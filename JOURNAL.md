@@ -66,6 +66,54 @@ pieces of original equipment:
    or wiring tying it in) — this machine has no pneumatics at all, fully
    electric (steppers + AC spindle motor only).
 
+## MicroMill 2000 manual (MPS2003 software) — now read in full
+
+The owner uploaded this one and it could be read directly (had to install
+`poppler-utils` in the sandbox first — noted here in case a future session
+hits the same "pdftoppm not installed" error). It's a **software/user
+manual for the original MPS2003 DOS program**, not a hardware/wiring
+manual, so it doesn't contain a DB25 pin table — but it confirms and adds
+important detail:
+
+- **Confirms direct parallel-port bit-banging**, exactly as theorized.
+  MPS2003 talks straight to PC hardware I/O ports: the XYZ axes are
+  addressed at port base **888 decimal (0x378 — the standard LPT1
+  address)**, and there's an optional **4th axis ("A") printer port
+  card at 632 decimal (0x278 — standard LPT2)**, supplied specifically
+  with the rotary-table option. So a machine with the 4th axis installed
+  would need *two* parallel ports on the PC — worth checking whether this
+  particular PC ever had a second LPT card, since its back panel (per
+  photos) only showed one DB25.
+- Confirms a separate **"driver unit"** (amplifier hardware, distinct
+  from the PC) takes those raw parallel signals and drives the actual
+  stepper motors. Explicitly warned in the troubleshooting section: the
+  driver unit must stay under continuous software control or it
+  overheats — "DO NOT leave the driver unit on if it is not under
+  control of the software." Confirms troubleshooting for "motors just
+  vibrate" points at the printer cable/port, not a smarter protocol.
+- **Motion calibration constants**, useful later for configuring
+  whatever retrofit board we land on: 20 rev/inch lead screw, 1.8°/step
+  motors, half-stepping → **8000 steps/inch** (0.000125 in/step) as the
+  factory default; the manual also shows how to fine-tune this
+  (e.g. 7992 steps/inch) if a given lead screw's true pitch varies
+  slightly.
+- **Original G-code dialect supported by MPS2003** (useful if we ever
+  find old job files, and as a sanity baseline — our new software isn't
+  required to match this, since we're not reusing this program):
+  `G00 G01 G02 G03 G17 G20 G21 G43 G81 G83 G98 G99` and
+  `M02 M97 M99`. Fairly minimal/classic subset — notably no explicit
+  G90/G91 mention found, no tool-change M-codes, no canned pattern
+  cycles beyond drilling/peck-drilling.
+- No mention anywhere of Light Machines or spectraLIGHT — consistent
+  with the theory that the spectraLIGHT box was a **later replacement**
+  for MicroProto's original driver unit + MPS2003 combo, not part of the
+  machine's original design.
+
+**Still missing**: the actual DB25 pin assignments for whichever
+box/driver unit is currently in the signal path. This manual didn't have
+it — need the spectraLIGHT manual (still not uploaded) or a physical
+trace/continuity check.
+
 ## Key technical finding: why this can't just move to a new Windows PC as-is
 
 Web research (see Sources below) turned up a secondhand pinout for the
@@ -155,7 +203,7 @@ plan is to remove the real-time requirement from the PC entirely:
 
 - [spectraLIGHT Lathe Manual PDF](https://www.tock.pl/images/Nowa_strona_15_04_2021/spectraLIGHT_Lathe_Manual_EN.pdf)
 - [spectraLIGHT Mill manual (Intelitek, network-blocked from fetching directly)](https://downloads.intelitek.com/Manuals/CNC/Discontinued_Machines/spectraLIGHT_Mill_WIN_Manual.pdf)
-- [MicroMill 2000 User's Manual (soigeneris.com mirror)](https://www.soigeneris.com/Document/Taig/MPS2000_Manual.pdf)
+- [MicroMill 2000 User's Manual (soigeneris.com mirror) — uploaded by owner and read in full this session](https://www.soigeneris.com/Document/Taig/MPS2000_Manual.pdf)
 - [MicroProto Systems site](http://www.microproto.com/micromill2000.htm)
 - [LinuxCNC forum: Light Machine Corp. Benchman XTr retrofit](https://forum.linuxcnc.org/30-cnc-machines/27204-light-machine-corp-benchman-xtr-retrofit)
 - [LinuxCNC forum: Light Machines Company Mill](https://forum.linuxcnc.org/16-stepconf-wizard/3501-light-machines-company-mill)

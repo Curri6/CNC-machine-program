@@ -5,12 +5,20 @@ Ordered roughly by what has to happen before the next thing can. See
 
 ## Before any hardware is touched or ordered
 
-- [ ] Download and upload the two manual PDFs so they can actually be
-      read (this session's network access couldn't fetch them directly):
-      - spectraLIGHT Mill manual (Intelitek)
-      - MicroMill 2000 manual (MicroProto/Taig)
-- [ ] Confirm the `COMPUTER` DB25 pinout against that manual — the pinout
-      in `JOURNAL.md` is from a secondhand forum summary, not verified yet.
+- [x] MicroMill 2000 manual (MicroProto/Taig) — uploaded and read. It's a
+      software manual, no DB25 pin table, but confirmed the direct
+      parallel-port bit-banging theory and gave useful motion constants.
+      See `JOURNAL.md`.
+- [ ] Download and upload the **spectraLIGHT Mill manual** (Intelitek) —
+      still needed, this session's network access couldn't fetch it
+      directly: `https://downloads.intelitek.com/Manuals/CNC/Discontinued_Machines/spectraLIGHT_Mill_WIN_Manual.pdf`
+- [ ] Confirm the `COMPUTER` DB25 pinout — still only have a secondhand
+      forum summary (see `JOURNAL.md`), not verified against a primary
+      source yet. Neither manual read so far has a pin table, so this may
+      end up needing a physical continuity trace instead.
+- [ ] Check whether this PC/setup ever had a second parallel port card
+      (for a 4th/"A" rotary axis, per the MPS2003 manual) — the one back
+      panel photo we have only shows a single DB25.
 - [ ] Power on the Windows 95 machine and check for the original CNC
       software (MicroProto MPS2000/MPS2003, and/or spectraLIGHT software)
       still installed. **Do this before wiping or reimaging that drive.**
