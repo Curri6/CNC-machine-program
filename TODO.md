@@ -18,10 +18,25 @@ Ordered roughly by what has to happen before the next thing can. See
       pin-level signal table in this manual either.
 - [ ] Confirm the `COMPUTER` DB25 pinout — still only have a secondhand
       forum summary (see `JOURNAL.md`), not verified against a primary
-      source. Neither manual has a pin table. Next options: contact
-      Intelitek support for the Interface Card's engineering reference,
-      or empirically probe the cable (multimeter/logic analyzer) while
-      jogging an axis on the still-working Win95 system.
+      source. Neither manual has a pin table.
+      - [x] Sent a documentation request to Intelitek (support form /
+            info@intelitek.com) asking for the Interface Card's pinout —
+            awaiting reply.
+      - [ ] Post on forums that already discuss this exact hardware
+            asking if anyone has the pinout from their own
+            reverse-engineering: practicalmachinist.com ("Need help on a
+            light machines spectralight cnc mill program mach 3"),
+            homeshopmachinist.net ("Help with a spectraLIGHT mill"),
+            cnczone.com.
+      - [ ] Contact Steven Rhine / Rhine Labs (stevenrhine.com) — he's
+            documented restoring this same Light Machines equipment and
+            may have gotten further on the pinout.
+      - [ ] Fallback if no one has it: empirically probe the cable
+            (multimeter/logic analyzer) while jogging an axis on the
+            still-working Win95 system.
+- [ ] Check whether other schools received similar Perkins-funded
+      spectraLIGHT/MicroMill equipment around the same time — a sister
+      machine elsewhere might still have its manual or nameplate intact.
 - [ ] Check whether this PC/setup ever had a second parallel port card
       (for a 4th/"A" rotary axis, per the MPS2003 manual) — the one back
       panel photo we have only shows a single DB25.
