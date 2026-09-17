@@ -111,8 +111,53 @@ important detail:
 
 **Still missing**: the actual DB25 pin assignments for whichever
 box/driver unit is currently in the signal path. This manual didn't have
-it — need the spectraLIGHT manual (still not uploaded) or a physical
+it — need the spectraLIGHT manual (see next section — now read, but it
+turns out this doesn't have the pin table either) or a physical
 trace/continuity check.
+
+## spectraLIGHT Mill manual — now read in full (251 pages)
+
+Owner sent this one as a zip (the PDF was too large to upload directly).
+This is the **full official manual** — installation, the Windows 95
+"Control Program" GUI, G-code reference, robotic I/O, safety, everything.
+Confirms and substantially sharpens the picture:
+
+- **The `COMPUTER` DB25 is not a parallel port at all — it's a
+  dedicated ISA bus expansion card** ("the spectraLIGHT Interface Card"),
+  installed in a full-size expansion slot inside the original PC. The
+  manual explicitly warns installers: "Do not get the Interface Card
+  mixed up with the parallel port which uses the same type of
+  connector" — i.e. it just *looks* like a parallel port (same DB25
+  shell) but is wired to the ISA bus, not the PC's built-in LPT hardware.
+  Factory I/O address is **0x3A0** (reserved for Bisync cards on the
+  classic PC/AT I/O address map), and there's a software panel in the
+  Control Program to change this address if it conflicts with another
+  card.
+- This **removes all ambiguity about reusing the original PC-side
+  hardware**: ISA slots don't exist on any PC made in the last ~20 years,
+  full stop — not even as an option via a simple adapter. There was
+  never a version of "keep the original interface, just get a new PC"
+  that could have worked. This confirms the retrofit plan is the only
+  viable path, not just the recommended one.
+- **The manual does not publish a pin-level signal table for the DB25
+  cable coming out of this Interface Card.** It's an end-user
+  install/operate guide, not an engineering reference. So the
+  secondhand forum pinout below is still our only lead on the actual
+  signal assignments — not confirmed by a primary source yet.
+- Also documented, for completeness: a separate 9-pin cable runs
+  directly from the Interface Card to the machining center itself
+  (spindle-related, bypasses the Controller Box), and the Controller
+  Box connects to the machining center via a 15-pin `A & B AXES` cable
+  and a 9-pin `C AXIS` cable. There's also a documented 9-pin `TTL I/O`
+  / robotic accessory connector with its own pin table (inputs/outputs
+  for external automation, ±5V/TTL levels, 1mA max output) — useful
+  context, but it's for accessory integration, not the main axis drive
+  signals.
+- Confirms the currently-installed OS really is running the
+  **spectraLIGHT Windows 95 GUI "Control Program"** (not the MicroProto
+  MPS2003 DOS program) — so when the machine is powered on, look for a
+  Windows program/folder actually named something like "spectraLIGHT"
+  or "Control Program," not "MPS2003."
 
 ## Key technical finding: why this can't just move to a new Windows PC as-is
 
@@ -129,11 +174,17 @@ Pin 23: E-Stop          Pin 13: Home            Pin 24: Limit
 Pin 1:  Accessory       Pin 11: Cover           Pin 2:  Chuck
 Pin 7:  Ground
 ```
-(**Not yet verified against a primary source** — see Open Items.)
+(**Still not verified against a primary source** — neither manual we've
+read has it; see Open Items. It's plausible this is still roughly right
+even though we now know it's an ISA card rather than a plain parallel
+port — a lot of ISA-era motion cards just used the bus to receive fast
+register writes from the CPU and then output plain TTL step/dir pulses
+on their external connector — but "plausible" isn't "confirmed.")
 
 Also found: the spectraLIGHT needs "an LPT card with a strong 5V
-output — a 3.3V card will not work," and community sources say it
-originally required a dedicated **ISA card** in the PC.
+output — a 3.3V card will not work" — this actually lines up with the
+"ISA card, not the parallel port" finding above; the forum poster was
+likely describing the same Interface Card, imprecisely.
 
 Put together with the Windows-95-was-the-original-OS fact: this old
 setup relied on the PC itself bit-banging real-time step pulses out the
@@ -178,31 +229,39 @@ plan is to remove the real-time requirement from the PC entirely:
 
 ## Open items / next steps
 
-1. **Get the official manuals read.** Both PDFs were located online but
-   this session's sandbox network egress blocked fetching them directly:
-   - spectraLIGHT Mill manual:
-     `https://downloads.intelitek.com/Manuals/CNC/Discontinued_Machines/spectraLIGHT_Mill_WIN_Manual.pdf`
-   - MicroMill 2000 manual:
-     `https://www.soigeneris.com/Document/Taig/MPS2000_Manual.pdf`
-   Owner needs to download these and upload them directly into the
-   conversation so they can be read and the DB25 pinout above verified
-   against a primary source before any hardware is ordered or wired.
-2. **Check the Windows 95 machine before touching its drive** — look for
-   MicroProto/Light Machines/spectraLIGHT/MPS2000 software, config files,
-   or saved jobs. Image the drive if anything is found.
-3. Confirm the actual signal path between the two boxes (does the
+1. ~~Get the official manuals read.~~ **Done** — both manuals (MicroMill
+   2000 / MPS2003, and spectraLIGHT Mill) have been uploaded and read.
+   Neither contained a DB25 pin-level signal table, so the pinout is
+   still unverified — see next item.
+2. **Confirm the real DB25 pin assignments.** Since neither manual has
+   it, options are: (a) contact Intelitek support (they inherited Light
+   Machines' documentation and still host the manual — contact info was
+   in the original spectraLIGHT Lathe manual found earlier) and ask for
+   the Interface Card's engineering/technical reference; or (b) an
+   empirical approach — safely power up the original Win95 system, and
+   with a multimeter or (better) a logic analyzer/oscilloscope, probe
+   the DB25 cable's pins while jogging a single axis a small amount to
+   see which pins toggle. Option (b) needs care — only attempt with the
+   machine's motion path clear and someone who knows what they're doing
+   with the probe.
+3. **Check the Windows 95 machine before touching its drive** — look for
+   the spectraLIGHT "Control Program" (per the manual, this is a real
+   Windows 95 GUI app, not a DOS program — that's the one actually
+   likely to be installed, more so than MPS2003) and any
+   config/calibration/job files. Image the drive if anything is found.
+4. Confirm the actual signal path between the two boxes (does the
    spectraLIGHT's output really feed the MicroProto breakout panel, or
    are they wired some other way?).
-4. Once pinout is confirmed: finalize exact retrofit board + parts list.
-5. Owner is sending more machine photos "Tuesday" (next session) —
+5. Once pinout is confirmed: finalize exact retrofit board + parts list.
+6. Owner is sending more machine photos "Tuesday" (next session) —
    revisit this journal and update it once those arrive.
-6. No code has been written yet — explicitly deferred by owner until
+7. No code has been written yet — explicitly deferred by owner until
    hardware/software plan is settled.
 
 ## Sources referenced this session
 
 - [spectraLIGHT Lathe Manual PDF](https://www.tock.pl/images/Nowa_strona_15_04_2021/spectraLIGHT_Lathe_Manual_EN.pdf)
-- [spectraLIGHT Mill manual (Intelitek, network-blocked from fetching directly)](https://downloads.intelitek.com/Manuals/CNC/Discontinued_Machines/spectraLIGHT_Mill_WIN_Manual.pdf)
+- [spectraLIGHT Mill manual (Intelitek) — uploaded by owner as a zip and read in full this session (251 pages)](https://downloads.intelitek.com/Manuals/CNC/Discontinued_Machines/spectraLIGHT_Mill_WIN_Manual.pdf)
 - [MicroMill 2000 User's Manual (soigeneris.com mirror) — uploaded by owner and read in full this session](https://www.soigeneris.com/Document/Taig/MPS2000_Manual.pdf)
 - [MicroProto Systems site](http://www.microproto.com/micromill2000.htm)
 - [LinuxCNC forum: Light Machine Corp. Benchman XTr retrofit](https://forum.linuxcnc.org/30-cnc-machines/27204-light-machine-corp-benchman-xtr-retrofit)

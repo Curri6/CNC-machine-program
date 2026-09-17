@@ -33,6 +33,15 @@ out different than expected, this list changes.
 - **Multimeter** — needed before touching wiring to confirm actual pin
   assignments and check for continuity/shorts, rather than trusting the
   secondhand pinout blindly.
+- **USB logic analyzer** (e.g. a cheap 8-channel "Saleae clone") — now
+  confirmed we likely need this. The spectraLIGHT manual (251 pages) has
+  no pin-level signal table for the `COMPUTER` DB25 cable, and it's a
+  proprietary ISA card, not a standard parallel port, so its exact
+  output signals aren't publicly documented. If Intelitek support can't
+  provide the engineering reference, the fallback is probing the DB25
+  cable's pins with a logic analyzer while the still-working Windows 95
+  system jogs a single axis, to empirically capture which pins are
+  X/Y/Z step and direction. Cheap and reusable for future debugging too.
 - **Small standoffs/enclosure or perfboard** — to mount the new
   controller board safely near the spectraLIGHT box rather than leaving
   it loose.

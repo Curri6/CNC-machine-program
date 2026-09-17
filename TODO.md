@@ -9,21 +9,28 @@ Ordered roughly by what has to happen before the next thing can. See
       software manual, no DB25 pin table, but confirmed the direct
       parallel-port bit-banging theory and gave useful motion constants.
       See `JOURNAL.md`.
-- [ ] Download and upload the **spectraLIGHT Mill manual** (Intelitek) —
-      still needed, this session's network access couldn't fetch it
-      directly: `https://downloads.intelitek.com/Manuals/CNC/Discontinued_Machines/spectraLIGHT_Mill_WIN_Manual.pdf`
+- [x] spectraLIGHT Mill manual (Intelitek) — uploaded as a zip and read
+      in full (251 pages). Confirmed the `COMPUTER` DB25 is actually a
+      dedicated **ISA bus expansion card** ("Interface Card," factory
+      address 0x3A0), not a real parallel port — meaning the original
+      PC-side hardware genuinely cannot be reused on any modern PC (no
+      ISA slots exist anymore), full stop. See `JOURNAL.md`. Still no
+      pin-level signal table in this manual either.
 - [ ] Confirm the `COMPUTER` DB25 pinout — still only have a secondhand
       forum summary (see `JOURNAL.md`), not verified against a primary
-      source yet. Neither manual read so far has a pin table, so this may
-      end up needing a physical continuity trace instead.
+      source. Neither manual has a pin table. Next options: contact
+      Intelitek support for the Interface Card's engineering reference,
+      or empirically probe the cable (multimeter/logic analyzer) while
+      jogging an axis on the still-working Win95 system.
 - [ ] Check whether this PC/setup ever had a second parallel port card
       (for a 4th/"A" rotary axis, per the MPS2003 manual) — the one back
       panel photo we have only shows a single DB25.
-- [ ] Power on the Windows 95 machine and check for the original CNC
-      software (MicroProto MPS2000/MPS2003, and/or spectraLIGHT software)
-      still installed. **Do this before wiping or reimaging that drive.**
-      If found, copy off: the program itself, any config/calibration
-      files, and any saved job files.
+- [ ] Power on the Windows 95 machine and check for the **spectraLIGHT
+      "Control Program"** (a real Windows 95 GUI app per the manual —
+      more likely to be what's actually installed than MPS2003) and any
+      config/calibration/job files. **Do this before wiping or
+      reimaging that drive.** If found, copy off the program, configs,
+      and any saved job files.
 - [ ] Figure out the actual signal path between the two black boxes —
       does the spectraLIGHT box's output really feed the MicroProto
       breakout panel, or is it wired some other way? (Visual trace of the
