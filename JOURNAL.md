@@ -49,11 +49,24 @@ pieces of original equipment:
    ![spectraLIGHT controller box front panel](images/spectralight-front-panel.jpg)
    ![spectraLIGHT controller box rear panel showing MOTOR DRIVES, COMPUTER, TTL I/O, A & B AXES, C AXIS](images/spectralight-back-panel.jpg)
 
-   Working theory (not yet confirmed against a wiring diagram): the
-   MicroProto mill/breakout panel is the original hardware, and at some
-   point the school added/swapped in the Light Machines spectraLIGHT box
-   as the driver/controller electronics feeding it. Not confirmed which
-   box's output feeds which box's input.
+   **Updated theory, revised 2026-09-22 — likely NOT connected to the
+   MicroProto mill at all.** Cross-checked both full manuals directly:
+   neither mentions the other company's product anywhere. More
+   tellingly, the spectraLIGHT manual's own interconnection diagram
+   shows its `A & B AXES`/`C AXIS` ports are designed for **15-pin and
+   9-pin D-sub cables** going to Light Machines' own "machining center"
+   — a completely different connector shape than the **round DIN**
+   connectors on the MicroProto axis panel. Combined with the
+   `Params.dat` finding below (MPS2003 talks to plain PC parallel-port
+   hardware; the spectraLIGHT box needs its own proprietary ISA card —
+   mutually unintelligible protocols), the working conclusion is that
+   this spectraLIGHT box is a **leftover from a separate, different
+   Light Machines mill/lathe** (possibly no longer present), not
+   actually part of this MicroMill's functioning signal path. A cable
+   was found plugged into its `COMPUTER` port, but its other end hasn't
+   been traced yet — doing so would make this certain either way, but
+   isn't currently treated as blocking given the strength of the manual
+   evidence above.
 
 3. **Original computer**: an **IBM NetVista** (Machine Type 6578, Model
    KCU, manufactured ~2001, Pentium III/4 era). Back panel has exactly
@@ -286,22 +299,31 @@ for restoring that low-jitter timing) — same problem, different fix.
 
 ## Decision: retrofit plan
 
+**Updated 2026-09-22** to reflect the conclusion above that the
+spectraLIGHT box is very likely not part of this machine's actual
+signal path — the retrofit target is the **MicroProto side only**.
+
 Rather than fight for real-time performance on a general-purpose PC OS
 (what both Win95-original and the Linux-retrofit idea were doing), the
 plan is to remove the real-time requirement from the PC entirely:
 
-1. Keep the mechanical mill, the NEMA 23 steppers, the spindle motor, and
-   ideally the spectraLIGHT box's internal drive amplifiers.
+1. Keep the mechanical mill, the NEMA 23 steppers, the spindle motor,
+   and the MicroProto axis panel / driver unit that currently receives
+   the PC's raw parallel-port signals.
 2. Replace only the PC-side signal generation with a small, modern,
    well-documented motion-control board (GRBL-based controller is the
    leading candidate — cheap, open protocol, huge community, and this
-   exact retrofit pattern is documented by the LinuxCNC community for a
-   sibling Light Machines product, the Benchman XTr, using a Mesa
-   5i25/7i77 board instead). It wires into the *same* DB25 pins the old
-   PC used to drive, so (if the pinout above holds up) no changes needed
-   inside the spectraLIGHT box at all.
+   is exactly the kind of raw step/dir parallel-port setup GRBL
+   controllers are designed to replace). It would either wire into the
+   MicroProto driver unit's existing input pins (once we know them), or
+   — more simply, since that unit just expects standard step/dir/enable
+   signals on standard parallel-port pins — feed it the equivalent
+   signals from the new board directly.
 3. That board handles all real-time step timing in hardware. The Windows
    11 PC just streams G-code over USB at non-time-critical speed.
+4. The spectraLIGHT box is set aside as out of scope for this retrofit
+   unless the cable trace (still not done, no longer treated as
+   blocking) reveals it actually is in the path after all.
 
 ## Software plan
 
@@ -327,26 +349,26 @@ plan is to remove the real-time requirement from the PC entirely:
    `Paramp3.dat` or run `Mill`/`Mps2003`/`Mpsm97`/`Mpsprob3` — do that
    next, running programs only once the area around the mill is
    confirmed physically safe.
-3. **Physically trace the PC's parallel port cable** — `Params.dat`
-   shows the real working config uses the PC's own standard LPT1/LPT2
-   ports (888/632 decimal), not the spectraLIGHT Interface Card's ISA
-   address. So: does that cable actually plug into the MicroProto
-   breakout box (DIN X/Y/Z/A connectors) or the spectraLIGHT box's
-   `COMPUTER` port? This decides which box is actually live and
-   answers the "how do the two boxes relate" question directly —
-   higher priority now than the DB25-pinout research below, since it
-   might make that research moot (if the spectraLIGHT box isn't even
-   in the active signal path, we may not need its pinout at all).
-4. **Confirm the real DB25 pin assignments** for whichever box turns out
-   to be the active one. Options: (a) contact Intelitek support (in
-   progress, no reply yet after several days — a phone follow-up is
-   the suggested next step) or the hobbyist forum/blog leads (see
-   Sources); or (b) an empirical approach — with the machine powered
+3. ~~Physically trace the PC's parallel port cable.~~ **Resolved by
+   manual cross-check instead** (2026-09-22) — see the updated theory
+   above. Working conclusion: the spectraLIGHT box is not in this
+   machine's active signal path; the MicroProto panel is. A physical
+   cable trace would still make this 100% certain rather than "very
+   likely," but is no longer treated as blocking.
+4. **Confirm the real signal pinout for the MicroProto driver
+   unit/axis panel** (not the spectraLIGHT box — deprioritized per
+   above unless the conclusion changes). Neither manual gives a
+   pin-level table for it either. Options: (a) the hobbyist forum/blog
+   leads (see Sources) — worth re-targeting those asks at the
+   MicroProto/MPS2000 hardware specifically now, rather than
+   spectraLIGHT; (b) an empirical approach — with the machine powered
    and the area clear, use a multimeter or logic analyzer to probe the
-   cable's pins while jogging a single axis via the now-confirmed
-   `Steptxt`/MPSTEXT program, to see which pins toggle.
-5. Once the active box and its pinout are confirmed: finalize exact
-   retrofit board + parts list.
+   panel's connector pins while jogging a single axis via the
+   confirmed-working `Steptxt`/MPSTEXT program, to see which pins
+   toggle. (The Intelitek documentation request is still out there but
+   is now lower-value, since it's spectraLIGHT-specific.)
+5. Once the pinout is confirmed: finalize exact retrofit board + parts
+   list.
 6. Before wiping/reformatting the Win95 drive for any reason: back up
    the entire `C:\MPSPRO` folder (and ideally a full disk image) —
    it's a working reference implementation of the exact G-code dialect

@@ -25,34 +25,35 @@ Ordered roughly by what has to happen before the next thing can. See
 - [ ] Open the remaining config files not yet checked: `Param3.dat`,
       `Param51.dat`, `Param51s.dat`, `Paramp3.dat` (Notepad, like
       `Params.dat` already read).
-- [ ] **Physically trace the PC's parallel port cable** — `Params.dat`
-      confirms the real working setup uses the PC's own standard
-      LPT1/LPT2 ports (888/632 decimal), not the spectraLIGHT ISA card
-      address. Find out: does that cable plug into the MicroProto
-      breakout box (DIN X/Y/Z/A connectors) or the spectraLIGHT box's
-      `COMPUTER` port? This is now **higher priority** than the DB25
-      pinout research below — it tells us which box is actually live,
-      and may make the spectraLIGHT-specific pinout research moot.
-- [ ] Confirm the `COMPUTER` DB25 pinout for whichever box turns out to
-      be the active one — still only have a secondhand forum summary
-      (see `JOURNAL.md`), not verified against a primary source.
-      - [x] Sent a documentation request to Intelitek (support form /
-            info@intelitek.com) asking for the Interface Card's pinout —
-            **no reply after several days; follow up by phone** (script
-            already worked out, see chat).
-      - [ ] Post on forums that already discuss this exact hardware
-            asking if anyone has the pinout from their own
-            reverse-engineering: practicalmachinist.com ("Need help on a
-            light machines spectralight cnc mill program mach 3"),
-            homeshopmachinist.net ("Help with a spectraLIGHT mill"),
-            cnczone.com.
-      - [ ] Contact Steven Rhine / Rhine Labs (stevenrhine.com) — he's
-            documented restoring this same Light Machines equipment and
-            may have gotten further on the pinout.
-      - [ ] Fallback if no one has it: empirically probe the cable
-            (multimeter/logic analyzer) while jogging a single axis via
-            the now-confirmed working `Steptxt`/MPSTEXT program — only
-            once the area around the mill is confirmed physically clear.
+- [x] ~~Physically trace the PC's parallel port cable~~ — **resolved by
+      cross-checking both manuals instead** (2026-09-22): neither
+      manual mentions the other company's product, and the spectraLIGHT
+      box's own interconnection diagram shows its axis ports are
+      designed for 15-pin/9-pin D-sub cables to Light Machines' *own*
+      mill, not the round DIN connectors on the MicroProto panel.
+      Working conclusion: **the spectraLIGHT box is not part of this
+      machine's active signal path** — the MicroProto panel is. See
+      `JOURNAL.md`. A physical trace of the cable plugged into the
+      spectraLIGHT box's `COMPUTER` port would still make this fully
+      certain rather than "very likely," but is no longer blocking.
+- [ ] Confirm the real signal pinout for the **MicroProto driver
+      unit/axis panel** (retargeted from spectraLIGHT, per above) —
+      still only have a secondhand forum summary for a "spectraLIGHT"
+      pinout (see `JOURNAL.md`), which may not even be the right
+      hardware to have been chasing. Neither manual has a pin table for
+      either box.
+      - [x] Sent a documentation request to Intelitek about the
+            spectraLIGHT Interface Card — lower priority now, but still
+            out there; no reply after several days, phone follow-up
+            script already worked out if wanted.
+      - [ ] Post on forums, but re-target the ask at **MicroProto
+            MicroMill 2000 / MPS2003** hardware specifically:
+            practicalmachinist.com, homeshopmachinist.net, cnczone.com.
+      - [ ] Fallback: empirically probe the MicroProto panel's connector
+            pins (multimeter/logic analyzer) while jogging a single axis
+            via the now-confirmed working `Steptxt`/MPSTEXT program —
+            only once the area around the mill is confirmed physically
+            clear.
 - [ ] Check whether other schools received similar Perkins-funded
       spectraLIGHT/MicroMill equipment around the same time — a sister
       machine elsewhere might still have its manual or nameplate intact.
@@ -63,13 +64,14 @@ Ordered roughly by what has to happen before the next thing can. See
       checking the 3 expansion-slot brackets on the back of the case for
       a second DB25 we might have missed.
 
-## Once the pinout/signal path is confirmed
+## Once the pinout is confirmed
 
 - [ ] Pick the exact retrofit motion-control board (GRBL-based board is
       the leading candidate — see `PARTS_LIST.md`).
 - [ ] Order parts.
-- [ ] Wire the new board into the spectraLIGHT box's existing `COMPUTER`
-      DB25 socket, matching the confirmed pinout.
+- [ ] Wire the new board into the **MicroProto driver unit/axis panel**
+      (not the spectraLIGHT box — see above), matching the confirmed
+      pinout.
 - [ ] Bench-test motion (jog each axis a small, safe distance) before
       trusting it with a real cutting job.
 
