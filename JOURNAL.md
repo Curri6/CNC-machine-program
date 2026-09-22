@@ -33,6 +33,11 @@ pieces of original equipment:
    connectors labeled `X`, `Y`, `Z`, `A`, an `I/O PORT`, and an
    `XYZA PORT`.
 
+   ![MicroProto MicroMill 2000HD/LE nameplate](images/micromill-2000-nameplate.jpg)
+   ![MicroMill axis interface panel with DIN connectors](images/micromill-2000-axis-panel.jpg)
+   ![Lin Engineering 5718L-10D stepper motor driving an axis](images/lin-engineering-stepper-motor.jpg)
+   ![Franklin Electric spindle motor nameplate](images/franklin-electric-spindle-motor.jpg)
+
 2. **Controller/driver box**: badged **Light Machines Corporation
    "spectraLIGHT"** (Light Machines was later acquired by **Intelitek**).
    This is the box with all the fused power distribution (`MOTOR DRIVES`,
@@ -40,6 +45,9 @@ pieces of original equipment:
    `C AXIS` (DB9), `TTL I/O` (DB9), and — the important one —
    **`COMPUTER` (DB25)**. Warning label says "do not open, no user
    serviceable parts inside."
+
+   ![spectraLIGHT controller box front panel](images/spectralight-front-panel.jpg)
+   ![spectraLIGHT controller box rear panel showing MOTOR DRIVES, COMPUTER, TTL I/O, A & B AXES, C AXIS](images/spectralight-back-panel.jpg)
 
    Working theory (not yet confirmed against a wiring diagram): the
    MicroProto mill/breakout panel is the original hardware, and at some
@@ -53,6 +61,9 @@ pieces of original equipment:
    early USB, VGA. **Currently still boots to Windows 95** (per owner,
    2026-09-17). A previous, unsuccessful repair attempt by others wanted
    to move this machine to Linux instead.
+
+   ![IBM NetVista rear panel showing the single DB25 parallel port and two DB9 serial ports](images/ibm-netvista-back-panel.jpg)
+   ![IBM NetVista nameplate: Machine Type 6578, Model KCU](images/ibm-netvista-nameplate.jpg)
 
    Not yet checked: whether the original CNC software (MicroProto's
    MPS2000/MPS2003 DOS CAM program, and/or Light Machines' spectraLIGHT
