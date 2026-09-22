@@ -25,7 +25,7 @@ confirm it. Never design around this, in this phase or later ones.
       possible job (a shallow face or small engraving), not a full
       cutout.
 
-## Phase 1 — Windows 11 app as G-code generator + authenticated "receiver" on the old PC
+## Phase 1 — Windows 11 app as G-code importer/sender + plain "receiver" on the old PC
 
 - [ ] Check what network adapter is actually in the old PC: **Start →
       Settings → Control Panel → System → Device Manager → Network
@@ -39,23 +39,28 @@ confirm it. Never design around this, in this phase or later ones.
       driver support and no security patches ever, so joining the
       real school network is both likely-infeasible and a real risk
       most IT departments would block.
-- [ ] Design and build the **custom authenticated "receiver" program**
-      for the old PC (owner's explicit request, replacing raw/open
-      file sharing): requires a username + password before accepting
-      anything; on success, receives a G-code file and saves it to
-      `C:\MPSPRO`. Must **never** auto-load or auto-run the file — a
-      person still has to load/start it in MPS2003 themselves (see
-      standing safety rule above).
+- [ ] Design and build the **"receiver" program** for the old PC:
+      listens for an incoming G-code file over the isolated link and
+      saves it to `C:\MPSPRO`. **No username/password** — dropped by
+      owner (2026-09-22) since the link is isolated point-to-point, so
+      there's no one else who could reach it. Must **never** auto-load
+      or auto-run the file — a person still has to load/start it in
+      MPS2003 themselves (see standing safety rule above).
       - Windows 95 can't run modern software (no Python 3, no current
         .NET) — this has to be written in period-appropriate tooling,
         most practically **Visual Basic 6** or **plain C with
         Winsock**. Separate small codebase from the main app. Not
         started.
-- [ ] Scaffold the Windows 11 app (Python + PySide6) with G-code
-      generation targeting MPS2003's dialect (`G00 G01 G02 G03 G17 G20
-      G21 G43 G81 G83 G98 G99`, `M02 M97 M99` — see `JOURNAL.md`) and a
-      matching client that logs into the receiver program and sends a
-      finished job over the isolated link.
+- [ ] Scaffold the Windows 11 app (Python + PySide6) as a G-code
+      **importer/previewer/sender**, not a from-scratch CAM tool
+      (owner's explicit request, 2026-09-22): should open G-code files
+      created on any computer in the school with whatever CAM software
+      is already available there, validate the file only uses commands
+      MPS2003 understands (`G00 G01 G02 G03 G17 G20 G21 G43 G81 G83
+      G98 G99`, `M02 M97 M99` — see `JOURNAL.md`) and warn on anything
+      unsupported, preview the toolpath, then send the file to the
+      receiver program over the isolated link. Native G-code generation
+      inside the app is a possible nice-to-have later, not required now.
 
 ## Phase 2 (deferred, not abandoned) — full hardware retrofit
 

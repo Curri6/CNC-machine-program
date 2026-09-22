@@ -425,12 +425,27 @@ cutter; secure the stock firmly; use the manual's own **Preview, then
 Dry Run** steps before any real cut; start with the simplest possible
 test job (a shallow face or small engraving, not a full cutout).
 
-**Phase 1 — Windows 11 app as a G-code *generator*, old PC stays as
-the executor ("receiver")**, deferring the full hardware retrofit:
-- The new Windows 11 app's job (for this phase) is producing G-code in
-  MPS2003's dialect (`G00 G01 G02 G03 G17 G20 G21 G43 G81 G83 G98 G99`,
-  `M02 M97 M99` — see the MicroMill manual section above) with a
-  polished native UI, not real-time machine control.
+**Phase 1 — Windows 11 app as a G-code *importer/sender*, old PC stays
+as the executor ("receiver")**, deferring the full hardware retrofit:
+- **Revised again 2026-09-22**: owner dropped the username/password
+  requirement — acceptable specifically because the link is a private,
+  isolated point-to-point Ethernet cable between only these two
+  machines (not the school's shared network), so there's no one else
+  who could reach it to send a bogus file. Simpler receiver program as
+  a result: just accepts an incoming G-code file and saves it, no auth
+  handshake.
+- **Also revised: the app's job is import + preview + send, not
+  building G-code from scratch.** Owner wants it to accept G-code files
+  created on *any* computer in the school (using whatever free/existing
+  CAM software someone already has), so students/staff aren't forced to
+  design everything inside our app. The app should validate that an
+  imported file only uses commands MPS2003 actually understands
+  (`G00 G01 G02 G03 G17 G20 G21 G43 G81 G83 G98 G99`, `M02 M97 M99` —
+  see the MicroMill manual section above) and warn on anything
+  unsupported, then preview the toolpath before sending. Building a
+  from-scratch CAD/CAM design tool is explicitly *not* required for
+  this phase — native G-code generation could still be a nice-to-have
+  later, but importing existing files is the priority.
 - Getting the file to the old PC: owner wants this over a network
   connection rather than physically carrying a floppy disk over.
   **Decided against joining the actual school WiFi/network** — Windows
@@ -446,14 +461,10 @@ the executor ("receiver")**, deferring the full hardware retrofit:
   already has a WiFi/Ethernet card — check Device Manager under
   "Network adapters" to confirm exactly what's there and whether it's
   period-compatible).
-- **A custom authenticated "receiver" program on the old PC**, replacing
-  raw/open file sharing (owner's explicit request): requires a
-  username and password before accepting anything at all; only once
-  authenticated does it receive a G-code file and save it to
-  `C:\MPSPRO`. This is real access control, but honestly not strong
-  encryption — Windows 95-era tooling doesn't make that easy — which is
-  an acceptable tradeoff *specifically because* the link is isolated
-  point-to-point, not exposed more broadly.
+- **A custom "receiver" program on the old PC**: listens for an
+  incoming G-code file over the isolated link and saves it to
+  `C:\MPSPRO`. No authentication (see above — dropped as unnecessary
+  complexity given the isolated link).
 - **Windows 95 cannot run modern software at all** (no Python 3, no
   current .NET, etc.), so this receiver program is necessarily a
   separate, small codebase from the main Windows 11 app, written in
