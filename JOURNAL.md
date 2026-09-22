@@ -17,6 +17,13 @@ so far:
 - No phone/companion app — desktop only.
 - Needs to both (a) send G-code/cutting jobs to the machine, and
   (b) be the path for "updating" the machine's control electronics.
+- **Standing safety requirement (2026-09-22, owner's explicit
+  instruction): a job must never be able to start running on the
+  machine without a person physically present to confirm it.** This
+  applies at every phase of the project, not just the current
+  workaround — including after the eventual full hardware retrofit.
+  Software must never support fully unattended/remote job starts; a
+  physical confirmation step at the machine is mandatory every time.
 
 ## Hardware identified (as of 2026-09-17)
 
@@ -49,11 +56,24 @@ pieces of original equipment:
    ![spectraLIGHT controller box front panel](images/spectralight-front-panel.jpg)
    ![spectraLIGHT controller box rear panel showing MOTOR DRIVES, COMPUTER, TTL I/O, A & B AXES, C AXIS](images/spectralight-back-panel.jpg)
 
-   Working theory (not yet confirmed against a wiring diagram): the
-   MicroProto mill/breakout panel is the original hardware, and at some
-   point the school added/swapped in the Light Machines spectraLIGHT box
-   as the driver/controller electronics feeding it. Not confirmed which
-   box's output feeds which box's input.
+   **Updated theory, revised 2026-09-22 — likely NOT connected to the
+   MicroProto mill at all.** Cross-checked both full manuals directly:
+   neither mentions the other company's product anywhere. More
+   tellingly, the spectraLIGHT manual's own interconnection diagram
+   shows its `A & B AXES`/`C AXIS` ports are designed for **15-pin and
+   9-pin D-sub cables** going to Light Machines' own "machining center"
+   — a completely different connector shape than the **round DIN**
+   connectors on the MicroProto axis panel. Combined with the
+   `Params.dat` finding below (MPS2003 talks to plain PC parallel-port
+   hardware; the spectraLIGHT box needs its own proprietary ISA card —
+   mutually unintelligible protocols), the working conclusion is that
+   this spectraLIGHT box is a **leftover from a separate, different
+   Light Machines mill/lathe** (possibly no longer present), not
+   actually part of this MicroMill's functioning signal path. A cable
+   was found plugged into its `COMPUTER` port, but its other end hasn't
+   been traced yet — doing so would make this certain either way, but
+   isn't currently treated as blocking given the strength of the manual
+   evidence above.
 
 3. **Original computer**: an **IBM NetVista** (Machine Type 6578, Model
    KCU, manufactured ~2001, Pentium III/4 era). Back panel has exactly
@@ -170,6 +190,146 @@ Confirms and substantially sharpens the picture:
   Windows program/folder actually named something like "spectraLIGHT"
   or "Control Program," not "MPS2003."
 
+## Machine powered on — found the live MPSPRO installation (2026-09-22)
+
+Owner got the Windows 95 machine booted (login dialog turned out to be
+the classic Win9x non-enforcing logon — Cancel/blank credentials got
+straight to the desktop, as expected). The desktop itself was stock/empty
+(no CNC shortcuts), but `C:\MPSPRO` is **fully intact**:
+
+```
+Bolthole.tap  Ellipse.tap  Facef.tap  Facer.tap  Gear.tap  Knight.tap
+Textdemo.tap  Install  Mill  Mps2003  Mpsm97  Mpsprob3
+Param3.dat  Param51.dat  Param51s.dat  Paramp3.dat  Params.dat
+Steptxt  Textm97
+```
+
+Two big findings from opening files here:
+
+- **`Params.dat` confirms the real, working port addresses** — and they
+  match the manual's documented *standard* values exactly, not the
+  spectraLIGHT ISA card's address:
+  ```
+  0
+  0
+  0
+  0
+  888     <- XYZ port base = 0x378 = standard PC LPT1
+  890
+  632     <- A (4th axis) port base = 0x278 = standard PC LPT2
+  600
+  200
+  10
+  0
+  16
+  16
+  0
+  8
+  INCH
+  ```
+  (First four `0`s are likely the last-saved X/Y/Z/A position, all
+  homed/zeroed. The values after 632 are probably rapid-speed/backlash/
+  step-mode settings per the manual's calibration section — not fully
+  decoded, and not needed for our purposes. The `888`/`632` match is the
+  important part.)
+
+  **This is a significant update to the working theory.** It means the
+  software actually configured and (presumably) used on this machine
+  talks through the **PC's own built-in standard parallel port
+  hardware** (LPT1, and LPT2 for the 4th axis) — not the spectraLIGHT
+  Interface Card's proprietary ISA bus address (0x3A0) at all. That
+  raises an open question we didn't have before: **is the spectraLIGHT
+  box even the thing currently wired to this PC's parallel port**, or is
+  the MicroProto native breakout box (the one with the round DIN X/Y/Z/A
+  connectors) the one actually in the live signal path, with the
+  spectraLIGHT box unused/legacy or wired in for something unrelated
+  (e.g. just spindle control)? **Next time at the machine: physically
+  trace the cable from the PC's DB25 parallel port to whichever box it
+  actually plugs into** — this settles it conclusively either way.
+  This is good news either way for the retrofit: a standard LPT1/LPT2
+  step/dir setup is a well-understood, common target (this is exactly
+  what generic hobby CNC breakout boards and GRBL-adjacent controllers
+  already expect), more so than the spectraLIGHT ISA card scenario.
+
+- **`Steptxt` is not a text file — it's a live DOS control program**
+  ("MPSTEXT V3.0"), showing real-time axis position (X/Y/Z/A, all
+  0.0000), feed rate, jog increment, and a manual jog / load program /
+  run program / zero axis menu. **This is working control software that
+  can actually move the machine** if the driver box and motors are
+  powered and connected — treat it with the same care as running the
+  original software for real. Owner was advised not to press any menu
+  keys (Manual Jog, Run Program, Zero Axis) until the area around the
+  mill is confirmed clear.
+
+Not yet opened: `Param3.dat`, `Param51.dat`, `Param51s.dat`,
+`Paramp3.dat` (other config variants — probably per-job or per-material
+presets), `Mill` (separate program, purpose unknown), `Mps2003` /
+`Mpsm97` / `Mpsprob3` (the actual control program executables — not run
+yet, deliberately, until we're sure it's safe to do so with the machine
+in its current physical state).
+
+## Community research on the MicroProto controller itself (2026-09-22)
+
+With the retrofit target now confirmed as the MicroProto side (not
+spectraLIGHT), searched specifically for how the MicroProto controller
+hardware works. Found a dedicated history/reference (a wiki page,
+"Microproto Control System Versions" on medw.uk — blocked from direct
+fetch in this sandbox, but reached via search snippets) plus several
+forum threads. Key findings:
+
+- **MicroProto controllers exist in (at least) two generations.** The
+  **original** controller drives each stepper motor with a raw
+  **3-wire phase control** signal straight from the PC's parallel
+  port — not step/direction. Since 3 wires × 4 axes = 12 signals, more
+  than one 8-bit parallel port's data lines can carry, the original
+  design **needed two parallel ports** for a 4-axis setup (one for
+  XYZ, a second for the 4th/A axis).
+- **In 2003, MicroProto released a "step and direction" upgrade
+  board** that sits between the PC and the original phase-drive cards,
+  translating standard step/dir signals into the 3-wire phase pattern
+  those cards actually need — this is what let later owners run
+  standard software like Mach3 on old MicroProto hardware. A 2006
+  variant added closed-loop encoder feedback.
+- **A separate, still-sold commercial product does the same
+  conversion**: the **TurboTaig board** (Homann Designs, ~AU$169,
+  part# TC-01) — also converts the original 3-wire phase interface to
+  standard step/direction, with bonus I/O (limit switch inputs, relay
+  outputs for spindle/coolant, touch-probe and spindle-indexer
+  support). Reviewed by real owners; one review reported running
+  150,000 lines of G-code for 4 hours without a hitch. It exposes a
+  step/dir input via a connector called `J9` for use with classic
+  step/dir software (Mach1/Master5/TurboCNC/EMC-era programs, all of
+  which historically ran on a PC with a real parallel port doing the
+  real-time bit-banging — so this board still needs an external
+  real-time-capable pulse source, it doesn't generate G-code motion
+  itself).
+- **This machine is almost certainly the original, pre-upgrade
+  version** — `Params.dat`'s two port addresses (888 and 632) match
+  the "needed two parallel ports" description of the *original*
+  3-wire-phase controller, not the single-port step/dir upgrade.
+- **Confirmation this matters in practice, not just theory**: a forum
+  thread describes someone wiring a modern Centroid Acorn controller
+  directly into an old MicroProto driver box's DB25 expecting standard
+  step/dir — the axes only turned one step and needed direction
+  toggling to move further, exactly the broken behavior you'd expect
+  feeding step/dir pulses into hardware that actually wants raw
+  phase-state signals. **A generic modern step/dir board cannot be
+  wired straight into this old driver box.**
+- Bonus, found real pinout detail for the panel's **`I/O PORT`**
+  connector (separate from the axis motor connectors): pins 1–4 are 3
+  limit switches + E-stop, pin 5 is an optional 4th-axis limit switch,
+  pin 8 is ground/common return.
+
+**Revised retrofit pipeline** (updates the "Decision: retrofit plan"
+section below): Windows 11 PC → a small GRBL-based board (generates
+real step/dir pulses in hardware) → a **TurboTaig board** (or
+MicroProto's own official 2003 upgrade board, if one can be sourced)
+converting those to the 3-wire phase pattern → the **existing original
+MicroProto driver cards** (unchanged) → motors. This replaces
+"reverse-engineer the 3-wire phase pinout ourselves" with "buy an
+existing, tested product that already solves exactly this problem" —
+a meaningfully lower-risk plan.
+
 ## Key technical finding: why this can't just move to a new Windows PC as-is
 
 Web research (see Sources below) turned up a secondhand pinout for the
@@ -206,67 +366,215 @@ reason the earlier would-be fixers wanted to switch to Linux
 (a real-time-patched Linux kernel, à la LinuxCNC, is the traditional fix
 for restoring that low-jitter timing) — same problem, different fix.
 
-## Decision: retrofit plan
+## Decision: retrofit plan (NOT CURRENTLY ACTIVE — see below)
+
+**Superseded 2026-09-22**: the owner decided the Phase 0/1 plan further
+below (keep the old PC running MPS2003, use the new Windows 11 app as a
+G-code importer/sender to it) is sufficient on its own — the full
+hardware retrofit described in this section is **no longer part of the
+active plan**, not just deferred. Kept here as reference in case the
+old PC's hardware or MPS2003 ever stops working entirely and this
+becomes relevant again; nothing below this note should be treated as
+a current task.
+
+**Updated 2026-09-22 (twice)**: first to reflect that the spectraLIGHT
+box is very likely not part of this machine's actual signal path (the
+retrofit target is the **MicroProto side only**), then again after the
+community research above revealed the MicroProto driver box likely
+uses **raw 3-wire phase control per motor, not step/direction** — a
+generic modern step/dir board cannot be wired straight into it (a
+forum report of someone trying exactly that produced broken,
+one-step-only motion).
 
 Rather than fight for real-time performance on a general-purpose PC OS
 (what both Win95-original and the Linux-retrofit idea were doing), the
-plan is to remove the real-time requirement from the PC entirely:
+plan is to remove the real-time requirement from the PC entirely — and
+rather than reverse-engineer the old 3-wire phase protocol ourselves,
+use an existing product built for exactly this conversion:
 
-1. Keep the mechanical mill, the NEMA 23 steppers, the spindle motor, and
-   ideally the spectraLIGHT box's internal drive amplifiers.
-2. Replace only the PC-side signal generation with a small, modern,
-   well-documented motion-control board (GRBL-based controller is the
-   leading candidate — cheap, open protocol, huge community, and this
-   exact retrofit pattern is documented by the LinuxCNC community for a
-   sibling Light Machines product, the Benchman XTr, using a Mesa
-   5i25/7i77 board instead). It wires into the *same* DB25 pins the old
-   PC used to drive, so (if the pinout above holds up) no changes needed
-   inside the spectraLIGHT box at all.
-3. That board handles all real-time step timing in hardware. The Windows
-   11 PC just streams G-code over USB at non-time-critical speed.
+1. Keep the mechanical mill, the NEMA 23 steppers, the spindle motor,
+   and the **original MicroProto driver cards** (the ones doing 3-wire
+   phase drive) completely unchanged.
+2. Add a **TurboTaig board** (Homann Designs, ~AU$169, part# TC-01 —
+   or MicroProto's own official 2003 step/dir upgrade board, if one
+   can still be sourced) between the driver cards and everything else.
+   This is a real, tested product that converts standard step/direction
+   signals into the 3-wire phase pattern the old driver cards expect —
+   solving the exact problem we'd otherwise be reverse-engineering.
+3. Feed that board's step/dir input (its `J9` connector, per the one
+   review found) from a small, modern, well-documented motion-control
+   board (GRBL-based controller is the leading candidate — cheap, open
+   protocol, huge community) that generates the actual real-time
+   step/dir pulses in hardware.
+4. The Windows 11 PC just streams G-code over USB to the GRBL board at
+   non-time-critical speed — no real-time requirement on the PC at all.
+5. The spectraLIGHT box remains set aside as out of scope for this
+   retrofit unless a cable trace (still not done, no longer treated as
+   blocking) reveals it actually is in the path after all.
+
+**Still to confirm**: whether this specific machine already has *any*
+step/dir upgrade board installed (TurboTaig, MicroProto's own, or the
+2006 closed-loop variant) rather than being fully original — this
+would change or even eliminate the need to buy one. Check the driver
+box/cards for a board matching either product before ordering
+anything.
+
+## Current active plan (2026-09-22): test-first, then a networked "receiver" — no hardware retrofit
+
+Owner decided this plan is sufficient **on its own**, not just an
+interim step before the hardware retrofit above — that retrofit is now
+out of scope entirely (see the note added to that section). The old PC
+keeps running MPS2003 exactly as it always has, indefinitely; the
+Windows 11 app is the modern front end for creating/importing and
+sending it jobs. Sequence:
+
+**Phase 0 — verify the machine still physically works**, using the
+*original* MPS2003 software, unmodified, on the existing Win95 PC:
+test-cut a piece of acrylic. Safety procedure (from the MPS2003 manual
+itself, which documents exactly this workflow): move each axis by hand
+with power off first to check for binding; mount a plastics-appropriate
+cutter; secure the stock firmly; use the manual's own **Preview, then
+Dry Run** steps before any real cut; start with the simplest possible
+test job (a shallow face or small engraving, not a full cutout).
+
+**Phase 1 — Windows 11 app as a G-code *importer/sender*, old PC stays
+as the executor ("receiver")**, deferring the full hardware retrofit:
+- **Revised again 2026-09-22**: owner dropped the username/password
+  requirement — acceptable specifically because the link is a private,
+  isolated point-to-point Ethernet cable between only these two
+  machines (not the school's shared network), so there's no one else
+  who could reach it to send a bogus file. Simpler receiver program as
+  a result: just accepts an incoming G-code file and saves it, no auth
+  handshake.
+- **Also revised: the app's job is import + preview + send, not
+  building G-code from scratch.** Owner wants it to accept G-code files
+  created on *any* computer in the school (using whatever free/existing
+  CAM software someone already has), so students/staff aren't forced to
+  design everything inside our app. The app should validate that an
+  imported file only uses commands MPS2003 actually understands
+  (`G00 G01 G02 G03 G17 G20 G21 G43 G81 G83 G98 G99`, `M02 M97 M99` —
+  see the MicroMill manual section above) and warn on anything
+  unsupported, then preview the toolpath before sending. Building a
+  from-scratch CAD/CAM design tool is explicitly *not* required for
+  this phase — native G-code generation could still be a nice-to-have
+  later, but importing existing files is the priority.
+- Getting the file to the old PC: owner wants this over a network
+  connection rather than physically carrying a floppy disk over.
+  **Decided against joining the actual school WiFi/network** — Windows
+  95 has no wireless hardware/driver support for any modern
+  WPA2/WPA3-secured network, and even over wired Ethernet, the OS has
+  no security patches ever, so exposing it to the school's shared
+  network is a real risk most IT departments would (rightly) block.
+  **Instead: a private, isolated, direct link between just the two
+  computers** (a single Ethernet cable, or a small dedicated switch
+  with only these two machines on it) — no other device can reach it,
+  since it's not part of the school's network at all. Still need to
+  check what network adapter is actually in the old PC (owner says it
+  already has a WiFi/Ethernet card — check Device Manager under
+  "Network adapters" to confirm exactly what's there and whether it's
+  period-compatible).
+- **A custom "receiver" program on the old PC**: listens for an
+  incoming G-code file over the isolated link and saves it to
+  `C:\MPSPRO`. No authentication (see above — dropped as unnecessary
+  complexity given the isolated link).
+- **Windows 95 cannot run modern software at all** (no Python 3, no
+  current .NET, etc.), so this receiver program is necessarily a
+  separate, small codebase from the main Windows 11 app, written in
+  period-appropriate tooling — most practically **Visual Basic 6** or
+  **plain C with Winsock**. Not yet started.
+- **Standing safety rule applies here too**: the receiver program must
+  only ever save the incoming file — never auto-load or auto-run it.
+  A person must still be physically present to load and start the job
+  in MPS2003 themselves. See the safety requirement added to the Goal
+  section above.
+
+**"Phase 2" (the hardware retrofit) is no longer part of the active
+plan** — see the note added above. Kept only as reference in case the
+old PC/MPS2003 ever stops working entirely.
 
 ## Software plan
 
 - Native desktop app, **Python + Qt (PySide6)** — real native window,
   cross-platform if ever needed, mature serial/USB libraries, good fit
-  for toolpath preview / jogging / job control UI in the style of Bambu
-  Studio.
-- Talks to the retrofit motion-control board over USB-serial with
-  G-code, using whatever protocol that board's firmware speaks (GRBL's
-  line-based G-code-over-serial is the leading candidate).
+  for a G-code import/preview/send UI in the style of Bambu Studio.
+  Scope is importing/validating/previewing G-code and sending it to the
+  receiver program on the old PC over the isolated network link — not
+  real-time machine control (that would only become relevant again if
+  the hardware retrofit is ever revisited).
 - Explicitly not a web app / browser UI (owner's requirement).
 - No phone companion app (owner's requirement, reversed an earlier
   direction).
+- The old-PC receiver program is a **separate small project** in
+  older, Windows-95-compatible tooling (Visual Basic 6 or C/Winsock),
+  not part of the main Python/Qt codebase.
 
-## Open items / next steps
+## Beta app built (2026-09-22)
+
+Owner asked to start the beta now rather than wait for Phase 0 (the
+acrylic test cut) to finish, so it's ready to go once the machine is
+verified. Lives in `windows-app/` — see `windows-app/README.md` for the
+full rundown. Working and tested (headless, via `QT_QPA_PLATFORM=
+offscreen`) on this machine:
+
+- `gcode/parser.py` — parses G-code, flags any command outside
+  MPS2003's supported set as a warning, flattens G02/G03 arcs to
+  polylines for the preview. Has its own sanity tests
+  (`tests/test_parser.py`, no framework needed, just run it directly).
+- `ui/toolpath_view.py` + `ui/main_window.py` — a real window (not a
+  browser) with Open File, a scrollable warnings list, a 2D toolpath
+  preview (rapids dashed gray, cuts solid blue), and a Send button with
+  host/port fields.
+- `network/sender.py` — the actual protocol the future Windows-95-side
+  receiver will need to implement: connect via TCP, send `SEND
+  <filename> <byte-count>\n`, then that many raw bytes, then close. No
+  auth (matches the decision above).
+- `dev_tools/mock_receiver.py` — a throwaway Python stand-in for the
+  real receiver (which still has to be written in VB6/C — Windows 95
+  can't run Python), so the sending side could actually be tested
+  end-to-end on this machine. Confirmed working: sent a real file
+  through the app's UI, mock receiver saved it correctly.
+
+**Not yet done / explicitly deferred**: the real Windows-95-side
+receiver program itself (still needs VB6 or C/Winsock — separate,
+near-term task), testing against the real machine/network link, and
+native in-app G-code generation (nice-to-have, not required).
 
 1. ~~Get the official manuals read.~~ **Done** — both manuals (MicroMill
    2000 / MPS2003, and spectraLIGHT Mill) have been uploaded and read.
-   Neither contained a DB25 pin-level signal table, so the pinout is
-   still unverified — see next item.
-2. **Confirm the real DB25 pin assignments.** Since neither manual has
-   it, options are: (a) contact Intelitek support (they inherited Light
-   Machines' documentation and still host the manual — contact info was
-   in the original spectraLIGHT Lathe manual found earlier) and ask for
-   the Interface Card's engineering/technical reference; or (b) an
-   empirical approach — safely power up the original Win95 system, and
-   with a multimeter or (better) a logic analyzer/oscilloscope, probe
-   the DB25 cable's pins while jogging a single axis a small amount to
-   see which pins toggle. Option (b) needs care — only attempt with the
-   machine's motion path clear and someone who knows what they're doing
-   with the probe.
-3. **Check the Windows 95 machine before touching its drive** — look for
-   the spectraLIGHT "Control Program" (per the manual, this is a real
-   Windows 95 GUI app, not a DOS program — that's the one actually
-   likely to be installed, more so than MPS2003) and any
-   config/calibration/job files. Image the drive if anything is found.
-4. Confirm the actual signal path between the two boxes (does the
-   spectraLIGHT's output really feed the MicroProto breakout panel, or
-   are they wired some other way?).
-5. Once pinout is confirmed: finalize exact retrofit board + parts list.
-6. Owner is sending more machine photos "Tuesday" (next session) —
-   revisit this journal and update it once those arrive.
-7. No code has been written yet — explicitly deferred by owner until
+2. ~~Check the Windows 95 machine before touching its drive.~~ **Done** —
+   machine boots, `C:\MPSPRO` is fully intact with the original MPS2003
+   installation and config files. See the new section above. Still
+   haven't opened `Param3.dat` / `Param51.dat` / `Param51s.dat` /
+   `Paramp3.dat` or run `Mill`/`Mps2003`/`Mpsm97`/`Mpsprob3` — do that
+   next, running programs only once the area around the mill is
+   confirmed physically safe.
+3. ~~Physically trace the PC's parallel port cable.~~ **Resolved by
+   manual cross-check instead** (2026-09-22) — see the updated theory
+   above. Working conclusion: the spectraLIGHT box is not in this
+   machine's active signal path; the MicroProto panel is. A physical
+   cable trace would still make this 100% certain rather than "very
+   likely," but is no longer treated as blocking.
+4. **Confirm the real signal pinout for the MicroProto driver
+   unit/axis panel** (not the spectraLIGHT box — deprioritized per
+   above unless the conclusion changes). Neither manual gives a
+   pin-level table for it either. Options: (a) the hobbyist forum/blog
+   leads (see Sources) — worth re-targeting those asks at the
+   MicroProto/MPS2000 hardware specifically now, rather than
+   spectraLIGHT; (b) an empirical approach — with the machine powered
+   and the area clear, use a multimeter or logic analyzer to probe the
+   panel's connector pins while jogging a single axis via the
+   confirmed-working `Steptxt`/MPSTEXT program, to see which pins
+   toggle. (The Intelitek documentation request is still out there but
+   is now lower-value, since it's spectraLIGHT-specific.)
+5. Once the pinout is confirmed: finalize exact retrofit board + parts
+   list.
+6. Before wiping/reformatting the Win95 drive for any reason: back up
+   the entire `C:\MPSPRO` folder (and ideally a full disk image) —
+   it's a working reference implementation of the exact G-code dialect
+   and motion parameters this machine expects.
+7. Owner is sending more info/photos as they come — revisit this
+   journal and update it as they do.
+8. No code has been written yet — explicitly deferred by owner until
    hardware/software plan is settled.
 
 ## Sources referenced this session
@@ -278,3 +586,12 @@ plan is to remove the real-time requirement from the PC entirely:
 - [LinuxCNC forum: Light Machine Corp. Benchman XTr retrofit](https://forum.linuxcnc.org/30-cnc-machines/27204-light-machine-corp-benchman-xtr-retrofit)
 - [LinuxCNC forum: Light Machines Company Mill](https://forum.linuxcnc.org/16-stepconf-wizard/3501-light-machines-company-mill)
 - [Steven Rhine / Rhine Labs: Light Machines spectraLight restore blog](https://www.stevenrhine.com/?p=1175)
+- [Microproto Control System Versions (Model Engineers Digital Workshop wiki) — the key source on 3-wire phase vs. step/dir generations](https://medw.uk/wiki/Microproto+Control+System+Versions)
+- [MicroMill wiki page (same site)](https://medw.uk/wiki/MicroMill)
+- [CNCzone: "taig cnc mill with microproto controller and need set up values for linuxcnc"](https://www.cnczone.com/forums/taig-mills-lathes/273596-taig-cnc-mill-microproto-controller-need-set.html)
+- [CNCzone: "I/O port pinout on Taig/Microproto" — real DIN pin assignments for the I/O port](https://www.cnczone.com/forums/taig-mills-lathes/428664-o-port-pinout-taig-microproto.html)
+- [CNCzone: "Centroid Acorn Board Paired W/ a Old MicroProto Systems Driver Box" — confirms generic step/dir boards don't work unmodified](https://www.cnczone.com/forums/centroid-cnc-control-products/427496-centroid-acorn-board-paired-w-old-microproto.html)
+- [Review of the TurboTaig Step and Direction Upgrade Board (cartertools.com)](http://www.cartertools.com/turbot.html)
+- [TurboTaig Instruction Manual v2.2 (Homann Designs)](https://www.homanndesigns.com/pdfs/TurboTaig-2_2.pdf)
+- [TC-01 TurboTaig Upgrade Controller Board product page (Homann Designs)](https://www.homanndesigns.com/index.php?main_page=product_info&products_id=16)
+- [Riser's MicroMill2000 HD/LE](http://jamesriser.com/Machinery/MicroProto/MicroMill.html)
