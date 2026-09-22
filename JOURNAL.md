@@ -170,6 +170,84 @@ Confirms and substantially sharpens the picture:
   Windows program/folder actually named something like "spectraLIGHT"
   or "Control Program," not "MPS2003."
 
+## Machine powered on — found the live MPSPRO installation (2026-09-22)
+
+Owner got the Windows 95 machine booted (login dialog turned out to be
+the classic Win9x non-enforcing logon — Cancel/blank credentials got
+straight to the desktop, as expected). The desktop itself was stock/empty
+(no CNC shortcuts), but `C:\MPSPRO` is **fully intact**:
+
+```
+Bolthole.tap  Ellipse.tap  Facef.tap  Facer.tap  Gear.tap  Knight.tap
+Textdemo.tap  Install  Mill  Mps2003  Mpsm97  Mpsprob3
+Param3.dat  Param51.dat  Param51s.dat  Paramp3.dat  Params.dat
+Steptxt  Textm97
+```
+
+Two big findings from opening files here:
+
+- **`Params.dat` confirms the real, working port addresses** — and they
+  match the manual's documented *standard* values exactly, not the
+  spectraLIGHT ISA card's address:
+  ```
+  0
+  0
+  0
+  0
+  888     <- XYZ port base = 0x378 = standard PC LPT1
+  890
+  632     <- A (4th axis) port base = 0x278 = standard PC LPT2
+  600
+  200
+  10
+  0
+  16
+  16
+  0
+  8
+  INCH
+  ```
+  (First four `0`s are likely the last-saved X/Y/Z/A position, all
+  homed/zeroed. The values after 632 are probably rapid-speed/backlash/
+  step-mode settings per the manual's calibration section — not fully
+  decoded, and not needed for our purposes. The `888`/`632` match is the
+  important part.)
+
+  **This is a significant update to the working theory.** It means the
+  software actually configured and (presumably) used on this machine
+  talks through the **PC's own built-in standard parallel port
+  hardware** (LPT1, and LPT2 for the 4th axis) — not the spectraLIGHT
+  Interface Card's proprietary ISA bus address (0x3A0) at all. That
+  raises an open question we didn't have before: **is the spectraLIGHT
+  box even the thing currently wired to this PC's parallel port**, or is
+  the MicroProto native breakout box (the one with the round DIN X/Y/Z/A
+  connectors) the one actually in the live signal path, with the
+  spectraLIGHT box unused/legacy or wired in for something unrelated
+  (e.g. just spindle control)? **Next time at the machine: physically
+  trace the cable from the PC's DB25 parallel port to whichever box it
+  actually plugs into** — this settles it conclusively either way.
+  This is good news either way for the retrofit: a standard LPT1/LPT2
+  step/dir setup is a well-understood, common target (this is exactly
+  what generic hobby CNC breakout boards and GRBL-adjacent controllers
+  already expect), more so than the spectraLIGHT ISA card scenario.
+
+- **`Steptxt` is not a text file — it's a live DOS control program**
+  ("MPSTEXT V3.0"), showing real-time axis position (X/Y/Z/A, all
+  0.0000), feed rate, jog increment, and a manual jog / load program /
+  run program / zero axis menu. **This is working control software that
+  can actually move the machine** if the driver box and motors are
+  powered and connected — treat it with the same care as running the
+  original software for real. Owner was advised not to press any menu
+  keys (Manual Jog, Run Program, Zero Axis) until the area around the
+  mill is confirmed clear.
+
+Not yet opened: `Param3.dat`, `Param51.dat`, `Param51s.dat`,
+`Paramp3.dat` (other config variants — probably per-job or per-material
+presets), `Mill` (separate program, purpose unknown), `Mps2003` /
+`Mpsm97` / `Mpsprob3` (the actual control program executables — not run
+yet, deliberately, until we're sure it's safe to do so with the machine
+in its current physical state).
+
 ## Key technical finding: why this can't just move to a new Windows PC as-is
 
 Web research (see Sources below) turned up a secondhand pinout for the
@@ -242,31 +320,40 @@ plan is to remove the real-time requirement from the PC entirely:
 
 1. ~~Get the official manuals read.~~ **Done** — both manuals (MicroMill
    2000 / MPS2003, and spectraLIGHT Mill) have been uploaded and read.
-   Neither contained a DB25 pin-level signal table, so the pinout is
-   still unverified — see next item.
-2. **Confirm the real DB25 pin assignments.** Since neither manual has
-   it, options are: (a) contact Intelitek support (they inherited Light
-   Machines' documentation and still host the manual — contact info was
-   in the original spectraLIGHT Lathe manual found earlier) and ask for
-   the Interface Card's engineering/technical reference; or (b) an
-   empirical approach — safely power up the original Win95 system, and
-   with a multimeter or (better) a logic analyzer/oscilloscope, probe
-   the DB25 cable's pins while jogging a single axis a small amount to
-   see which pins toggle. Option (b) needs care — only attempt with the
-   machine's motion path clear and someone who knows what they're doing
-   with the probe.
-3. **Check the Windows 95 machine before touching its drive** — look for
-   the spectraLIGHT "Control Program" (per the manual, this is a real
-   Windows 95 GUI app, not a DOS program — that's the one actually
-   likely to be installed, more so than MPS2003) and any
-   config/calibration/job files. Image the drive if anything is found.
-4. Confirm the actual signal path between the two boxes (does the
-   spectraLIGHT's output really feed the MicroProto breakout panel, or
-   are they wired some other way?).
-5. Once pinout is confirmed: finalize exact retrofit board + parts list.
-6. Owner is sending more machine photos "Tuesday" (next session) —
-   revisit this journal and update it once those arrive.
-7. No code has been written yet — explicitly deferred by owner until
+2. ~~Check the Windows 95 machine before touching its drive.~~ **Done** —
+   machine boots, `C:\MPSPRO` is fully intact with the original MPS2003
+   installation and config files. See the new section above. Still
+   haven't opened `Param3.dat` / `Param51.dat` / `Param51s.dat` /
+   `Paramp3.dat` or run `Mill`/`Mps2003`/`Mpsm97`/`Mpsprob3` — do that
+   next, running programs only once the area around the mill is
+   confirmed physically safe.
+3. **Physically trace the PC's parallel port cable** — `Params.dat`
+   shows the real working config uses the PC's own standard LPT1/LPT2
+   ports (888/632 decimal), not the spectraLIGHT Interface Card's ISA
+   address. So: does that cable actually plug into the MicroProto
+   breakout box (DIN X/Y/Z/A connectors) or the spectraLIGHT box's
+   `COMPUTER` port? This decides which box is actually live and
+   answers the "how do the two boxes relate" question directly —
+   higher priority now than the DB25-pinout research below, since it
+   might make that research moot (if the spectraLIGHT box isn't even
+   in the active signal path, we may not need its pinout at all).
+4. **Confirm the real DB25 pin assignments** for whichever box turns out
+   to be the active one. Options: (a) contact Intelitek support (in
+   progress, no reply yet after several days — a phone follow-up is
+   the suggested next step) or the hobbyist forum/blog leads (see
+   Sources); or (b) an empirical approach — with the machine powered
+   and the area clear, use a multimeter or logic analyzer to probe the
+   cable's pins while jogging a single axis via the now-confirmed
+   `Steptxt`/MPSTEXT program, to see which pins toggle.
+5. Once the active box and its pinout are confirmed: finalize exact
+   retrofit board + parts list.
+6. Before wiping/reformatting the Win95 drive for any reason: back up
+   the entire `C:\MPSPRO` folder (and ideally a full disk image) —
+   it's a working reference implementation of the exact G-code dialect
+   and motion parameters this machine expects.
+7. Owner is sending more info/photos as they come — revisit this
+   journal and update it as they do.
+8. No code has been written yet — explicitly deferred by owner until
    hardware/software plan is settled.
 
 ## Sources referenced this session
