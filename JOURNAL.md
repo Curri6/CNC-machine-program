@@ -508,7 +508,36 @@ old PC/MPS2003 ever stops working entirely.
   older, Windows-95-compatible tooling (Visual Basic 6 or C/Winsock),
   not part of the main Python/Qt codebase.
 
-## Open items / next steps
+## Beta app built (2026-09-22)
+
+Owner asked to start the beta now rather than wait for Phase 0 (the
+acrylic test cut) to finish, so it's ready to go once the machine is
+verified. Lives in `windows-app/` — see `windows-app/README.md` for the
+full rundown. Working and tested (headless, via `QT_QPA_PLATFORM=
+offscreen`) on this machine:
+
+- `gcode/parser.py` — parses G-code, flags any command outside
+  MPS2003's supported set as a warning, flattens G02/G03 arcs to
+  polylines for the preview. Has its own sanity tests
+  (`tests/test_parser.py`, no framework needed, just run it directly).
+- `ui/toolpath_view.py` + `ui/main_window.py` — a real window (not a
+  browser) with Open File, a scrollable warnings list, a 2D toolpath
+  preview (rapids dashed gray, cuts solid blue), and a Send button with
+  host/port fields.
+- `network/sender.py` — the actual protocol the future Windows-95-side
+  receiver will need to implement: connect via TCP, send `SEND
+  <filename> <byte-count>\n`, then that many raw bytes, then close. No
+  auth (matches the decision above).
+- `dev_tools/mock_receiver.py` — a throwaway Python stand-in for the
+  real receiver (which still has to be written in VB6/C — Windows 95
+  can't run Python), so the sending side could actually be tested
+  end-to-end on this machine. Confirmed working: sent a real file
+  through the app's UI, mock receiver saved it correctly.
+
+**Not yet done / explicitly deferred**: the real Windows-95-side
+receiver program itself (still needs VB6 or C/Winsock — separate,
+near-term task), testing against the real machine/network link, and
+native in-app G-code generation (nice-to-have, not required).
 
 1. ~~Get the official manuals read.~~ **Done** — both manuals (MicroMill
    2000 / MPS2003, and spectraLIGHT Mill) have been uploaded and read.

@@ -54,16 +54,25 @@ confirm it. Never design around this, in this phase or later ones.
         most practically **Visual Basic 6** or **plain C with
         Winsock**. Separate small codebase from the main app. Not
         started.
-- [ ] Scaffold the Windows 11 app (Python + PySide6) as a G-code
-      **importer/previewer/sender**, not a from-scratch CAM tool
-      (owner's explicit request, 2026-09-22): should open G-code files
-      created on any computer in the school with whatever CAM software
-      is already available there, validate the file only uses commands
-      MPS2003 understands (`G00 G01 G02 G03 G17 G20 G21 G43 G81 G83
-      G98 G99`, `M02 M97 M99` — see `JOURNAL.md`) and warn on anything
-      unsupported, preview the toolpath, then send the file to the
-      receiver program over the isolated link. Native G-code generation
-      inside the app is a possible nice-to-have later, not required now.
+- [x] Scaffold the Windows 11 app (Python + PySide6) as a G-code
+      **importer/previewer/sender**. **Beta built 2026-09-22** — see
+      `windows-app/` (run with `pip install -r requirements.txt` then
+      `python main.py`; `windows-app/README.md` has the full rundown).
+      Working: opens `.tap`/`.nc`/`.gcode`/`.txt` files, validates every
+      command against exactly what MPS2003 supports (`G00 G01 G02 G03
+      G17 G20 G21 G43 G81 G83 G98 G99`, `M02 M97 M99` — see
+      `JOURNAL.md`) and lists anything unsupported as a warning, renders
+      a 2D toolpath preview, and sends the file over TCP to a receiver
+      host/port. Tested end-to-end against a throwaway dev-only mock
+      receiver (`windows-app/dev_tools/mock_receiver.py`) since the real
+      Windows-95-side receiver doesn't exist yet (see below). **Not yet
+      tested against the real machine, real network link, or real
+      receiver** — that's the point of Phase 0 above and the item below.
+      Native G-code generation inside the app is a possible nice-to-have
+      later, not required now.
+- [ ] Write the real receiver program for the old Windows 95 PC
+      (Visual Basic 6 or C/Winsock — see item above) and test the beta
+      app against it for real, over the actual isolated Ethernet link.
 
 ## Reference only — hardware retrofit (NOT part of the active plan)
 
