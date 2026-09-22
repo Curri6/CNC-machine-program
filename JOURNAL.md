@@ -17,6 +17,13 @@ so far:
 - No phone/companion app — desktop only.
 - Needs to both (a) send G-code/cutting jobs to the machine, and
   (b) be the path for "updating" the machine's control electronics.
+- **Standing safety requirement (2026-09-22, owner's explicit
+  instruction): a job must never be able to start running on the
+  machine without a person physically present to confirm it.** This
+  applies at every phase of the project, not just the current
+  workaround — including after the eventual full hardware retrofit.
+  Software must never support fully unattended/remote job starts; a
+  physical confirmation step at the machine is mandatory every time.
 
 ## Hardware identified (as of 2026-09-17)
 
@@ -403,18 +410,85 @@ would change or even eliminate the need to buy one. Check the driver
 box/cards for a board matching either product before ordering
 anything.
 
+## Plan revised again (2026-09-22): test-first, "receiver" phase before hardware retrofit
+
+Owner paused the hardware retrofit track above (not abandoned — just
+sequenced later) in favor of proving the machine still works at all
+first, then getting *something* usable running sooner. New sequence:
+
+**Phase 0 — verify the machine still physically works**, using the
+*original* MPS2003 software, unmodified, on the existing Win95 PC:
+test-cut a piece of acrylic. Safety procedure (from the MPS2003 manual
+itself, which documents exactly this workflow): move each axis by hand
+with power off first to check for binding; mount a plastics-appropriate
+cutter; secure the stock firmly; use the manual's own **Preview, then
+Dry Run** steps before any real cut; start with the simplest possible
+test job (a shallow face or small engraving, not a full cutout).
+
+**Phase 1 — Windows 11 app as a G-code *generator*, old PC stays as
+the executor ("receiver")**, deferring the full hardware retrofit:
+- The new Windows 11 app's job (for this phase) is producing G-code in
+  MPS2003's dialect (`G00 G01 G02 G03 G17 G20 G21 G43 G81 G83 G98 G99`,
+  `M02 M97 M99` — see the MicroMill manual section above) with a
+  polished native UI, not real-time machine control.
+- Getting the file to the old PC: owner wants this over a network
+  connection rather than physically carrying a floppy disk over.
+  **Decided against joining the actual school WiFi/network** — Windows
+  95 has no wireless hardware/driver support for any modern
+  WPA2/WPA3-secured network, and even over wired Ethernet, the OS has
+  no security patches ever, so exposing it to the school's shared
+  network is a real risk most IT departments would (rightly) block.
+  **Instead: a private, isolated, direct link between just the two
+  computers** (a single Ethernet cable, or a small dedicated switch
+  with only these two machines on it) — no other device can reach it,
+  since it's not part of the school's network at all. Still need to
+  check what network adapter is actually in the old PC (owner says it
+  already has a WiFi/Ethernet card — check Device Manager under
+  "Network adapters" to confirm exactly what's there and whether it's
+  period-compatible).
+- **A custom authenticated "receiver" program on the old PC**, replacing
+  raw/open file sharing (owner's explicit request): requires a
+  username and password before accepting anything at all; only once
+  authenticated does it receive a G-code file and save it to
+  `C:\MPSPRO`. This is real access control, but honestly not strong
+  encryption — Windows 95-era tooling doesn't make that easy — which is
+  an acceptable tradeoff *specifically because* the link is isolated
+  point-to-point, not exposed more broadly.
+- **Windows 95 cannot run modern software at all** (no Python 3, no
+  current .NET, etc.), so this receiver program is necessarily a
+  separate, small codebase from the main Windows 11 app, written in
+  period-appropriate tooling — most practically **Visual Basic 6** or
+  **plain C with Winsock**. Not yet started.
+- **Standing safety rule applies here too**: the receiver program must
+  only ever save the incoming file — never auto-load or auto-run it.
+  A person must still be physically present to load and start the job
+  in MPS2003 themselves. See the safety requirement added to the Goal
+  section above.
+
+**Phase 2 (later, deferred, not abandoned)** — the full hardware
+retrofit described above (TurboTaig/step-dir upgrade board + GRBL
+controller + real-time machine control from the Windows 11 app
+directly), once Phase 0/1 have proven the concept end-to-end.
+
 ## Software plan
 
 - Native desktop app, **Python + Qt (PySide6)** — real native window,
   cross-platform if ever needed, mature serial/USB libraries, good fit
   for toolpath preview / jogging / job control UI in the style of Bambu
-  Studio.
-- Talks to the retrofit motion-control board over USB-serial with
-  G-code, using whatever protocol that board's firmware speaks (GRBL's
-  line-based G-code-over-serial is the leading candidate).
+  Studio. This covers the eventual Phase 2 (full machine control); for
+  Phase 1 its scope is G-code generation/job management plus talking to
+  the custom receiver program on the old PC over the isolated network
+  link (see above).
+- Phase 2: talks to the retrofit motion-control board over USB-serial
+  with G-code, using whatever protocol that board's firmware speaks
+  (GRBL's line-based G-code-over-serial is the leading candidate).
 - Explicitly not a web app / browser UI (owner's requirement).
 - No phone companion app (owner's requirement, reversed an earlier
   direction).
+- The old-PC receiver program is a **separate small project** in
+  older, Windows-95-compatible tooling (Visual Basic 6 or C/Winsock),
+  not part of the main Python/Qt codebase — see the Phase 1 section
+  above.
 
 ## Open items / next steps
 

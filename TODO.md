@@ -3,7 +3,65 @@
 Ordered roughly by what has to happen before the next thing can. See
 `JOURNAL.md` for the full backstory behind each item.
 
-## Before any hardware is touched or ordered
+**Plan as of 2026-09-22**: Phase 0 and Phase 1 below are the current
+priority — verify the machine still works with the original software,
+then build the Windows 11 app as a G-code generator handing jobs to a
+custom "receiver" program on the old PC. The hardware retrofit
+(TurboTaig/GRBL/etc., further down as "Phase 2") is paused, not
+abandoned, until Phase 0/1 prove the concept.
+
+**Standing safety rule for all phases**: a job must never be able to
+start running on the machine without a person physically present to
+confirm it. Never design around this, in this phase or later ones.
+
+## Phase 0 — verify the machine still physically works
+
+- [ ] Test-cut a piece of acrylic using the **original, unmodified**
+      MPS2003 software on the existing Windows 95 PC. Safety sequence
+      (from the manual itself): move each axis by hand with power off
+      first (check for binding); mount a plastics-appropriate cutter;
+      secure the stock firmly; run **Preview, then Dry Run** (built
+      into MPS2003) before any real cut; start with the simplest
+      possible job (a shallow face or small engraving), not a full
+      cutout.
+
+## Phase 1 — Windows 11 app as G-code generator + authenticated "receiver" on the old PC
+
+- [ ] Check what network adapter is actually in the old PC: **Start →
+      Settings → Control Panel → System → Device Manager → Network
+      adapters**. Owner says it already has a WiFi/Ethernet card —
+      need to confirm exactly what, to know what's actually usable.
+- [ ] Set up a **private, isolated, direct link** between the old PC
+      and the new Windows 11 PC only (a single Ethernet cable, or a
+      small dedicated switch with just these two machines on it) —
+      explicitly **not** the school's actual WiFi/network. Rationale
+      logged in `JOURNAL.md`: Windows 95 has no modern WiFi/WPA2
+      driver support and no security patches ever, so joining the
+      real school network is both likely-infeasible and a real risk
+      most IT departments would block.
+- [ ] Design and build the **custom authenticated "receiver" program**
+      for the old PC (owner's explicit request, replacing raw/open
+      file sharing): requires a username + password before accepting
+      anything; on success, receives a G-code file and saves it to
+      `C:\MPSPRO`. Must **never** auto-load or auto-run the file — a
+      person still has to load/start it in MPS2003 themselves (see
+      standing safety rule above).
+      - Windows 95 can't run modern software (no Python 3, no current
+        .NET) — this has to be written in period-appropriate tooling,
+        most practically **Visual Basic 6** or **plain C with
+        Winsock**. Separate small codebase from the main app. Not
+        started.
+- [ ] Scaffold the Windows 11 app (Python + PySide6) with G-code
+      generation targeting MPS2003's dialect (`G00 G01 G02 G03 G17 G20
+      G21 G43 G81 G83 G98 G99`, `M02 M97 M99` — see `JOURNAL.md`) and a
+      matching client that logs into the receiver program and sends a
+      finished job over the isolated link.
+
+## Phase 2 (deferred, not abandoned) — full hardware retrofit
+
+Everything below this point is on hold until Phase 0/1 are working.
+
+### Before any hardware is touched or ordered
 
 - [x] MicroMill 2000 manual (MicroProto/Taig) — uploaded and read. It's a
       software manual, no DB25 pin table, but confirmed the direct
@@ -72,7 +130,7 @@ Ordered roughly by what has to happen before the next thing can. See
       checking the 3 expansion-slot brackets on the back of the case for
       a second DB25 we might have missed.
 
-## Once the TurboTaig/upgrade board situation is sorted
+### Once the TurboTaig/upgrade board situation is sorted
 
 - [ ] Pick the exact GRBL-based motion-control board to feed the
       TurboTaig (or equivalent) board's step/dir input — see
@@ -85,7 +143,7 @@ Ordered roughly by what has to happen before the next thing can. See
 - [ ] Bench-test motion (jog each axis a small, safe distance) before
       trusting it with a real cutting job.
 
-## Software (not started — explicitly on hold until hardware plan locks)
+### Software (not started — explicitly on hold until hardware plan locks)
 
 - [ ] Scaffold the Python + PySide6 desktop app.
 - [ ] G-code sender/streamer talking to the retrofit board over
