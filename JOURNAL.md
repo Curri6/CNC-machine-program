@@ -5,6 +5,37 @@ replacement-software project. Read this first if you're picking this
 project up after a gap — it exists so nothing has to be re-discovered
 from scratch.
 
+## Session wrap-up — 2026-09-22 (end of day)
+
+Where things actually stand right now, if you're skimming instead of
+reading the whole log below:
+
+- **Confirmed**: only the small black MicroProto driver box matters —
+  the spectraLIGHT box is very likely unrelated leftover equipment, not
+  part of this mill's signal path.
+- **Decided**: no hardware retrofit. The old Windows 95 PC keeps
+  running the original MPS2003 software indefinitely. The
+  TurboTaig/GRBL retrofit research is kept only as reference in case
+  that old PC ever dies completely.
+- **The real plan**: a Windows 11 app imports/validates/previews G-code
+  (made on any school computer, any CAM tool) and sends it over a
+  private, isolated Ethernet cable directly to the old PC — no login,
+  no school network involved. A small receiver program on the old PC
+  catches the file and saves it. **A person must always be physically
+  present at the old machine to load and start a job** — this is a
+  standing safety rule for every phase, not a current limitation.
+- **Built**: a working beta of that Windows 11 app already exists in
+  `windows-app/` — opens G-code, flags anything MPS2003 doesn't
+  support, previews the toolpath, sends over TCP. Tested end-to-end
+  against a throwaway dev-only mock receiver. The real receiver
+  (Visual Basic 6 or C, for Windows 95) still needs to be written.
+- **Everything merged to `main`** — the GitHub repo's front page shows
+  the current state of all docs and code, no branch-hunting needed.
+- **Not done yet, next up**: the acrylic test cut on the real machine
+  with the original software (Phase 0), and checking Device Manager on
+  the old PC for its network adapter (Phase 1) — both still need
+  someone physically at the machine.
+
 ## Goal
 
 Build a modern replacement for the discontinued software that used to
