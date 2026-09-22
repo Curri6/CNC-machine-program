@@ -261,6 +261,68 @@ presets), `Mill` (separate program, purpose unknown), `Mps2003` /
 yet, deliberately, until we're sure it's safe to do so with the machine
 in its current physical state).
 
+## Community research on the MicroProto controller itself (2026-09-22)
+
+With the retrofit target now confirmed as the MicroProto side (not
+spectraLIGHT), searched specifically for how the MicroProto controller
+hardware works. Found a dedicated history/reference (a wiki page,
+"Microproto Control System Versions" on medw.uk — blocked from direct
+fetch in this sandbox, but reached via search snippets) plus several
+forum threads. Key findings:
+
+- **MicroProto controllers exist in (at least) two generations.** The
+  **original** controller drives each stepper motor with a raw
+  **3-wire phase control** signal straight from the PC's parallel
+  port — not step/direction. Since 3 wires × 4 axes = 12 signals, more
+  than one 8-bit parallel port's data lines can carry, the original
+  design **needed two parallel ports** for a 4-axis setup (one for
+  XYZ, a second for the 4th/A axis).
+- **In 2003, MicroProto released a "step and direction" upgrade
+  board** that sits between the PC and the original phase-drive cards,
+  translating standard step/dir signals into the 3-wire phase pattern
+  those cards actually need — this is what let later owners run
+  standard software like Mach3 on old MicroProto hardware. A 2006
+  variant added closed-loop encoder feedback.
+- **A separate, still-sold commercial product does the same
+  conversion**: the **TurboTaig board** (Homann Designs, ~AU$169,
+  part# TC-01) — also converts the original 3-wire phase interface to
+  standard step/direction, with bonus I/O (limit switch inputs, relay
+  outputs for spindle/coolant, touch-probe and spindle-indexer
+  support). Reviewed by real owners; one review reported running
+  150,000 lines of G-code for 4 hours without a hitch. It exposes a
+  step/dir input via a connector called `J9` for use with classic
+  step/dir software (Mach1/Master5/TurboCNC/EMC-era programs, all of
+  which historically ran on a PC with a real parallel port doing the
+  real-time bit-banging — so this board still needs an external
+  real-time-capable pulse source, it doesn't generate G-code motion
+  itself).
+- **This machine is almost certainly the original, pre-upgrade
+  version** — `Params.dat`'s two port addresses (888 and 632) match
+  the "needed two parallel ports" description of the *original*
+  3-wire-phase controller, not the single-port step/dir upgrade.
+- **Confirmation this matters in practice, not just theory**: a forum
+  thread describes someone wiring a modern Centroid Acorn controller
+  directly into an old MicroProto driver box's DB25 expecting standard
+  step/dir — the axes only turned one step and needed direction
+  toggling to move further, exactly the broken behavior you'd expect
+  feeding step/dir pulses into hardware that actually wants raw
+  phase-state signals. **A generic modern step/dir board cannot be
+  wired straight into this old driver box.**
+- Bonus, found real pinout detail for the panel's **`I/O PORT`**
+  connector (separate from the axis motor connectors): pins 1–4 are 3
+  limit switches + E-stop, pin 5 is an optional 4th-axis limit switch,
+  pin 8 is ground/common return.
+
+**Revised retrofit pipeline** (updates the "Decision: retrofit plan"
+section below): Windows 11 PC → a small GRBL-based board (generates
+real step/dir pulses in hardware) → a **TurboTaig board** (or
+MicroProto's own official 2003 upgrade board, if one can be sourced)
+converting those to the 3-wire phase pattern → the **existing original
+MicroProto driver cards** (unchanged) → motors. This replaces
+"reverse-engineer the 3-wire phase pinout ourselves" with "buy an
+existing, tested product that already solves exactly this problem" —
+a meaningfully lower-risk plan.
+
 ## Key technical finding: why this can't just move to a new Windows PC as-is
 
 Web research (see Sources below) turned up a secondhand pinout for the
@@ -299,31 +361,47 @@ for restoring that low-jitter timing) — same problem, different fix.
 
 ## Decision: retrofit plan
 
-**Updated 2026-09-22** to reflect the conclusion above that the
-spectraLIGHT box is very likely not part of this machine's actual
-signal path — the retrofit target is the **MicroProto side only**.
+**Updated 2026-09-22 (twice)**: first to reflect that the spectraLIGHT
+box is very likely not part of this machine's actual signal path (the
+retrofit target is the **MicroProto side only**), then again after the
+community research above revealed the MicroProto driver box likely
+uses **raw 3-wire phase control per motor, not step/direction** — a
+generic modern step/dir board cannot be wired straight into it (a
+forum report of someone trying exactly that produced broken,
+one-step-only motion).
 
 Rather than fight for real-time performance on a general-purpose PC OS
 (what both Win95-original and the Linux-retrofit idea were doing), the
-plan is to remove the real-time requirement from the PC entirely:
+plan is to remove the real-time requirement from the PC entirely — and
+rather than reverse-engineer the old 3-wire phase protocol ourselves,
+use an existing product built for exactly this conversion:
 
 1. Keep the mechanical mill, the NEMA 23 steppers, the spindle motor,
-   and the MicroProto axis panel / driver unit that currently receives
-   the PC's raw parallel-port signals.
-2. Replace only the PC-side signal generation with a small, modern,
-   well-documented motion-control board (GRBL-based controller is the
-   leading candidate — cheap, open protocol, huge community, and this
-   is exactly the kind of raw step/dir parallel-port setup GRBL
-   controllers are designed to replace). It would either wire into the
-   MicroProto driver unit's existing input pins (once we know them), or
-   — more simply, since that unit just expects standard step/dir/enable
-   signals on standard parallel-port pins — feed it the equivalent
-   signals from the new board directly.
-3. That board handles all real-time step timing in hardware. The Windows
-   11 PC just streams G-code over USB at non-time-critical speed.
-4. The spectraLIGHT box is set aside as out of scope for this retrofit
-   unless the cable trace (still not done, no longer treated as
+   and the **original MicroProto driver cards** (the ones doing 3-wire
+   phase drive) completely unchanged.
+2. Add a **TurboTaig board** (Homann Designs, ~AU$169, part# TC-01 —
+   or MicroProto's own official 2003 step/dir upgrade board, if one
+   can still be sourced) between the driver cards and everything else.
+   This is a real, tested product that converts standard step/direction
+   signals into the 3-wire phase pattern the old driver cards expect —
+   solving the exact problem we'd otherwise be reverse-engineering.
+3. Feed that board's step/dir input (its `J9` connector, per the one
+   review found) from a small, modern, well-documented motion-control
+   board (GRBL-based controller is the leading candidate — cheap, open
+   protocol, huge community) that generates the actual real-time
+   step/dir pulses in hardware.
+4. The Windows 11 PC just streams G-code over USB to the GRBL board at
+   non-time-critical speed — no real-time requirement on the PC at all.
+5. The spectraLIGHT box remains set aside as out of scope for this
+   retrofit unless a cable trace (still not done, no longer treated as
    blocking) reveals it actually is in the path after all.
+
+**Still to confirm**: whether this specific machine already has *any*
+step/dir upgrade board installed (TurboTaig, MicroProto's own, or the
+2006 closed-loop variant) rather than being fully original — this
+would change or even eliminate the need to buy one. Check the driver
+box/cards for a board matching either product before ordering
+anything.
 
 ## Software plan
 
@@ -387,3 +465,12 @@ plan is to remove the real-time requirement from the PC entirely:
 - [LinuxCNC forum: Light Machine Corp. Benchman XTr retrofit](https://forum.linuxcnc.org/30-cnc-machines/27204-light-machine-corp-benchman-xtr-retrofit)
 - [LinuxCNC forum: Light Machines Company Mill](https://forum.linuxcnc.org/16-stepconf-wizard/3501-light-machines-company-mill)
 - [Steven Rhine / Rhine Labs: Light Machines spectraLight restore blog](https://www.stevenrhine.com/?p=1175)
+- [Microproto Control System Versions (Model Engineers Digital Workshop wiki) — the key source on 3-wire phase vs. step/dir generations](https://medw.uk/wiki/Microproto+Control+System+Versions)
+- [MicroMill wiki page (same site)](https://medw.uk/wiki/MicroMill)
+- [CNCzone: "taig cnc mill with microproto controller and need set up values for linuxcnc"](https://www.cnczone.com/forums/taig-mills-lathes/273596-taig-cnc-mill-microproto-controller-need-set.html)
+- [CNCzone: "I/O port pinout on Taig/Microproto" — real DIN pin assignments for the I/O port](https://www.cnczone.com/forums/taig-mills-lathes/428664-o-port-pinout-taig-microproto.html)
+- [CNCzone: "Centroid Acorn Board Paired W/ a Old MicroProto Systems Driver Box" — confirms generic step/dir boards don't work unmodified](https://www.cnczone.com/forums/centroid-cnc-control-products/427496-centroid-acorn-board-paired-w-old-microproto.html)
+- [Review of the TurboTaig Step and Direction Upgrade Board (cartertools.com)](http://www.cartertools.com/turbot.html)
+- [TurboTaig Instruction Manual v2.2 (Homann Designs)](https://www.homanndesigns.com/pdfs/TurboTaig-2_2.pdf)
+- [TC-01 TurboTaig Upgrade Controller Board product page (Homann Designs)](https://www.homanndesigns.com/index.php?main_page=product_info&products_id=16)
+- [Riser's MicroMill2000 HD/LE](http://jamesriser.com/Machinery/MicroProto/MicroMill.html)

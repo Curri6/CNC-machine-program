@@ -36,24 +36,32 @@ Ordered roughly by what has to happen before the next thing can. See
       `JOURNAL.md`. A physical trace of the cable plugged into the
       spectraLIGHT box's `COMPUTER` port would still make this fully
       certain rather than "very likely," but is no longer blocking.
-- [ ] Confirm the real signal pinout for the **MicroProto driver
-      unit/axis panel** (retargeted from spectraLIGHT, per above) —
-      still only have a secondhand forum summary for a "spectraLIGHT"
-      pinout (see `JOURNAL.md`), which may not even be the right
-      hardware to have been chasing. Neither manual has a pin table for
-      either box.
+- [x] Research how the MicroProto controller actually works. **Done**
+      (2026-09-22) — found it very likely uses **raw 3-wire phase
+      control per motor**, not step/direction (matches the two-port-
+      address evidence in `Params.dat`), and that a generic modern
+      step/dir board cannot be wired straight into it (a forum report
+      of someone trying exactly that got broken, one-step-only motion).
+      See `JOURNAL.md` for the full writeup and sources.
+- [ ] **Check the physical driver box/cards for an existing step/dir
+      upgrade board** (TurboTaig, MicroProto's own 2003 board, or the
+      2006 closed-loop variant) before assuming none is installed —
+      would change or eliminate the need to buy one.
+- [ ] If none is installed: **buy a TurboTaig board** (Homann Designs,
+      ~AU$169, part# TC-01) or track down MicroProto's own official
+      step/dir upgrade board — this converts the old 3-wire phase
+      interface to standard step/direction, replacing the need to
+      reverse-engineer the phase pinout ourselves. See `JOURNAL.md` for
+      product links.
+- [ ] Confirm the step/dir pinout on the TurboTaig (or equivalent)
+      board's input connector (`J9` per the one review found) once it's
+      in hand — this is the connector our GRBL-based board will feed.
+      Much simpler/better-documented than chasing the MicroProto panel's
+      own internal pinout would have been.
       - [x] Sent a documentation request to Intelitek about the
-            spectraLIGHT Interface Card — lower priority now, but still
-            out there; no reply after several days, phone follow-up
-            script already worked out if wanted.
-      - [ ] Post on forums, but re-target the ask at **MicroProto
-            MicroMill 2000 / MPS2003** hardware specifically:
-            practicalmachinist.com, homeshopmachinist.net, cnczone.com.
-      - [ ] Fallback: empirically probe the MicroProto panel's connector
-            pins (multimeter/logic analyzer) while jogging a single axis
-            via the now-confirmed working `Steptxt`/MPSTEXT program —
-            only once the area around the mill is confirmed physically
-            clear.
+            spectraLIGHT Interface Card — no longer very relevant given
+            the spectraLIGHT box is believed unrelated; no reply after
+            several days either way.
 - [ ] Check whether other schools received similar Perkins-funded
       spectraLIGHT/MicroMill equipment around the same time — a sister
       machine elsewhere might still have its manual or nameplate intact.
@@ -64,14 +72,16 @@ Ordered roughly by what has to happen before the next thing can. See
       checking the 3 expansion-slot brackets on the back of the case for
       a second DB25 we might have missed.
 
-## Once the pinout is confirmed
+## Once the TurboTaig/upgrade board situation is sorted
 
-- [ ] Pick the exact retrofit motion-control board (GRBL-based board is
-      the leading candidate — see `PARTS_LIST.md`).
+- [ ] Pick the exact GRBL-based motion-control board to feed the
+      TurboTaig (or equivalent) board's step/dir input — see
+      `PARTS_LIST.md`.
 - [ ] Order parts.
-- [ ] Wire the new board into the **MicroProto driver unit/axis panel**
-      (not the spectraLIGHT box — see above), matching the confirmed
-      pinout.
+- [ ] Wire the GRBL board's step/dir output into the TurboTaig board's
+      `J9` (or equivalent) input, and confirm the TurboTaig board's
+      output still connects correctly to the original MicroProto driver
+      cards.
 - [ ] Bench-test motion (jog each axis a small, safe distance) before
       trusting it with a real cutting job.
 
