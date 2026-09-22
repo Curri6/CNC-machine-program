@@ -366,7 +366,16 @@ reason the earlier would-be fixers wanted to switch to Linux
 (a real-time-patched Linux kernel, à la LinuxCNC, is the traditional fix
 for restoring that low-jitter timing) — same problem, different fix.
 
-## Decision: retrofit plan
+## Decision: retrofit plan (NOT CURRENTLY ACTIVE — see below)
+
+**Superseded 2026-09-22**: the owner decided the Phase 0/1 plan further
+below (keep the old PC running MPS2003, use the new Windows 11 app as a
+G-code importer/sender to it) is sufficient on its own — the full
+hardware retrofit described in this section is **no longer part of the
+active plan**, not just deferred. Kept here as reference in case the
+old PC's hardware or MPS2003 ever stops working entirely and this
+becomes relevant again; nothing below this note should be treated as
+a current task.
 
 **Updated 2026-09-22 (twice)**: first to reflect that the spectraLIGHT
 box is very likely not part of this machine's actual signal path (the
@@ -410,11 +419,14 @@ would change or even eliminate the need to buy one. Check the driver
 box/cards for a board matching either product before ordering
 anything.
 
-## Plan revised again (2026-09-22): test-first, "receiver" phase before hardware retrofit
+## Current active plan (2026-09-22): test-first, then a networked "receiver" — no hardware retrofit
 
-Owner paused the hardware retrofit track above (not abandoned — just
-sequenced later) in favor of proving the machine still works at all
-first, then getting *something* usable running sooner. New sequence:
+Owner decided this plan is sufficient **on its own**, not just an
+interim step before the hardware retrofit above — that retrofit is now
+out of scope entirely (see the note added to that section). The old PC
+keeps running MPS2003 exactly as it always has, indefinitely; the
+Windows 11 app is the modern front end for creating/importing and
+sending it jobs. Sequence:
 
 **Phase 0 — verify the machine still physically works**, using the
 *original* MPS2003 software, unmodified, on the existing Win95 PC:
@@ -476,30 +488,25 @@ as the executor ("receiver")**, deferring the full hardware retrofit:
   in MPS2003 themselves. See the safety requirement added to the Goal
   section above.
 
-**Phase 2 (later, deferred, not abandoned)** — the full hardware
-retrofit described above (TurboTaig/step-dir upgrade board + GRBL
-controller + real-time machine control from the Windows 11 app
-directly), once Phase 0/1 have proven the concept end-to-end.
+**"Phase 2" (the hardware retrofit) is no longer part of the active
+plan** — see the note added above. Kept only as reference in case the
+old PC/MPS2003 ever stops working entirely.
 
 ## Software plan
 
 - Native desktop app, **Python + Qt (PySide6)** — real native window,
   cross-platform if ever needed, mature serial/USB libraries, good fit
-  for toolpath preview / jogging / job control UI in the style of Bambu
-  Studio. This covers the eventual Phase 2 (full machine control); for
-  Phase 1 its scope is G-code generation/job management plus talking to
-  the custom receiver program on the old PC over the isolated network
-  link (see above).
-- Phase 2: talks to the retrofit motion-control board over USB-serial
-  with G-code, using whatever protocol that board's firmware speaks
-  (GRBL's line-based G-code-over-serial is the leading candidate).
+  for a G-code import/preview/send UI in the style of Bambu Studio.
+  Scope is importing/validating/previewing G-code and sending it to the
+  receiver program on the old PC over the isolated network link — not
+  real-time machine control (that would only become relevant again if
+  the hardware retrofit is ever revisited).
 - Explicitly not a web app / browser UI (owner's requirement).
 - No phone companion app (owner's requirement, reversed an earlier
   direction).
 - The old-PC receiver program is a **separate small project** in
   older, Windows-95-compatible tooling (Visual Basic 6 or C/Winsock),
-  not part of the main Python/Qt codebase — see the Phase 1 section
-  above.
+  not part of the main Python/Qt codebase.
 
 ## Open items / next steps
 

@@ -1,15 +1,15 @@
 # Parts List
 
-**Status: tentative.** These are the parts the retrofit plan in
-`JOURNAL.md` currently points to, but nothing here should be bought yet
-except possibly the TurboTaig board (see below) — check the physical
-driver box for an existing upgrade board first. **Retrofit target as of
-2026-09-22 is the MicroProto driver unit, not the spectraLIGHT box**
-(see `JOURNAL.md` for why), and the driver unit is believed to use raw
-3-wire phase control per motor rather than step/direction, requiring a
-converter board rather than a direct wire-in.
+**Status: NOT part of the active plan (as of 2026-09-22).** Owner
+decided the current plan (keep the old PC running MPS2003, use the new
+Windows 11 app as a G-code importer/sender — see `JOURNAL.md` and
+`TODO.md`) is sufficient on its own, so the hardware retrofit this list
+describes is **not something to buy right now**. Kept as reference only,
+in case the old PC or MPS2003 ever stops working entirely and a full
+retrofit becomes necessary. Nothing below should be purchased unless
+that changes.
 
-## Retrofit motion control
+## Retrofit motion control (reference only, not currently needed)
 
 - **TurboTaig board** (Homann Designs, ~AU$169, part# TC-01) — converts
   the MicroProto driver cards' original 3-wire-phase-per-motor interface

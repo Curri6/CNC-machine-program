@@ -3,12 +3,15 @@
 Ordered roughly by what has to happen before the next thing can. See
 `JOURNAL.md` for the full backstory behind each item.
 
-**Plan as of 2026-09-22**: Phase 0 and Phase 1 below are the current
-priority — verify the machine still works with the original software,
-then build the Windows 11 app as a G-code generator handing jobs to a
-custom "receiver" program on the old PC. The hardware retrofit
-(TurboTaig/GRBL/etc., further down as "Phase 2") is paused, not
-abandoned, until Phase 0/1 prove the concept.
+**Plan as of 2026-09-22**: Phase 0 and Phase 1 below are the whole
+active plan — verify the machine still works with the original
+software, then build the Windows 11 app as a G-code importer/sender
+talking to a plain "receiver" program on the old PC. **The hardware
+retrofit (TurboTaig/GRBL/etc., kept further down for reference only)
+is no longer part of the active plan** — owner decided Phase 0/1 is
+sufficient on its own, not just a stepping stone. That section would
+only become relevant again if the old PC or MPS2003 ever stops working
+entirely.
 
 **Standing safety rule for all phases**: a job must never be able to
 start running on the machine without a person physically present to
@@ -62,9 +65,11 @@ confirm it. Never design around this, in this phase or later ones.
       receiver program over the isolated link. Native G-code generation
       inside the app is a possible nice-to-have later, not required now.
 
-## Phase 2 (deferred, not abandoned) — full hardware retrofit
+## Reference only — hardware retrofit (NOT part of the active plan)
 
-Everything below this point is on hold until Phase 0/1 are working.
+Everything below this point is **not currently planned work**. Kept
+only in case the old PC or MPS2003 ever stops working entirely and a
+full retrofit becomes necessary again.
 
 ### Before any hardware is touched or ordered
 
