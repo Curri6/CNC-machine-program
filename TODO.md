@@ -3,12 +3,16 @@
 Ordered roughly by what has to happen before the next thing can. See
 `JOURNAL.md` for the full backstory behind each item.
 
-**Plan as of 2026-09-22**: Phase 0 and Phase 1 below are the whole
+**Plan as of 2026-09-24**: Phase 0 and Phase 1 below are the whole
 active plan — verify the machine still works with the original
-software, then build the Windows 11 app as a G-code importer/sender
-talking to a plain "receiver" program on the old PC. **The hardware
-retrofit (TurboTaig/GRBL/etc., kept further down for reference only)
-is no longer part of the active plan** — owner decided Phase 0/1 is
+software, then use the Windows 11 app as a G-code importer/previewer/
+exporter. **No networking** — the machine is in a teacher's classroom,
+so every job already has to be carried over there in person regardless,
+which makes a network transfer pointless. The old PC needs no new
+software and no network connection for this project at all; it just
+keeps running MPS2003 exactly as it always has. **The hardware retrofit
+(TurboTaig/GRBL/etc., kept further down for reference only) is no
+longer part of the active plan** — owner decided Phase 0/1 is
 sufficient on its own, not just a stepping stone. That section would
 only become relevant again if the old PC or MPS2003 ever stops working
 entirely.
@@ -28,57 +32,33 @@ confirm it. Never design around this, in this phase or later ones.
       possible job (a shallow face or small engraving), not a full
       cutout.
 
-## Phase 1 — Windows 11 app as G-code importer/sender + "receiver" on the old PC
+## Phase 1 — Windows 11 app as G-code importer/previewer/exporter
 
-- [x] Get school IT/security approval to connect the old PC to the
-      real school network. **Done 2026-09-24** — security department
-      approved it. This reverses the 2026-09-22 isolated-direct-link
-      plan; see `JOURNAL.md`'s 2026-09-24 update note for the full
-      reasoning.
-- [ ] Check what network adapter is actually in the old PC: **Start →
-      Settings → Control Panel → System → Device Manager → Network
-      adapters**. Owner says it already has a WiFi/Ethernet card —
-      need to confirm exactly what, to know what's actually usable.
-- [ ] Connect the old PC to the **real school Ethernet network**
-      (approved — no isolated link/dedicated switch needed anymore).
-      Confirm with IT: does the old PC get a **static/reserved IP**
-      (vs. DHCP, which could change its address), and is the port our
-      app uses (currently 8420, arbitrary) open between whatever
-      network segments the two computers end up on.
-- [ ] Design and build the **"receiver" program** for the old PC:
-      listens for an incoming G-code file over the network and saves
-      it to `C:\MPSPRO`. **Recommended (updated 2026-09-24): restrict
-      it to only accept connections from the Windows 11 PC's specific
-      IP address** — a lightweight safeguard now that this is a shared
-      network rather than an isolated link (the earlier "no username/
-      password needed" reasoning assumed isolation, which no longer
-      applies). Must **never** auto-load or auto-run the file — a
-      person still has to load/start it in MPS2003 themselves (see
-      standing safety rule above).
-      - Windows 95 can't run modern software (no Python 3, no current
-        .NET) — this has to be written in period-appropriate tooling,
-        most practically **Visual Basic 6** or **plain C with
-        Winsock**. Separate small codebase from the main app. Not
-        started.
+- [x] ~~Networking (isolated link, then real school network, receiver
+      program, etc.)~~ — **dropped entirely 2026-09-24.** The machine
+      is in a teacher's classroom, so files already have to be carried
+      over in person regardless; a network path wouldn't save that
+      trip. See `JOURNAL.md`'s 2026-09-24 update. The old PC needs no
+      new software and no network connection for this project — it
+      just keeps running MPS2003 as-is, and receives files exactly like
+      it always has (manually, on removable media). The school IT
+      approval to join the network still stands on record if a real
+      reason for it ever comes up, but nothing here depends on it.
 - [x] Scaffold the Windows 11 app (Python + PySide6) as a G-code
-      **importer/previewer/sender**. **Beta built 2026-09-22** — see
-      `windows-app/` (run with `pip install -r requirements.txt` then
-      `python main.py`; `windows-app/README.md` has the full rundown).
-      Working: opens `.tap`/`.nc`/`.gcode`/`.txt` files, validates every
-      command against exactly what MPS2003 supports (`G00 G01 G02 G03
-      G17 G20 G21 G43 G81 G83 G98 G99`, `M02 M97 M99` — see
-      `JOURNAL.md`) and lists anything unsupported as a warning, renders
-      a 2D toolpath preview, and sends the file over TCP to a receiver
-      host/port. Tested end-to-end against a throwaway dev-only mock
-      receiver (`windows-app/dev_tools/mock_receiver.py`) since the real
-      Windows-95-side receiver doesn't exist yet (see below). **Not yet
-      tested against the real machine, real network link, or real
-      receiver** — that's the point of Phase 0 above and the item below.
+      **importer/previewer/exporter**. **Beta built 2026-09-22, updated
+      2026-09-24** — see `windows-app/` (run with `pip install -r
+      requirements.txt` then `python main.py`; `windows-app/README.md`
+      has the full rundown). Working: opens `.tap`/`.nc`/`.gcode`/`.txt`
+      files, validates every command against exactly what MPS2003
+      supports (`G00 G01 G02 G03 G17 G20 G21 G43 G81 G83 G98 G99`,
+      `M02 M97 M99` — see `JOURNAL.md`) and lists anything unsupported
+      as a warning, renders a 2D toolpath preview, and **exports a copy
+      of the file to wherever you choose** (USB drive, floppy, etc.) to
+      carry over to the machine. The networking code (TCP sender, mock
+      receiver) has been removed — see `JOURNAL.md`. **Not yet tested
+      against the real machine** — that's the point of Phase 0 above.
       Native G-code generation inside the app is a possible nice-to-have
       later, not required now.
-- [ ] Write the real receiver program for the old Windows 95 PC
-      (Visual Basic 6 or C/Winsock — see item above) and test the beta
-      app against it for real, over the actual school network.
 
 ## Reference only — hardware retrofit (NOT part of the active plan)
 

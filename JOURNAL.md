@@ -5,7 +5,37 @@ replacement-software project. Read this first if you're picking this
 project up after a gap — it exists so nothing has to be re-discovered
 from scratch.
 
+## Update — 2026-09-24 (later same day): networking dropped entirely
+
+Owner pointed out something that makes the whole networking question
+moot: **the CNC machine is in a teacher's classroom**, so every job
+already has to be physically carried over there in person regardless
+of whether a network path exists. A network transfer feature wouldn't
+actually save that trip. **This supersedes the network-approval update
+directly below** — that approval is nice to have on record, but no
+longer something the project needs to act on.
+
+**Change made**: removed `windows-app/network/` and
+`windows-app/dev_tools/mock_receiver.py` entirely. The app's "Send to
+CNC Receiver" button became **"Export Copy for CNC Machine..."** — it
+just saves the validated G-code file wherever you point it (a USB
+drive, a floppy, anywhere), for you to carry over and load into
+`C:\MPSPRO` yourself. Tested working (headless) after the change.
+
+**This also means the old-PC receiver program is no longer needed at
+all** — not "written in VB6/C later," just entirely out of scope. The
+old PC doesn't need any new software or network connectivity for this
+project; it keeps running MPS2003 exactly as it always has, and files
+reach it exactly like they always have (physically, by whoever's
+carrying the media). The IT approval to join the school network still
+stands and could be revisited if a real reason for it ever comes up,
+but nothing in the current plan depends on it.
+
 ## Update — 2026-09-24: school IT approved network connection, isolated-link plan reversed
+
+*(Superseded by the section above, later the same day — kept for
+history since the IT approval itself is still a fact worth having on
+record, even though the project no longer needs to act on it.)*
 
 Owner talked to the school's security department, and **they've
 approved connecting the old Windows 95 PC to the actual school
