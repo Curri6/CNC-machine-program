@@ -28,27 +28,33 @@ confirm it. Never design around this, in this phase or later ones.
       possible job (a shallow face or small engraving), not a full
       cutout.
 
-## Phase 1 — Windows 11 app as G-code importer/sender + plain "receiver" on the old PC
+## Phase 1 — Windows 11 app as G-code importer/sender + "receiver" on the old PC
 
+- [x] Get school IT/security approval to connect the old PC to the
+      real school network. **Done 2026-09-24** — security department
+      approved it. This reverses the 2026-09-22 isolated-direct-link
+      plan; see `JOURNAL.md`'s 2026-09-24 update note for the full
+      reasoning.
 - [ ] Check what network adapter is actually in the old PC: **Start →
       Settings → Control Panel → System → Device Manager → Network
       adapters**. Owner says it already has a WiFi/Ethernet card —
       need to confirm exactly what, to know what's actually usable.
-- [ ] Set up a **private, isolated, direct link** between the old PC
-      and the new Windows 11 PC only (a single Ethernet cable, or a
-      small dedicated switch with just these two machines on it) —
-      explicitly **not** the school's actual WiFi/network. Rationale
-      logged in `JOURNAL.md`: Windows 95 has no modern WiFi/WPA2
-      driver support and no security patches ever, so joining the
-      real school network is both likely-infeasible and a real risk
-      most IT departments would block.
+- [ ] Connect the old PC to the **real school Ethernet network**
+      (approved — no isolated link/dedicated switch needed anymore).
+      Confirm with IT: does the old PC get a **static/reserved IP**
+      (vs. DHCP, which could change its address), and is the port our
+      app uses (currently 8420, arbitrary) open between whatever
+      network segments the two computers end up on.
 - [ ] Design and build the **"receiver" program** for the old PC:
-      listens for an incoming G-code file over the isolated link and
-      saves it to `C:\MPSPRO`. **No username/password** — dropped by
-      owner (2026-09-22) since the link is isolated point-to-point, so
-      there's no one else who could reach it. Must **never** auto-load
-      or auto-run the file — a person still has to load/start it in
-      MPS2003 themselves (see standing safety rule above).
+      listens for an incoming G-code file over the network and saves
+      it to `C:\MPSPRO`. **Recommended (updated 2026-09-24): restrict
+      it to only accept connections from the Windows 11 PC's specific
+      IP address** — a lightweight safeguard now that this is a shared
+      network rather than an isolated link (the earlier "no username/
+      password needed" reasoning assumed isolation, which no longer
+      applies). Must **never** auto-load or auto-run the file — a
+      person still has to load/start it in MPS2003 themselves (see
+      standing safety rule above).
       - Windows 95 can't run modern software (no Python 3, no current
         .NET) — this has to be written in period-appropriate tooling,
         most practically **Visual Basic 6** or **plain C with
@@ -72,7 +78,7 @@ confirm it. Never design around this, in this phase or later ones.
       later, not required now.
 - [ ] Write the real receiver program for the old Windows 95 PC
       (Visual Basic 6 or C/Winsock — see item above) and test the beta
-      app against it for real, over the actual isolated Ethernet link.
+      app against it for real, over the actual school network.
 
 ## Reference only — hardware retrofit (NOT part of the active plan)
 

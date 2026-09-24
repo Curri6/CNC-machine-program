@@ -5,6 +5,39 @@ replacement-software project. Read this first if you're picking this
 project up after a gap — it exists so nothing has to be re-discovered
 from scratch.
 
+## Update — 2026-09-24: school IT approved network connection, isolated-link plan reversed
+
+Owner talked to the school's security department, and **they've
+approved connecting the old Windows 95 PC to the actual school
+Ethernet network** — this addresses the institutional-approval concern
+raised on 2026-09-22 (see the "no school network" reasoning below,
+which this update supersedes). Back to the original idea: the old PC
+joins the real network, and the Windows 11 app sends job files to it
+over that network rather than a dedicated private cable.
+
+**What doesn't change**: `windows-app/network/sender.py` already just
+takes a host/port, so the beta app works identically regardless of
+which network it's reaching the old PC over. No app-side code changes
+needed for this.
+
+**What does change / needs attention**:
+- The "no username/password" decision from 2026-09-22 was justified
+  specifically by the link being isolated point-to-point with no other
+  device able to reach it. That justification no longer holds on a
+  shared school network. **Recommended (not yet implemented, since the
+  receiver program doesn't exist yet): have the receiver only accept
+  connections from the Windows 11 PC's specific IP address** — a
+  lightweight safeguard, not full authentication, easy to add in the
+  VB6/C receiver via a simple source-address check.
+- Need from IT/network setup: whether the old PC gets a **static/
+  reserved IP** (if not, the app would need to find it by hostname
+  instead of a fixed address), and whether the chosen port (currently
+  8420, arbitrary) is open between whatever network segments the two
+  computers end up on.
+- The isolated-cable-specific to-do items below (dedicated switch,
+  crossover cable) are no longer needed — replaced by "get the old PC
+  properly connected to the school network" instead.
+
 ## Session wrap-up — 2026-09-22 (end of day)
 
 Where things actually stand right now, if you're skimming instead of
@@ -470,13 +503,18 @@ test job (a shallow face or small engraving, not a full cutout).
 
 **Phase 1 — Windows 11 app as a G-code *importer/sender*, old PC stays
 as the executor ("receiver")**, deferring the full hardware retrofit:
-- **Revised again 2026-09-22**: owner dropped the username/password
-  requirement — acceptable specifically because the link is a private,
-  isolated point-to-point Ethernet cable between only these two
-  machines (not the school's shared network), so there's no one else
-  who could reach it to send a bogus file. Simpler receiver program as
-  a result: just accepts an incoming G-code file and saves it, no auth
-  handshake.
+- **Revised 2026-09-22, then reversed 2026-09-24**: owner initially
+  dropped the username/password requirement because the plan at the
+  time was an isolated point-to-point Ethernet cable with no other
+  device able to reach it. **Superseded 2026-09-24**: school security
+  department approved connecting the old PC to the real school
+  network, so the isolated-link plan is out — see the update note at
+  the top of this journal. The "no other device can reach it"
+  justification no longer applies on a shared network.
+  **Current recommendation** (not yet implemented — the receiver
+  doesn't exist yet): have the receiver restrict connections to only
+  the Windows 11 PC's known IP address, as a lightweight safeguard
+  short of full authentication.
 - **Also revised: the app's job is import + preview + send, not
   building G-code from scratch.** Owner wants it to accept G-code files
   created on *any* computer in the school (using whatever free/existing
@@ -489,25 +527,24 @@ as the executor ("receiver")**, deferring the full hardware retrofit:
   from-scratch CAD/CAM design tool is explicitly *not* required for
   this phase — native G-code generation could still be a nice-to-have
   later, but importing existing files is the priority.
-- Getting the file to the old PC: owner wants this over a network
-  connection rather than physically carrying a floppy disk over.
-  **Decided against joining the actual school WiFi/network** — Windows
-  95 has no wireless hardware/driver support for any modern
-  WPA2/WPA3-secured network, and even over wired Ethernet, the OS has
-  no security patches ever, so exposing it to the school's shared
-  network is a real risk most IT departments would (rightly) block.
-  **Instead: a private, isolated, direct link between just the two
-  computers** (a single Ethernet cable, or a small dedicated switch
-  with only these two machines on it) — no other device can reach it,
-  since it's not part of the school's network at all. Still need to
-  check what network adapter is actually in the old PC (owner says it
-  already has a WiFi/Ethernet card — check Device Manager under
-  "Network adapters" to confirm exactly what's there and whether it's
-  period-compatible).
+- **Getting the file to the old PC (updated 2026-09-24): over the
+  real school network**, now that IT has approved it. (History: this
+  was originally the plan on 2026-09-22 too, then briefly changed to
+  an isolated direct link over concern that Windows 95's total lack of
+  security patches made joining the shared network risky without
+  explicit institutional sign-off — that sign-off has now happened, so
+  the original approach is back.) Still need: confirm whether the old
+  PC gets a static/reserved IP or DHCP (affects whether the app can
+  just use a fixed address or needs to resolve a hostname), and confirm
+  the chosen port (currently 8420, arbitrary) isn't blocked by any
+  firewall/ACL between network segments. Still also need to check what
+  network adapter is actually in the old PC (owner says it already has
+  a WiFi/Ethernet card — check Device Manager under "Network adapters"
+  to confirm exactly what's there).
 - **A custom "receiver" program on the old PC**: listens for an
-  incoming G-code file over the isolated link and saves it to
-  `C:\MPSPRO`. No authentication (see above — dropped as unnecessary
-  complexity given the isolated link).
+  incoming G-code file over the network and saves it to `C:\MPSPRO`.
+  Given the 2026-09-24 network change, recommend adding the source-IP
+  restriction mentioned above rather than leaving it fully open.
 - **Windows 95 cannot run modern software at all** (no Python 3, no
   current .NET, etc.), so this receiver program is necessarily a
   separate, small codebase from the main Windows 11 app, written in
