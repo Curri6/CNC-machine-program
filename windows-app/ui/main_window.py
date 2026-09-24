@@ -1,21 +1,24 @@
 """Main window: open a G-code file, see warnings for anything MPS2003
-won't understand, preview the toolpath, and send it to the old PC.
+won't understand, preview the toolpath, and export a copy ready to
+carry over to the CNC machine.
 
-A job is never sent automatically and the receiver never auto-runs it
--- someone always has to be physically at the old machine to load and
-start it in MPS2003. See JOURNAL.md's standing safety requirement.
+No networking: the machine lives in a teacher's classroom, so every
+job already has to be carried over there in person regardless. Export
+just makes it easy to save a copy onto a USB drive or floppy. A job is
+never auto-run -- someone always has to be physically at the old
+machine to load and start it in MPS2003. See JOURNAL.md's standing
+safety requirement.
 """
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 
-from PySide6.QtCore import QThread, Signal
 from PySide6.QtWidgets import (
     QFileDialog,
     QHBoxLayout,
     QLabel,
-    QLineEdit,
     QListWidget,
     QMainWindow,
     QMessageBox,
@@ -27,23 +30,7 @@ from PySide6.QtWidgets import (
 )
 
 from gcode.parser import ParseResult, parse_gcode
-from network.sender import DEFAULT_PORT, send_job
 from ui.toolpath_view import ToolpathView
-
-
-class _SendWorker(QThread):
-    finished_send = Signal(bool, str)
-
-    def __init__(self, host: str, port: int, filename: str, data: bytes):
-        super().__init__()
-        self._host = host
-        self._port = port
-        self._filename = filename
-        self._data = data
-
-    def run(self) -> None:
-        result = send_job(self._host, self._filename, self._data, self._port)
-        self.finished_send.emit(result.ok, result.message)
 
 
 class MainWindow(QMainWindow):
@@ -54,7 +41,6 @@ class MainWindow(QMainWindow):
 
         self._current_path: Path | None = None
         self._current_result: ParseResult | None = None
-        self._send_worker: _SendWorker | None = None
 
         self._build_ui()
 
@@ -69,14 +55,9 @@ class MainWindow(QMainWindow):
 
         self._toolpath_view = ToolpathView()
 
-        self._host_edit = QLineEdit()
-        self._host_edit.setPlaceholderText("Old PC's IP address, e.g. 192.168.1.50")
-        self._port_edit = QLineEdit(str(DEFAULT_PORT))
-        self._port_edit.setFixedWidth(70)
-
-        self._send_button = QPushButton("Send to CNC Receiver")
-        self._send_button.setEnabled(False)
-        self._send_button.clicked.connect(self._on_send)
+        self._export_button = QPushButton("Export Copy for CNC Machine...")
+        self._export_button.setEnabled(False)
+        self._export_button.clicked.connect(self._on_export)
 
         left_panel = QWidget()
         left_layout = QVBoxLayout(left_panel)
@@ -84,14 +65,13 @@ class MainWindow(QMainWindow):
         left_layout.addWidget(self._file_label)
         left_layout.addWidget(QLabel("Warnings (unsupported commands):"))
         left_layout.addWidget(self._warnings_list, stretch=1)
-
-        network_row = QHBoxLayout()
-        network_row.addWidget(QLabel("Host:"))
-        network_row.addWidget(self._host_edit, stretch=1)
-        network_row.addWidget(QLabel("Port:"))
-        network_row.addWidget(self._port_edit)
-        left_layout.addLayout(network_row)
-        left_layout.addWidget(self._send_button)
+        left_layout.addWidget(
+            QLabel(
+                "Save a copy onto a USB drive or floppy, then carry it to\n"
+                "the CNC machine and load it into C:\\MPSPRO yourself."
+            )
+        )
+        left_layout.addWidget(self._export_button)
 
         splitter = QSplitter()
         splitter.addWidget(left_panel)
@@ -131,27 +111,17 @@ class MainWindow(QMainWindow):
         if result.warnings:
             self._warnings_list.addItems(result.warnings)
             self.statusBar().showMessage(
-                f"{len(result.warnings)} warning(s) — review before sending.", 8000
+                f"{len(result.warnings)} warning(s) — review before exporting.", 8000
             )
         else:
             self._warnings_list.addItem("None — all commands are supported by MPS2003.")
             self.statusBar().showMessage("File looks fully compatible.", 5000)
 
         self._toolpath_view.show_result(result)
-        self._send_button.setEnabled(True)
+        self._export_button.setEnabled(True)
 
-    def _on_send(self) -> None:
+    def _on_export(self) -> None:
         if self._current_path is None or self._current_result is None:
-            return
-
-        host = self._host_edit.text().strip()
-        if not host:
-            QMessageBox.warning(self, "Missing host", "Enter the old PC's IP address first.")
-            return
-        try:
-            port = int(self._port_edit.text().strip())
-        except ValueError:
-            QMessageBox.warning(self, "Invalid port", "Port must be a number.")
             return
 
         if self._current_result.warnings:
@@ -160,31 +130,34 @@ class MainWindow(QMainWindow):
                 "Unsupported commands present",
                 (
                     f"This file has {len(self._current_result.warnings)} command(s) "
-                    "MPS2003 doesn't understand. Sending it anyway may cause the "
-                    "machine to behave unexpectedly.\n\nSend anyway?"
+                    "MPS2003 doesn't understand. Exporting it anyway may cause the "
+                    "machine to behave unexpectedly.\n\nExport anyway?"
                 ),
             )
             if proceed != QMessageBox.StandardButton.Yes:
                 return
 
-        data = self._current_path.read_bytes()
-        self._send_button.setEnabled(False)
-        self.statusBar().showMessage(f"Sending to {host}:{port}...")
+        dest_str, _ = QFileDialog.getSaveFileName(
+            self,
+            "Export Copy for CNC Machine",
+            self._current_path.name,
+            "G-Code files (*.tap *.nc *.gcode *.txt);;All files (*)",
+        )
+        if not dest_str:
+            return
 
-        self._send_worker = _SendWorker(host, port, self._current_path.name, data)
-        self._send_worker.finished_send.connect(self._on_send_finished)
-        self._send_worker.start()
+        try:
+            shutil.copyfile(self._current_path, dest_str)
+        except OSError as exc:
+            QMessageBox.critical(self, "Export failed", str(exc))
+            return
 
-    def _on_send_finished(self, ok: bool, message: str) -> None:
-        self._send_button.setEnabled(True)
-        self.statusBar().showMessage(message, 8000)
-        if ok:
-            QMessageBox.information(
-                self,
-                "Sent",
-                message
-                + "\n\nRemember: someone still needs to be physically at the "
-                "old computer to load and run this job in MPS2003.",
-            )
-        else:
-            QMessageBox.critical(self, "Send failed", message)
+        self.statusBar().showMessage(f"Exported to {dest_str}", 8000)
+        QMessageBox.information(
+            self,
+            "Exported",
+            f"Saved a copy to:\n{dest_str}\n\n"
+            "Carry this to the CNC machine and load it into C:\\MPSPRO "
+            "yourself — someone still needs to be physically at the "
+            "machine to load and start the job in MPS2003.",
+        )
