@@ -51,7 +51,10 @@ from scratch.
   arrives with TCP/IP. Told the owner to click Cancel rather than Skip
   File, so no half-installed network stack is left. **Blocked on a
   Windows 95 CD** (retail, OSR2, or IBM's NetVista recovery CD). With the
-  CD in the drive, the same prompt finishes the install.
+  CD in the drive, the same prompt finishes the install. Pointing it
+  at `C:\WINDOWS` failed instantly too. The partial network setup was
+  cancelled and removed from Control Panel → Network, leaving the PC as
+  it was.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
