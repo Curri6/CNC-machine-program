@@ -23,6 +23,14 @@ confirm it. Never design around this, in this phase or later ones.
 
 ## Phase 0 — verify the machine still physically works
 
+- [x] Motors (X/Y/Z), spindle motor, and original MPS2003 software
+      confirmed working (2026-09-28, per owner).
+- [ ] **Back up `C:\MPSPRO` via floppy disk.** Networking isn't
+      installed on the Win95 PC and there are no install files to add
+      it, so the network/FTP attempt was abandoned. See `JOURNAL.md`
+      (2026-09-28). Needs a blank floppy plus a USB floppy drive for
+      the modern PC. Once the files are uploaded, review the other
+      `Param*.dat` files and the sample `.tap` jobs.
 - [ ] Test-cut a piece of acrylic using the **original, unmodified**
       MPS2003 software on the existing Windows 95 PC. Safety sequence
       (from the manual itself): move each axis by hand with power off

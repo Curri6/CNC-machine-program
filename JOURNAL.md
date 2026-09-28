@@ -5,6 +5,31 @@ replacement-software project. Read this first if you're picking this
 project up after a gap — it exists so nothing has to be re-discovered
 from scratch.
 
+## Update — 2026-09-28: machine verified working; backing up C:\MPSPRO
+
+- **Phase 0 result (per owner):** all axis motors, the spindle motor,
+  and the original MPS2003 software work. The `I/O PORT` (limit
+  switches + E-stop inputs) isn't connected and isn't needed for the
+  machine to run.
+- **Trying to copy `C:\MPSPRO` off the old PC so it can be reviewed.**
+  Tried Ethernet + FTP (the old PC's built-in `ftp.exe` pushing to a
+  `pyftpdlib` server on a modern laptop). Dead end for now: the Windows
+  95 **Network control panel is completely empty**. No network card
+  driver and no TCP/IP were ever installed. Adding them needs the
+  Windows 95 install files, and `C:\WINDOWS\OPTIONS\CABS` doesn't exist
+  (a last check for stray `*.cab` files elsewhere on C: is pending).
+  USB is also out, since genuine Windows 95 has no USB mass-storage
+  support.
+- **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
+  1.44MB floppy. The old PC already has a floppy drive; the modern
+  laptop needs a USB floppy drive (about $15). Commands: on Win95,
+  `xcopy C:\MPSPRO A:\ /s /e /h /i /c /y`; on the modern PC, copy from
+  the floppy into `Downloads\CNC_backup`, un-hide the files with
+  `attrib`, zip it, and upload.
+- The earlier assumption that "the login screen implies networking is
+  configured" was wrong. That dialog appears with plain Windows Logon
+  too.
+
 ## Update — 2026-09-24 (later same day): networking dropped entirely
 
 Owner pointed out something that makes the whole networking question
