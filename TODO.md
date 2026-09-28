@@ -44,9 +44,16 @@ confirm it. Never design around this, in this phase or later ones.
       - **Goal set 2026-09-28: enable networking on the Win95 PC, then
         send files over the network.** Device Manager shows the card as
         `PCI Ethernet Controller` with no driver. Steps:
-        1. [ ] Identify the card: `regedit` → HKEY_LOCAL_MACHINE →
-           Enum → PCI, and read the `VEN_xxxx&DEV_xxxx` IDs (read only,
-           no edits).
+        1. [x] Identify the card. **Done 2026-09-28:** it's
+           `VEN_8086&DEV_2449`, the **Intel PRO/100 VE Network
+           Connection** (on-board, Intel ICH2 chipset). It isn't in
+           Win95's built-in adapter list, so it needs Intel's driver. The
+           other PCI IDs are all Intel 815/ICH2 parts (graphics, USB,
+           AC'97 audio, IDE, SMBus). Driver sources: Intel's legacy
+           support page for the PRO/100 VE; failing that, Intel's own
+           PRO/100 & PRO/1000 driver CD v9.0 on the Internet Archive
+           (archive.org/details/pro1001000), which includes a Win95
+           driver for PRO/100. Avoid third-party "driver download" sites.
         2. [ ] Get a legitimate Windows 95 CD (ask school IT). It's
            needed for TCP/IP and core networking files.
         3. [ ] Get the card's Windows 95 driver from the card maker.
