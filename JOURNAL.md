@@ -32,6 +32,16 @@ from scratch.
   → `mput *.*` → `bye`. Afterwards, restore the laptop with
   `netsh interface ip set address name="Ethernet" dhcp` and delete the
   firewall rule.
+- **Networking attempt in progress (later 2026-09-28).** In Control
+  Panel → Network the owner added the adapter as the closest built-in
+  match, **Intel EtherExpress PRO/100 (PCI)**. That is the older 82557
+  driver and may not recognize the PRO/100 VE (DEV_2449) chip. Removed
+  the NetWare client, IPX/SPX, and NetBEUI, added **TCP/IP** with a
+  static IP of **192.168.50.2 / 255.255.255.0**, and renamed the computer
+  to `A-TECH-IBM` (Win95 doesn't allow spaces). Next: click OK/Close
+  and see whether Windows can find the files without the CD (pointing
+  it at `C:\WINDOWS\SYSTEM`). If it can't, the Win95 CD plus Intel's
+  PRO/100 VE driver are still required.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

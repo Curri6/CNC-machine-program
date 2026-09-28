@@ -60,7 +60,11 @@ confirm it. Never design around this, in this phase or later ones.
         4. [ ] Get the driver onto the old PC via floppy (needs a USB
            floppy drive on the laptop) or a CD burned by IT.
         5. [ ] Install the card driver and TCP/IP; set a static IP of
-           192.168.50.2 / 255.255.255.0.
+           192.168.50.2 / 255.255.255.0. **In progress 2026-09-28:**
+           adapter added as the built-in "Intel EtherExpress PRO/100
+           (PCI)" driver (may not fit the VE chip), TCP/IP added with
+           192.168.50.2/24, computer named `A-TECH-IBM`. Waiting to see
+           whether Windows can finish without the CD.
         6. [ ] Send files with the FTP steps in `JOURNAL.md`
            (2026-09-28): `pyftpdlib` on the laptop at 192.168.50.1,
            Win95 `ftp.exe` with `mput`.
