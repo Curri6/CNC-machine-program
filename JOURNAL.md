@@ -41,7 +41,9 @@ from scratch.
   to `A-TECH-IBM` (Win95 doesn't allow spaces). Next: click OK/Close
   and see whether Windows can find the files without the CD (pointing
   it at `C:\WINDOWS\SYSTEM`). If it can't, the Win95 CD plus Intel's
-  PRO/100 VE driver are still required.
+  PRO/100 VE driver are still required. After clicking Close, Windows
+  asked for the "Windows 95 CD-ROM" disk, as expected. Trying
+  `C:\WINDOWS\SYSTEM` and `C:\WINDOWS` as the file source instead.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
