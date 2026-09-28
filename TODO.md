@@ -25,12 +25,22 @@ confirm it. Never design around this, in this phase or later ones.
 
 - [x] Motors (X/Y/Z), spindle motor, and original MPS2003 software
       confirmed working (2026-09-28, per owner).
-- [ ] **Back up `C:\MPSPRO` via floppy disk.** Networking isn't
-      installed on the Win95 PC and there are no install files to add
-      it, so the network/FTP attempt was abandoned. See `JOURNAL.md`
-      (2026-09-28). Needs a blank floppy plus a USB floppy drive for
-      the modern PC. Once the files are uploaded, review the other
-      `Param*.dat` files and the sample `.tap` jobs.
+- [ ] **Back up `C:\MPSPRO`.** Networking isn't installed on the Win95
+      PC and there are no install files to add it, and Win95 can't
+      read USB drives, so the network/FTP attempt was abandoned. See
+      `JOURNAL.md` (2026-09-28). Two working options:
+      - **Serial cable (owner's chosen route):** HyperTerminal is
+        installed on the Win95 PC. Needs a USB-to-serial adapter
+        (FTDI preferred) and a DB9 female-female null-modem cable.
+        Send each file from HyperTerminal (Direct to Com1, 57600 8N1,
+        no flow control, Zmodem) to Tera Term on the laptop (ZMODEM
+        Receive, download dir `Downloads\CNC_backup`). Send from a
+        `C:\MPSBAK` copy made with `xcopy /h` + `attrib -h -s -r` so
+        hidden files are included.
+      - **Floppy:** a blank floppy plus a USB floppy drive for the
+        laptop; `xcopy C:\MPSPRO A:\ /s /e /h /i /c /y`.
+      Once the files are uploaded, review the other `Param*.dat` files
+      and the sample `.tap` jobs.
 - [ ] Test-cut a piece of acrylic using the **original, unmodified**
       MPS2003 software on the existing Windows 95 PC. Safety sequence
       (from the manual itself): move each axis by hand with power off
