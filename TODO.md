@@ -41,6 +41,13 @@ confirm it. Never design around this, in this phase or later ones.
         laptop; `xcopy C:\MPSPRO A:\ /s /e /h /i /c /y`.
       Once the files are uploaded, review the other `Param*.dat` files
       and the sample `.tap` jobs.
+      - **Update 2026-09-28: no purchases possible.** Near term,
+        photograph the text files (`Param3.dat`, `Param51.dat`,
+        `Param51s.dat`, `Paramp3.dat`, plus a sample `.tap` or two) in
+        Notepad/WordPad for review. For a real backup, ask the teacher
+        or tech department to lend a USB floppy drive, a
+        serial cable + USB-serial adapter, or a Windows 95 install CD.
+        Not urgent, since the machine is working.
 - [ ] Test-cut a piece of acrylic using the **original, unmodified**
       MPS2003 software on the existing Windows 95 PC. Safety sequence
       (from the manual itself): move each axis by hand with power off
