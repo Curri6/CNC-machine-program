@@ -17,7 +17,7 @@ from scratch.
   95 **Network control panel is completely empty**. No network card
   driver and no TCP/IP were ever installed. Adding them needs the
   Windows 95 install files, and `C:\WINDOWS\OPTIONS\CABS` doesn't exist
-  (a last check for stray `*.cab` files elsewhere on C: is pending).
+  (a search for `*.cab` files anywhere on C: also found nothing).
   USB is also out, since genuine Windows 95 has no USB mass-storage
   support.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
