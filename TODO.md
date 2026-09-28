@@ -63,8 +63,9 @@ confirm it. Never design around this, in this phase or later ones.
            192.168.50.2 / 255.255.255.0. **In progress 2026-09-28:**
            adapter added as the built-in "Intel EtherExpress PRO/100
            (PCI)" driver (may not fit the VE chip), TCP/IP added with
-           192.168.50.2/24, computer named `A-TECH-IBM`. Waiting to see
-           whether Windows can finish without the CD.
+           192.168.50.2/24, computer named `A-TECH-IBM`. **Blocked:**
+           Windows asked for the Win95 CD and couldn't find `arp.exe`
+           on the hard drive. Needs the CD (step 2).
         6. [ ] Send files with the FTP steps in `JOURNAL.md`
            (2026-09-28): `pyftpdlib` on the laptop at 192.168.50.1,
            Win95 `ftp.exe` with `mput`.
