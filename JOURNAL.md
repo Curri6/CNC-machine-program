@@ -26,6 +26,14 @@ from scratch.
   `xcopy C:\MPSPRO A:\ /s /e /h /i /c /y`; on the modern PC, copy from
   the floppy into `Downloads\CNC_backup`, un-hide the files with
   `attrib`, zip it, and upload.
+- **Device Manager confirms it:** "Other devices" lists `PCI Ethernet
+  Controller`, `PCI Universal Serial Bus`, `PCI Multimedia Audio
+  Device`, `PCI Card`, and `Unknown Device`, all with no drivers. The
+  Ethernet card is physically present, but Windows 95 has no driver
+  for it, and there's no media to install one from. USB has no driver
+  either. **Ethernet and USB are both definitively out** without a
+  floppy or CD. With no purchases possible: photograph the text files
+  for review now, and borrow a USB floppy drive for a full backup later.
 - The earlier assumption that "the login screen implies networking is
   configured" was wrong. That dialog appears with plain Windows Logon
   too.
