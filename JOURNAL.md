@@ -44,6 +44,14 @@ from scratch.
   PRO/100 VE driver are still required. After clicking Close, Windows
   asked for the "Windows 95 CD-ROM" disk, as expected. Trying
   `C:\WINDOWS\SYSTEM` and `C:\WINDOWS` as the file source instead.
+  Result: `'arp.exe' on Windows 95 CD-ROM could not be found` at
+  `C:\WINDOWS\SYSTEM`. The TCP/IP files (arp.exe, ftp.exe, the
+  Winsock/TCP drivers) were never installed, so they exist only on the
+  CD. Note: this means **`ftp.exe` is not on the PC yet** either; it
+  arrives with TCP/IP. Told the owner to click Cancel rather than Skip
+  File, so no half-installed network stack is left. **Blocked on a
+  Windows 95 CD** (retail, OSR2, or IBM's NetVista recovery CD). With the
+  CD in the drive, the same prompt finishes the install.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
