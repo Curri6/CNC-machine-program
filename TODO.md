@@ -41,6 +41,22 @@ confirm it. Never design around this, in this phase or later ones.
         laptop; `xcopy C:\MPSPRO A:\ /s /e /h /i /c /y`.
       Once the files are uploaded, review the other `Param*.dat` files
       and the sample `.tap` jobs.
+      - **Goal set 2026-09-28: enable networking on the Win95 PC, then
+        send files over the network.** Device Manager shows the card as
+        `PCI Ethernet Controller` with no driver. Steps:
+        1. [ ] Identify the card: `regedit` → HKEY_LOCAL_MACHINE →
+           Enum → PCI, and read the `VEN_xxxx&DEV_xxxx` IDs (read only,
+           no edits).
+        2. [ ] Get a legitimate Windows 95 CD (ask school IT). It's
+           needed for TCP/IP and core networking files.
+        3. [ ] Get the card's Windows 95 driver from the card maker.
+        4. [ ] Get the driver onto the old PC via floppy (needs a USB
+           floppy drive on the laptop) or a CD burned by IT.
+        5. [ ] Install the card driver and TCP/IP; set a static IP of
+           192.168.50.2 / 255.255.255.0.
+        6. [ ] Send files with the FTP steps in `JOURNAL.md`
+           (2026-09-28): `pyftpdlib` on the laptop at 192.168.50.1,
+           Win95 `ftp.exe` with `mput`.
       - **Update 2026-09-28: no purchases possible.** Near term,
         photograph the text files (`Param3.dat`, `Param51.dat`,
         `Param51s.dat`, `Paramp3.dat`, plus a sample `.tap` or two) in

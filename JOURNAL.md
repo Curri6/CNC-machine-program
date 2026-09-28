@@ -20,6 +20,18 @@ from scratch.
   (a search for `*.cab` files anywhere on C: also found nothing).
   USB is also out, since genuine Windows 95 has no USB mass-storage
   support.
+- **FTP transfer recipe, for once networking works.** Laptop Ethernet
+  set to a static 192.168.50.1/24
+  (`netsh interface ip set address name="Ethernet" static 192.168.50.1 255.255.255.0`),
+  a firewall allow rule for python.exe, then
+  `python -m pyftpdlib -w -p 21 -i 192.168.50.1 -d "%USERPROFILE%\Downloads\CNC_backup"`.
+  Win95 set to 192.168.50.2/24 in Control Panel → Network → TCP/IP.
+  On Win95: `xcopy C:\MPSPRO C:\MPSBAK\ /s /e /h /i /c /y`,
+  `attrib -h -s -r C:\MPSBAK\*.* /s`, `cd C:\MPSBAK`, then
+  `ftp` → `open 192.168.50.1` → user `anonymous` → `binary` → `prompt`
+  → `mput *.*` → `bye`. Afterwards, restore the laptop with
+  `netsh interface ip set address name="Ethernet" dhcp` and delete the
+  firewall rule.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
