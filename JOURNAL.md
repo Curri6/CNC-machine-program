@@ -55,6 +55,15 @@ from scratch.
   at `C:\WINDOWS` failed instantly too. The partial network setup was
   cancelled and removed from Control Panel → Network, leaving the PC as
   it was.
+- **2026-09-29: found a Win95 ISO on archive.org** (a user upload,
+  not Microsoft). Decision: don't use it without the teacher's or IT's
+  OK, since it's a school PC and the key on that page isn't ours. Even
+  with permission it has to be **burned to a CD** (600MB, and the old PC
+  has no USB or large media), it should **match the installed version**
+  (check Control Panel → System → General: 4.00.950 / A / B / C), and
+  the Intel PRO/100 VE driver still has to come from Intel on the same
+  disc. Next step: ask IT for a Win95 CD, or to burn one with the
+  Intel driver.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
