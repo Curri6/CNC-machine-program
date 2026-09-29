@@ -55,7 +55,10 @@ confirm it. Never design around this, in this phase or later ones.
            (archive.org/details/pro1001000), which includes a Win95
            driver for PRO/100. Avoid third-party "driver download" sites.
         2. [ ] Get a legitimate Windows 95 CD (ask school IT). It's
-           needed for TCP/IP and core networking files.
+           needed for TCP/IP and core networking files. First check the
+           installed version (Control Panel → System → General) so the
+           CD matches. An archive.org ISO was found 2026-09-29; only use
+           it with IT's OK, burned to CD by IT.
         3. [ ] Get the card's Windows 95 driver from the card maker.
         4. [ ] Get the driver onto the old PC via floppy (needs a USB
            floppy drive on the laptop) or a CD burned by IT.
