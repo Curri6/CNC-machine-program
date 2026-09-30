@@ -64,6 +64,16 @@ from scratch.
   the Intel PRO/100 VE driver still has to come from Intel on the same
   disc. Next step: ask IT for a Win95 CD, or to burn one with the
   Intel driver.
+- **2026-09-30: owner now has a blank DVD and a burner.** Plan: one data
+  DVD with `\WIN95\` (the .CAB files copied out of a version-matched
+  Win95 ISO, with the teacher's or IT's OK), `\INTEL\` (the Win9x
+  PRO/100 VE driver, from Intel's own driver CD only), and README.TXT.
+  It must be burned "With a CD/DVD player" (Mastered, ISO 9660/Joliet),
+  **not** "Like a USB flash drive" (UDF), because Win95 can't read UDF.
+  The Samsung SD-608 drive reads DVDs. On the old PC: Network → Add →
+  Adapter → Have Disk → `D:\INTEL`, add TCP/IP (192.168.50.2/24), and
+  point the CD prompt at `D:\WIN95`. Owner was given a ready-made
+  prompt for Claude on their laptop covering the download and burn.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
