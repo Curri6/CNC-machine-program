@@ -74,6 +74,8 @@ from scratch.
   Adapter → Have Disk → `D:\INTEL`, add TCP/IP (192.168.50.2/24), and
   point the CD prompt at `D:\WIN95`. Owner was given a ready-made
   prompt for Claude on their laptop covering the download and burn.
+  Owner has already downloaded the Intel driver. Still needed: the
+  Win95 `.CAB` files (with the teacher's or IT's OK), then the burn.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
