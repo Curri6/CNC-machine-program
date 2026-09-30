@@ -85,7 +85,13 @@ from scratch.
   Advised against it: it's a Memorex CD-R that's likely already
   finalized, a rewritable disc could get erased (losing possibly the
   only DeskCNC copy), and multisession discs are unreliable on old
-  drives. Use the blank DVD instead.
+  drives. Use the blank DVD instead. **Update:** owner checked. The disc
+  is an open (not finalized) write-once CD-R with 676MB free, so
+  there's no erase risk. Plan changed: add `\WIN95\` (.CABs only, not
+  the .iso) and `\INTEL\` to it as a new session, then check that both
+  the DeskCNC files and the new folders are visible. If Win95 only shows
+  the DeskCNC files, its drive isn't reading the new session, so fall
+  back to the blank DVD.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
