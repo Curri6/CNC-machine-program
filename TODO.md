@@ -61,7 +61,10 @@ confirm it. Never design around this, in this phase or later ones.
            it with IT's OK, burned to CD by IT.
         3. [ ] Get the card's Windows 95 driver from the card maker.
         4. [ ] Get the driver onto the old PC via floppy (needs a USB
-           floppy drive on the laptop) or a CD burned by IT.
+           floppy drive on the laptop) or a CD burned by IT. **Update
+           2026-09-30:** owner has a DVD and burner. Burn one data DVD
+           (Mastered/ISO 9660, not UDF) with `\WIN95\` CABs +
+           `\INTEL\` driver. See `JOURNAL.md`.
         5. [ ] Install the card driver and TCP/IP; set a static IP of
            192.168.50.2 / 255.255.255.0. **In progress 2026-09-28:**
            adapter added as the built-in "Intel EtherExpress PRO/100
