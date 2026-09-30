@@ -76,6 +76,12 @@ from scratch.
   prompt for Claude on their laptop covering the download and burn.
   Owner has already downloaded the Intel driver. Still needed: the
   Win95 `.CAB` files (with the teacher's or IT's OK), then the burn.
+- **Found a DeskCNC CD** (IMService, South Lyon MI, v2.2.076, "frm 2.41",
+  2001). It's CAM/machine-control software for IMService's own
+  controller box, not part of this machine's MPS2003 + MicroProto setup,
+  and not a Windows 95 CD. Don't install it on the Win95 PC. Kept for
+  reference. If a DeskCNC controller box turns up in the room, photograph
+  it.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
