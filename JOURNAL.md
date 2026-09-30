@@ -81,7 +81,11 @@ from scratch.
   controller box, not part of this machine's MPS2003 + MicroProto setup,
   and not a Windows 95 CD. Don't install it on the Win95 PC. Kept for
   reference. If a DeskCNC controller box turns up in the room, photograph
-  it.
+  it. Owner asked about adding the Win95 + Intel files to this disc.
+  Advised against it: it's a Memorex CD-R that's likely already
+  finalized, a rewritable disc could get erased (losing possibly the
+  only DeskCNC copy), and multisession discs are unreliable on old
+  drives. Use the blank DVD instead.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
