@@ -59,7 +59,9 @@ confirm it. Never design around this, in this phase or later ones.
            installed version (Control Panel → System → General) so the
            CD matches. An archive.org ISO was found 2026-09-29; only use
            it with IT's OK, burned to CD by IT.
-        3. [ ] Get the card's Windows 95 driver from the card maker.
+        3. [x] Get the card's Windows 95 driver from the card maker.
+           **Owner has it (2026-09-30).** Still to confirm that it's the
+           Win9x version (.INF plus a WIN9X/WIN95 folder) before burning.
         4. [ ] Get the driver onto the old PC via floppy (needs a USB
            floppy drive on the laptop) or a CD burned by IT. **Update
            2026-09-30:** owner has a DVD and burner. Burn one data DVD
