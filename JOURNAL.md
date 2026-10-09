@@ -91,7 +91,8 @@ from scratch.
   the .iso) and `\INTEL\` to it as a new session, then check that both
   the DeskCNC files and the new folders are visible. If Win95 only shows
   the DeskCNC files, its drive isn't reading the new session, so fall
-  back to the blank DVD.
+  back to the blank DVD. Confirmed with owner (2026-10-09): burn
+  "With a CD/DVD player" (Mastered), not "Like a USB flash drive".
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
