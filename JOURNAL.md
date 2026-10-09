@@ -98,7 +98,7 @@ from scratch.
   read. Mastered burning needs no format: drag the folders in, then
   Drive Tools → Finish burning. The Mastered "Burn to Disc" wizard
   came up (confirming the right mode). Settings used: title `WIN95NET`
-  and the lowest recording speed, for reliability on the old drive.
+  and the lowest recording speed (2x), for reliability on the old drive.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
