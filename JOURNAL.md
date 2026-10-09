@@ -121,7 +121,9 @@ from scratch.
   **Correction:** the earlier advice that "With a CD/DVD player"
   (Mastered) gives a Win95-readable ISO 9660/Joliet disc holds for CDs
   but not reliably for DVDs on Windows 11. The owner followed the steps
-  correctly; the instructions were wrong for DVD media.
+  correctly; the instructions were wrong for DVD media, and a blank DVD
+  was used up as a result. Future discs for the Win95 PC: CD-R only,
+  confirmed readable on the old PC first.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
