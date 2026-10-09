@@ -106,7 +106,12 @@ from scratch.
   fall back to the open DeskCNC CD-R. After reinserting, the laptop
   shows no files on the disc, so the failed burn likely wrote nothing.
   Checking E: → Properties for free space (4.38GB means still blank)
-  before retrying at 8x.
+  before retrying at 8x. Clarified: the **laptop** shows the files but
+  the **Win95 PC** shows the disc as empty. Most likely the laptop is
+  only showing the staged "Files ready to be written" (the burn failed),
+  so the disc really is blank. If the files turn out to really be burned,
+  the fallback is a PowerShell IMAPI2 script (built into Windows) that
+  forces an ISO 9660 + Joliet file system for Win95.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
