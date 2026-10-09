@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 windows-app/dev_tools/received_jobs/
+*.iso
+tools/tests/src/
+tools/tests/src2/

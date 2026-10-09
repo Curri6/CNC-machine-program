@@ -142,6 +142,22 @@ from scratch.
   can't be read. Fixed, and `ForceOverwrite` was added for DVD+RW. The
   first version was sent before the fix; the owner should use the fixed
   copy.
+- **Pre-burn safety check added (2026-10-09).** The burn tool now builds
+  the disc image, then **reads it back and checks it before anything is
+  written**. The check looks for an ISO 9660 descriptor, WIN95 (with
+  .CAB files) and INTEL (with an .INF) in both the ISO 9660 and Joliet
+  listings, and confirms every directory and file address sits inside
+  the new session, which catches the start-block bug class. Only after
+  "CHECK PASSED" does it ask for YES. Tested here with xorriso-built
+  images (`tools/tests/`): 7/7 pass, covering 3 good images and 4
+  deliberately broken ones, including the exact start-block bug. Testing
+  also caught and fixed a false rejection in the check itself (tools
+  differ on how a later session records its volume size). The check is
+  compiled at C# 5 to match Windows PowerShell 5.1's Add-Type. The
+  background runspace hand-off was tested with a stand-in stream.
+  **Still untested:** the real IMAPI2 burn calls and burner, which aren't
+  available here, and whether the old SD-608 drive reads a later
+  session on a DVD-R.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
