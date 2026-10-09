@@ -118,6 +118,10 @@ from scratch.
   poorly. Test: does Win95 read the DeskCNC CD-R? If yes, burn
   WIN95 + INTEL onto that CD instead (after backing up the DeskCNC files
   to the laptop). If no, write an IMAPI2 ISO 9660/Joliet burn script.
+  **Correction:** the earlier advice that "With a CD/DVD player"
+  (Mastered) gives a Win95-readable ISO 9660/Joliet disc holds for CDs
+  but not reliably for DVDs on Windows 11. The owner followed the steps
+  correctly; the instructions were wrong for DVD media.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
