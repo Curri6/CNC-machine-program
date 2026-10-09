@@ -93,6 +93,10 @@ from scratch.
   the DeskCNC files, its drive isn't reading the new session, so fall
   back to the blank DVD. Confirmed with owner (2026-10-09): burn
   "With a CD/DVD player" (Mastered), not "Like a USB flash drive".
+  Windows offered to format the disc (E:, 4.38GB DVD, UDF 2.01). Owner
+  was told not to format it, since that's the UDF/USB mode Win95 can't
+  read. Mastered burning needs no format: drag the folders in, then
+  Drive Tools → Finish burning.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
