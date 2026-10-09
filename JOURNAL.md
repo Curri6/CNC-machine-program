@@ -123,7 +123,18 @@ from scratch.
   but not reliably for DVDs on Windows 11. The owner followed the steps
   correctly; the instructions were wrong for DVD media, and a blank DVD
   was used up as a result. Future discs for the Win95 PC: CD-R only,
-  confirmed readable on the old PC first.
+  confirmed readable on the old PC first. **Update:** owner says the
+  burned DVD was the only disc the old PC's drive reads at all (the
+  DeskCNC CD-R doesn't work in it), so the CD-R route is out. Possible
+  salvage: `tools/burn_win95_disc.ps1` (launch with
+  `tools/burn_win95_disc.bat`) uses Windows' built-in IMAPI2 to burn
+  ISO 9660 + Joliet only (no UDF) and closes the disc. It reports the
+  disc type and status before writing anything and needs a typed YES.
+  It erases and reburns a DVD-RW, overwrites a DVD+RW, or adds a new
+  Win95-readable session to an open DVD-R/+R. Caveat: some old DVD-ROM
+  drives only read the first session of a DVD, so the append route may
+  still fail. Parse-checked in PowerShell 7 but **not tested on real
+  hardware** (no burner in the dev environment).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

@@ -68,8 +68,10 @@ confirm it. Never design around this, in this phase or later ones.
            (Mastered/ISO 9660, not UDF) with `\WIN95\` CABs +
            `\INTEL\` driver. See `JOURNAL.md`. **2026-10-09:** the
            DVD burned, but Win95 sees it as empty (UDF and/or the drive
-           can't read burned DVDs). Next: test the DeskCNC CD-R in the
-           old PC, and if it reads, burn the files onto that CD.
+           can't read burned DVDs). The DeskCNC CD-R doesn't read in the
+           old PC either. Next: run `tools/burn_win95_disc.bat` with the
+           DVD in the laptop. It reports the disc type first, then can
+           reburn it as ISO 9660/Joliet (untested on real hardware).
         5. [ ] Install the card driver and TCP/IP; set a static IP of
            192.168.50.2 / 255.255.255.0. **In progress 2026-09-28:**
            adapter added as the built-in "Intel EtherExpress PRO/100
