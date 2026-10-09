@@ -99,6 +99,11 @@ from scratch.
   Drive Tools → Finish burning. The Mastered "Burn to Disc" wizard
   came up (confirming the right mode). Settings used: title `WIN95NET`
   and the lowest recording speed (2x), for reliability on the old drive.
+  **Burn failed** ("The disc wasn't burned successfully"). Kept the
+  temporary files. Likely cause: 2x is below the blank DVD's minimum
+  write speed (Windows' default was 8x). Next: check whether the disc
+  is still blank, and if so retry at the default 8x. If it's used up,
+  fall back to the open DeskCNC CD-R.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
