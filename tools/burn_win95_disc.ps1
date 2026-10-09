@@ -44,8 +44,203 @@ $ST_WRITE_PROTECT  = 0x2000
 $ST_FINALIZED      = 0x4000
 $ST_UNSUPPORTED    = 0x8000
 
+# Safety check: reads back the finished disc image BEFORE it is burned and
+# refuses to burn unless Windows 95 will be able to read it. Tested against
+# good and deliberately broken images (see JOURNAL.md, 2026-10-09).
+$CheckSource = @'
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
+using System.Text;
+
+// Reads back the disc image IMAPI2 built, before it is burned, and checks
+// that Windows 95 will be able to read it: an ISO 9660 primary volume
+// descriptor, a root directory holding WIN95 (with .CAB files) and INTEL
+// (with an .INF), and every directory/file address inside this session.
+// Written in C# 5 so Windows PowerShell 5.1's Add-Type can compile it.
+public static class Win95DiscCheck
+{
+    const int S = 2048;
+
+    class Entry
+    {
+        public string Name;
+        public bool IsDir;
+        public uint Lba;
+        public uint Len;
+    }
+
+    class Reader
+    {
+        IStream st;
+        MemoryStream buf = new MemoryStream();
+        IntPtr pRead;
+        public Reader(IStream st) { this.st = st; pRead = Marshal.AllocHGlobal(4); }
+        public void Close() { Marshal.FreeHGlobal(pRead); }
+
+        // Reads forward only (no Seek), so it works on any stream.
+        public byte[] Sector(long rel)
+        {
+            if (rel < 0) throw new Exception("Address points before the start of this session (sector " + rel + ").");
+            if (rel > 200000) throw new Exception("Address is unreasonably far into the image (sector " + rel + ").");
+            long need = (rel + 1) * S;
+            byte[] chunk = new byte[65536];
+            while (buf.Length < need)
+            {
+                Marshal.WriteInt32(pRead, 0);
+                st.Read(chunk, chunk.Length, pRead);
+                int n = Marshal.ReadInt32(pRead);
+                if (n <= 0) throw new Exception("Image ends before sector " + rel + ".");
+                buf.Write(chunk, 0, n);
+            }
+            byte[] s = new byte[S];
+            Array.Copy(buf.GetBuffer(), rel * S, s, 0, S);
+            return s;
+        }
+    }
+
+    static uint U32(byte[] b, int o) { return (uint)(b[o] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24)); }
+
+    static List<Entry> ReadDir(Reader r, long start, uint vol, uint lba, uint len, bool joliet)
+    {
+        CheckRange(start, vol, lba, "directory");
+        List<Entry> list = new List<Entry>();
+        uint sectors = (len + S - 1) / S;
+        for (uint i = 0; i < sectors; i++)
+        {
+            byte[] sec = r.Sector(lba + i - start);
+            int p = 0;
+            while (p < S)
+            {
+                int rl = sec[p];
+                if (rl == 0) break;
+                if (p + rl > S || rl < 34) throw new Exception("Damaged directory record.");
+                int nl = sec[p + 32];
+                Entry e = new Entry();
+                e.Lba = U32(sec, p + 2);
+                e.Len = U32(sec, p + 10);
+                e.IsDir = (sec[p + 25] & 2) != 0;
+                if (nl == 1 && (sec[p + 33] == 0 || sec[p + 33] == 1)) { p += rl; continue; }
+                string name = joliet ? Encoding.BigEndianUnicode.GetString(sec, p + 33, nl)
+                                     : Encoding.ASCII.GetString(sec, p + 33, nl);
+                int semi = name.IndexOf(';');
+                if (semi >= 0) name = name.Substring(0, semi);
+                if (name.EndsWith(".")) name = name.Substring(0, name.Length - 1);
+                e.Name = name;
+                list.Add(e);
+                p += rl;
+            }
+        }
+        return list;
+    }
+
+    static void CheckRange(long start, uint vol, uint lba, string what)
+    {
+        if (lba < start || lba >= vol)
+            throw new Exception("A " + what + " address (" + lba + ") is outside this session (" + start + " to " + vol +
+                                "). The new section would be unreadable. Nothing was burned.");
+    }
+
+    static Entry Find(List<Entry> list, string name, bool dir)
+    {
+        foreach (Entry e in list)
+            if (e.IsDir == dir && string.Equals(e.Name, name, StringComparison.OrdinalIgnoreCase)) return e;
+        return null;
+    }
+
+    static int CountFiles(Reader r, long start, uint vol, Entry dir, bool joliet, string ext, int depth)
+    {
+        int n = 0;
+        foreach (Entry e in ReadDir(r, start, vol, dir.Lba, dir.Len, joliet))
+        {
+            if (e.IsDir) { if (depth < 6) n += CountFiles(r, start, vol, e, joliet, ext, depth + 1); continue; }
+            if (e.Len > 0) CheckRange(start, vol, e.Lba, "file");
+            if (e.Name.EndsWith(ext, StringComparison.OrdinalIgnoreCase)) n++;
+        }
+        return n;
+    }
+
+    static string CheckTree(Reader r, long start, uint vol, byte[] vd, bool joliet)
+    {
+        uint rootLba = U32(vd, 158);
+        uint rootLen = U32(vd, 166);
+        List<Entry> root = ReadDir(r, start, vol, rootLba, rootLen, joliet);
+        string which = joliet ? "Joliet" : "ISO 9660";
+        Entry win95 = Find(root, "WIN95", true);
+        Entry intel = Find(root, "INTEL", true);
+        if (win95 == null) throw new Exception(which + " listing has no WIN95 folder. Nothing was burned.");
+        if (intel == null) throw new Exception(which + " listing has no INTEL folder. Nothing was burned.");
+        int cabs = CountFiles(r, start, vol, win95, joliet, ".CAB", 0);
+        int infs = CountFiles(r, start, vol, intel, joliet, ".INF", 0);
+        if (cabs == 0) throw new Exception(which + " listing: WIN95 has no .CAB files. Nothing was burned.");
+        if (infs == 0) throw new Exception(which + " listing: INTEL has no .INF file. Nothing was burned.");
+        return which + ": WIN95 " + cabs + " CAB, INTEL " + infs + " INF";
+    }
+
+    public static string Verify(object comStream, long expectedStart)
+    {
+        Reader r = new Reader((IStream)comStream);
+        try
+        {
+            byte[] pvd = r.Sector(16);
+            if (pvd[0] != 1 || Encoding.ASCII.GetString(pvd, 1, 5) != "CD001")
+                throw new Exception("No ISO 9660 volume descriptor. Windows 95 could not read this. Nothing was burned.");
+            uint vol = U32(pvd, 80);
+            // Tools differ on whether a later session's volume size counts
+            // from the start of the disc or from the start of the session.
+            if (vol <= expectedStart) vol = (uint)(expectedStart + vol);
+            List<string> parts = new List<string>();
+            parts.Add("start block " + expectedStart);
+            parts.Add(CheckTree(r, expectedStart, vol, pvd, false));
+
+            bool joliet = false, udf = false;
+            for (int i = 17; i < 64; i++)
+            {
+                byte[] d = r.Sector(i);
+                if (Encoding.ASCII.GetString(d, 1, 5) != "CD001")
+                    throw new Exception("Volume descriptor list is damaged. Nothing was burned.");
+                if (d[0] == 255)
+                {
+                    // A UDF recognition sequence, if any, follows the terminator.
+                    for (int j = i + 1; j < i + 4; j++)
+                    {
+                        string id = Encoding.ASCII.GetString(r.Sector(j), 1, 5);
+                        if (id == "BEA01" || id == "NSR02" || id == "NSR03") udf = true;
+                    }
+                    break;
+                }
+                if (d[0] == 2 && d[88] == 0x25 && d[89] == 0x2F && (d[90] == 0x40 || d[90] == 0x43 || d[90] == 0x45))
+                {
+                    joliet = true;
+                    parts.Add(CheckTree(r, expectedStart, vol, d, true));
+                }
+            }
+            parts.Add(joliet ? "Joliet: yes" : "Joliet: no (short 8.3 names only)");
+            parts.Add(udf ? "UDF: also present" : "UDF: none");
+            return string.Join(" | ", parts.ToArray());
+        }
+        finally { r.Close(); }
+    }
+
+    public static bool TryRewind(object comStream)
+    {
+        try { ((IStream)comStream).Seek(0, 0, IntPtr.Zero); return true; }
+        catch { return false; }
+    }
+}
+'@
+
 try {
     Write-Host '=== Win95 disc burner (ISO 9660 + Joliet) ===' -ForegroundColor Cyan
+    try { Add-Type -TypeDefinition $CheckSource -ErrorAction Stop }
+    catch {
+        Write-Host 'Could not load the safety check, so nothing will be burned.' -ForegroundColor Red
+        Write-Host $_.Exception.Message
+        Write-Host 'Take a screenshot of this window and send it to Claude.'
+        Pause-Exit 1
+    }
     Write-Host 'Close any File Explorer windows showing the disc drive first.'
     Write-Host ''
 
@@ -158,13 +353,7 @@ try {
         Pause-Exit 1
     }
 
-    # ---- 4. Confirm ---------------------------------------------------------
-    Write-Host ''
-    Write-Host "PLAN: $plan" -ForegroundColor Yellow
-    $answer = Read-Host 'Type YES to go ahead (anything else cancels)'
-    if ($answer -cne 'YES') { Write-Host 'Cancelled. Nothing was written.'; Pause-Exit 0 }
-
-    # ---- 5. Stage files into WIN95NET\WIN95 and WIN95NET\INTEL --------------
+    # ---- 4. Stage files into WIN95NET\WIN95 and WIN95NET\INTEL --------------
     $stage = Join-Path $env:TEMP 'WIN95NET_stage'
     if (Test-Path $stage) { Remove-Item -LiteralPath $stage -Recurse -Force }
     New-Item -ItemType Directory -Path (Join-Path $stage 'WIN95') | Out-Null
@@ -178,85 +367,137 @@ try {
         }
     }
     for ($i = 0; $i -lt $jobs.Count; $i++) {
-        Write-Progress -Activity 'Step 1 of 2: preparing files' -Status "$($i + 1) of $($jobs.Count)" `
+        Write-Progress -Activity 'Step 1 of 3: preparing files' -Status "$($i + 1) of $($jobs.Count)" `
             -PercentComplete ([int](100 * $i / [math]::Max(1, $jobs.Count)))
         $dest = $jobs[$i][1]
         $destDir = Split-Path $dest -Parent
         if (-not (Test-Path $destDir)) { New-Item -ItemType Directory -Path $destDir | Out-Null }
         Copy-Item -LiteralPath $jobs[$i][0] -Destination $dest
     }
-    Write-Progress -Activity 'Step 1 of 2: preparing files' -Completed
+    Write-Progress -Activity 'Step 1 of 3: preparing files' -Completed
 
-    # Release the COM objects used for checking; the burn makes its own.
+    # Release the COM objects used for looking; the runspace makes its own.
     foreach ($o in @($format, $recorder, $master)) { [void][Runtime.InteropServices.Marshal]::ReleaseComObject($o) }
 
-    # ---- 6. Burn (in a background STA runspace so we can show progress) ----
-    $burn = {
-        param($recorderId, $stage, $mode)
-        $ErrorActionPreference = 'Stop'
-        $recorder = New-Object -ComObject IMAPI2.MsftDiscRecorder2
-        $recorder.InitializeDiscRecorder($recorderId)
+    # All disc work happens in one background STA runspace (so a progress bar
+    # can run here). Its objects are kept in $global: between the two phases.
+    $rs = [runspacefactory]::CreateRunspace()
+    $rs.ApartmentState = 'STA'
+    $rs.Open()
+    $ps = [PowerShell]::Create()
+    $ps.Runspace = $rs
 
-        if ($mode -eq 'erase') {
-            $erase = New-Object -ComObject IMAPI2.MsftDiscFormat2Erase
-            $erase.Recorder = $recorder
-            $erase.ClientName = 'CNC Win95 disc'
-            $erase.FullErase = $false
-            $erase.EraseMedia()
+    function Run-Phase([string]$script, [object[]]$argList, [string]$activity, [int]$est) {
+        $ps.Commands.Clear()
+        [void]$ps.AddScript($script)
+        foreach ($a in $argList) { [void]$ps.AddArgument($a) }
+        $h = $ps.BeginInvoke()
+        $sw = [Diagnostics.Stopwatch]::StartNew()
+        while (-not $h.IsCompleted) {
+            $pct = [math]::Min(99, [int](100 * $sw.Elapsed.TotalSeconds / $est))
+            Write-Progress -Activity $activity `
+                -Status "about $pct% (estimated) - $([int]$sw.Elapsed.TotalSeconds)s elapsed" -PercentComplete $pct
+            Start-Sleep -Milliseconds 500
         }
+        Write-Progress -Activity $activity -Completed
+        try { return $ps.EndInvoke($h) }
+        catch { if ($_.Exception.InnerException) { throw $_.Exception.InnerException } else { throw } }
+    }
 
-        $format = New-Object -ComObject IMAPI2.MsftDiscFormat2Data
-        $format.Recorder = $recorder
-        $format.ClientName = 'CNC Win95 disc'
-        $format.ForceMediaToBeClosed = $true
-        if ($mode -eq 'overwrite') { $format.ForceOverwrite = $true }
+    function Stop-All {
+        try { $ps.Dispose(); $rs.Close() } catch { }
+        Remove-Item -LiteralPath $stage -Recurse -Force -ErrorAction SilentlyContinue
+    }
+
+    # ---- 5. Build the disc image and CHECK it (nothing is written yet) -------
+    $phaseA = {
+        param($recorderId, $stage, $mode, $mediaType)
+        $ErrorActionPreference = 'Stop'
+        $global:recorder = New-Object -ComObject IMAPI2.MsftDiscRecorder2
+        $global:recorder.InitializeDiscRecorder($recorderId)
+        $global:format = New-Object -ComObject IMAPI2.MsftDiscFormat2Data
+        $global:format.Recorder = $global:recorder
+        $global:format.ClientName = 'CNC Win95 disc'
+        $global:format.ForceMediaToBeClosed = $true
+        if ($mode -eq 'overwrite') { $global:format.ForceOverwrite = $true }
 
         $fsi = New-Object -ComObject IMAPI2FS.MsftFileSystemImage
-        $fsi.ChooseImageDefaults($recorder)
+        if ($mode -eq 'erase') {
+            # The disc will be blank after erasing; size the image for that.
+            $fsi.ChooseImageDefaultsForMediaType($mediaType)
+        } else {
+            $fsi.ChooseImageDefaults($global:recorder)
+        }
+        $start = 0
         if ($mode -eq 'append') {
             # Start the new session right after the old one, without importing
             # the old (UDF) file list. Per Microsoft's IMAPI2 docs, when the
             # previous session is not imported the session start block must be
             # set by hand; otherwise the image is built as if it started at
             # block 0 and the new session is unreadable.
-            $fsi.SessionStartBlock = $format.NextWritableAddress
-            $fsi.FreeMediaBlocks = $format.FreeSectorsOnMedia
+            $start = $global:format.NextWritableAddress
+            $fsi.SessionStartBlock = $start
+            $fsi.FreeMediaBlocks = $global:format.FreeSectorsOnMedia
         }
         $fsi.FileSystemsToCreate = 3   # 1 = ISO 9660, 2 = Joliet. No UDF.
         $fsi.VolumeName = 'WIN95NET'
         $fsi.Root.AddTree($stage, $false)
+        if ($fsi.SessionStartBlock -ne $start) {
+            throw "Image start ($($fsi.SessionStartBlock)) does not match the disc position ($start). Nothing was burned."
+        }
 
         $image = $fsi.CreateResultImage()
-        $format.Write($image.ImageStream)
-        $recorder.EjectMedia()
+        $global:stream = $image.ImageStream
+        $summary = [Win95DiscCheck]::Verify($global:stream, [long]$start)
+        if (-not [Win95DiscCheck]::TryRewind($global:stream)) {
+            # Could not rewind the checked stream; build an identical fresh one.
+            $global:stream = $fsi.CreateResultImage().ImageStream
+        }
+        $global:fsi = $fsi
+        "$summary | image $([math]::Round($image.TotalBlocks * 2048 / 1MB, 1)) MB"
+    }
+
+    try {
+        $check = Run-Phase $phaseA.ToString() @($recorderId, $stage, $mode, $mediaType) `
+            'Step 2 of 3: building and checking the disc image (nothing written yet)' 30
+    }
+    catch { Stop-All; throw }
+    Write-Host ''
+    Write-Host 'CHECK PASSED - Windows 95 will be able to read this image:' -ForegroundColor Green
+    Write-Host "  $($check -join ' ')"
+
+    # ---- 6. Confirm -----------------------------------------------------------
+    Write-Host ''
+    Write-Host "PLAN: $plan" -ForegroundColor Yellow
+    $answer = Read-Host 'Type YES to burn (anything else cancels)'
+    if ($answer -cne 'YES') { Stop-All; Write-Host 'Cancelled. Nothing was written.'; Pause-Exit 0 }
+
+    # ---- 7. Burn ---------------------------------------------------------------
+    $phaseB = {
+        param($mode)
+        $ErrorActionPreference = 'Stop'
+        if ($mode -eq 'erase') {
+            $erase = New-Object -ComObject IMAPI2.MsftDiscFormat2Erase
+            $erase.Recorder = $global:recorder
+            $erase.ClientName = 'CNC Win95 disc'
+            $erase.FullErase = $false
+            $erase.EraseMedia()
+            $global:format = New-Object -ComObject IMAPI2.MsftDiscFormat2Data
+            $global:format.Recorder = $global:recorder
+            $global:format.ClientName = 'CNC Win95 disc'
+            $global:format.ForceMediaToBeClosed = $true
+        }
+        $global:format.Write($global:stream)
+        $global:recorder.EjectMedia()
         'OK'
     }
 
     $est = [math]::Max(90, [int]($sizeMB / 2.5) + 60)   # rough guess, seconds
     if ($mode -eq 'erase') { $est += 120 }
-
-    $rs = [runspacefactory]::CreateRunspace()
-    $rs.ApartmentState = 'STA'
-    $rs.Open()
-    $ps = [PowerShell]::Create()
-    $ps.Runspace = $rs
-    [void]$ps.AddScript($burn).AddArgument($recorderId).AddArgument($stage).AddArgument($mode)
-    $handle = $ps.BeginInvoke()
     $sw = [Diagnostics.Stopwatch]::StartNew()
-    while (-not $handle.IsCompleted) {
-        $pct = [math]::Min(99, [int](100 * $sw.Elapsed.TotalSeconds / $est))
-        Write-Progress -Activity 'Step 2 of 2: burning disc - do NOT eject' `
-            -Status "about $pct% (estimated) - $([int]$sw.Elapsed.TotalSeconds)s elapsed" -PercentComplete $pct
-        Start-Sleep -Milliseconds 500
-    }
-    Write-Progress -Activity 'Step 2 of 2: burning disc - do NOT eject' -Completed
-
     $result = $null
-    try { $result = $ps.EndInvoke($handle) }
-    catch { if ($_.Exception.InnerException) { throw $_.Exception.InnerException } else { throw } }
-    finally { $ps.Dispose(); $rs.Close() }
-
-    Remove-Item -LiteralPath $stage -Recurse -Force -ErrorAction SilentlyContinue
+    try { $result = Run-Phase $phaseB.ToString() @($mode) 'Step 3 of 3: burning disc - do NOT eject' $est }
+    finally { Stop-All }
 
     if ($result -contains 'OK') {
         Write-Host ''
