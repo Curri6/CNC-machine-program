@@ -103,7 +103,10 @@ from scratch.
   temporary files. Likely cause: 2x is below the blank DVD's minimum
   write speed (Windows' default was 8x). Next: check whether the disc
   is still blank, and if so retry at the default 8x. If it's used up,
-  fall back to the open DeskCNC CD-R.
+  fall back to the open DeskCNC CD-R. After reinserting, the laptop
+  shows no files on the disc, so the failed burn likely wrote nothing.
+  Checking E: → Properties for free space (4.38GB means still blank)
+  before retrying at 8x.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
