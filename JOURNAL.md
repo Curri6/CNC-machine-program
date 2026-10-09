@@ -111,7 +111,13 @@ from scratch.
   only showing the staged "Files ready to be written" (the burn failed),
   so the disc really is blank. If the files turn out to really be burned,
   the fallback is a PowerShell IMAPI2 script (built into Windows) that
-  forces an ISO 9660 + Joliet file system for Win95.
+  forces an ISO 9660 + Joliet file system for Win95. **Update:** owner
+  confirms the files really are burned on the DVD, but Win95 still sees
+  it as empty. Likely causes: Windows 11 burns DVDs mostly in UDF, which
+  Win95 can't read, and/or the 2000-era SD-608 reads burned DVD media
+  poorly. Test: does Win95 read the DeskCNC CD-R? If yes, burn
+  WIN95 + INTEL onto that CD instead (after backing up the DeskCNC files
+  to the laptop). If no, write an IMAPI2 ISO 9660/Joliet burn script.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

@@ -66,7 +66,10 @@ confirm it. Never design around this, in this phase or later ones.
            floppy drive on the laptop) or a CD burned by IT. **Update
            2026-09-30:** owner has a DVD and burner. Burn one data DVD
            (Mastered/ISO 9660, not UDF) with `\WIN95\` CABs +
-           `\INTEL\` driver. See `JOURNAL.md`.
+           `\INTEL\` driver. See `JOURNAL.md`. **2026-10-09:** the
+           DVD burned, but Win95 sees it as empty (UDF and/or the drive
+           can't read burned DVDs). Next: test the DeskCNC CD-R in the
+           old PC, and if it reads, burn the files onto that CD.
         5. [ ] Install the card driver and TCP/IP; set a static IP of
            192.168.50.2 / 255.255.255.0. **In progress 2026-09-28:**
            adapter added as the built-in "Intel EtherExpress PRO/100
