@@ -209,13 +209,18 @@ try {
         $format.Recorder = $recorder
         $format.ClientName = 'CNC Win95 disc'
         $format.ForceMediaToBeClosed = $true
+        if ($mode -eq 'overwrite') { $format.ForceOverwrite = $true }
 
         $fsi = New-Object -ComObject IMAPI2FS.MsftFileSystemImage
         $fsi.ChooseImageDefaults($recorder)
         if ($mode -eq 'append') {
-            # Start the new session after the old one, without importing the
-            # old (UDF) file list.
-            $fsi.MultisessionInterfaces = $format.MultisessionInterfaces
+            # Start the new session right after the old one, without importing
+            # the old (UDF) file list. Per Microsoft's IMAPI2 docs, when the
+            # previous session is not imported the session start block must be
+            # set by hand; otherwise the image is built as if it started at
+            # block 0 and the new session is unreadable.
+            $fsi.SessionStartBlock = $format.NextWritableAddress
+            $fsi.FreeMediaBlocks = $format.FreeSectorsOnMedia
         }
         $fsi.FileSystemsToCreate = 3   # 1 = ISO 9660, 2 = Joliet. No UDF.
         $fsi.VolumeName = 'WIN95NET'

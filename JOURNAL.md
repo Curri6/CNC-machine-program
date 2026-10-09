@@ -134,7 +134,13 @@ from scratch.
   Win95-readable session to an open DVD-R/+R. Caveat: some old DVD-ROM
   drives only read the first session of a DVD, so the append route may
   still fail. Parse-checked in PowerShell 7 but **not tested on real
-  hardware** (no burner in the dev environment).
+  hardware** (no burner in the dev environment). **Bug fixed the same
+  day:** the first version's append path didn't set the session start
+  block. Microsoft's IMAPI2 docs say it must be set by hand
+  (`SessionStartBlock = NextWritableAddress`) when the old session isn't
+  imported, or the new session is built as if it starts at block 0 and
+  can't be read. Fixed, and `ForceOverwrite` was added for DVD+RW. The
+  owner hadn't run the first version, so no disc was affected.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
