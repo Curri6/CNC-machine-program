@@ -140,7 +140,8 @@ from scratch.
   (`SessionStartBlock = NextWritableAddress`) when the old session isn't
   imported, or the new session is built as if it starts at block 0 and
   can't be read. Fixed, and `ForceOverwrite` was added for DVD+RW. The
-  owner hadn't run the first version, so no disc was affected.
+  first version was sent before the fix; the owner should use the fixed
+  copy.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
