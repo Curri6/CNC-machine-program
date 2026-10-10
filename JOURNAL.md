@@ -199,6 +199,20 @@ from scratch.
   Fourth run reached CHECK PASSED again with an identical result (open,
   4305 MB, block 93952, speeds 2x/4x/8x). Owner told to type YES and take
   the 4x default.
+  **Result: failed at 4x after 109 s**, again 0xC0AA0301 (the drive
+  reported a write error). Writing 79.7 MB at 4x (~5.5 MB/s) takes about
+  15 s, so the data was most likely written and the failure came during
+  the DVD-R close (lead-out/border-out). `DisableConsumerDvdCompatibility
+  Mode` doesn't apply to DVD-R (per Microsoft docs), so it's not a factor.
+  The re-check right after the failure came back blank (no flags, 0 MB
+  free), likely because the drive was still recovering. Tool updated:
+  the first screen now shows the raw status code, and a blank/unknown
+  state stops with "eject, reinsert, retry" instead of being misread as
+  closed. Next: eject and reinsert, check what E: shows in Explorer, and
+  read the disc state with the tool (cancel at the folder picker).
+  Tally on this drive + disc: Explorer 2x failed, Explorer 8x OK (UDF
+  session), IMAPI 8x failed with nothing written, IMAPI 4x failed during
+  close.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
