@@ -392,29 +392,32 @@ try {
     try {
         Write-Host "Reading via:  $($disc.OpenedAs)  (drive's own read commands only)"
         Write-Host "Drive says:   $($disc.DiscInfo())"
-        $track2Start = $null
+        # Check wherever each track starts: block 0 on a fresh disc, later
+        # blocks for added sessions.
+        $starts = @()
         for ($t = 1; $t -le [math]::Min($disc.LastTrack(), 10); $t++) {
             try {
                 Write-Host "  $($disc.DescribeTrack($t))"
-                if ($t -eq 2) { $track2Start = $disc.TrackStart(2) }
+                $ts = $disc.TrackStart($t)
+                if ($ts -ge 0 -and $ts -lt 2400000 -and -not ($starts -contains $ts)) { $starts += $ts }
             } catch { Write-Host "  track ${t}: could not read info - $($_.Exception.Message)" }
         }
+        if ($starts.Count -eq 0) { $starts = @(0) }
         Write-Host ''
         Write-Host 'Read test:'
-        foreach ($b in @(16, 256, 93000, 93951, 93952, 93968, 93969)) { Write-Host "  $($disc.Probe($b))" }
+        foreach ($st in $starts) { foreach ($b in @(($st + 16), ($st + 17))) { Write-Host "  $($disc.Probe($b))" } }
         Write-Host ''
-
-        $expected = 93952   # where the burn tool wrote the new section
-        $starts = @($expected)
-        if ($track2Start -and $track2Start -ne $expected -and $track2Start -lt 2400000) { $starts += $track2Start }
+        # Windows 95 reads the LAST session, so check the last start last and
+        # judge the disc by it.
         $good = $false
+        $lastStart = $starts[-1]
         foreach ($st in $starts) {
             $disc.StartAt($st)
             try {
                 $summary = [Win95DiscCheck]::Verify($disc, [long]$st)
                 Write-Host "VERIFIED at block ${st} - the Windows 95 section is on the disc and complete:" -ForegroundColor Green
                 Write-Host "  $summary"
-                $good = $true
+                if ($st -eq $lastStart) { $good = $true }
             }
             catch {
                 $m = $_.Exception.Message
@@ -426,8 +429,10 @@ try {
         }
         Write-Host ''
         if ($good) {
-            Write-Host 'The new section is on the disc and complete. Whether the old PC finds it'
-            Write-Host 'depends on its own drive reading the second session - only the old PC can test that.'
+            Write-Host 'The disc is right: the section Windows 95 reads is there and complete.'
+            if ($starts.Count -gt 1) {
+                Write-Host 'It has more than one session; the old PC''s drive must handle that (only it can tell).'
+            }
         } else {
             Write-Host 'Take a screenshot of this window and send it to Claude.'
         }

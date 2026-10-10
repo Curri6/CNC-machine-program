@@ -291,6 +291,14 @@ from scratch.
   than DVD-R multi-border. Step 1 (read-only): back up the DeskCNC files
   to the laptop, then run the verifier on the CD to read its
   session/track state before writing anything.
+- **Owner got a new blank disc (2026-10-10).** That's the best case: the
+  burn tool's "blank" mode writes one closed ISO 9660 + Joliet session
+  at block 0, so there's no multi-session reliance. Verifier updated to
+  check at every track's start (block 0 on a fresh disc) and judge the
+  disc by the last session. Tested with fakes: a fresh image verifies
+  at block 0, and a non-ISO image fails. Plan: run the burn tool,
+  screenshot the first screen and CHECK PASSED, choose the speed by disc
+  type, burn, then run the verifier (admin) before taking it to the old PC.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
