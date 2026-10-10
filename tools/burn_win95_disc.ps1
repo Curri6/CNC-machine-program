@@ -383,6 +383,11 @@ try {
     # can run here). Its objects are kept in $global: between the two phases.
     $rs = [runspacefactory]::CreateRunspace()
     $rs.ApartmentState = 'STA'
+    # Both phases MUST run on the same thread. COM objects made in an STA
+    # thread die when that thread ends, and by default each invocation gets
+    # a new thread ("COM object that has been separated from its underlying
+    # RCW cannot be used" - first real run, 2026-10-10).
+    $rs.ThreadOptions = 'ReuseThread'
     $rs.Open()
     $ps = [PowerShell]::Create()
     $ps.Runspace = $rs

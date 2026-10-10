@@ -168,6 +168,16 @@ from scratch.
   | image 79.7 MB. Source: `Downloads\Win95 Network DVD\{WIN95,INTEL}`.
   At the YES prompt Enter was pressed without typing YES, so it cancelled
   and nothing was written. Owner told to rerun and type YES.
+  **Second run: YES typed, then "COM object that has been separated from
+  its underlying RCW cannot be used."** Cause: the runspace ran each
+  phase on a new thread (the default), and the COM objects created on the
+  first phase's STA thread died when that thread ended. The burn call
+  failed before reaching IMAPI2, so **nothing was written** (the disc
+  should still report open with 4305 MB free). Fix: `$rs.ThreadOptions =
+  'ReuseThread'`. Verified with `tools/tests/test_same_thread.ps1`: the
+  fixed setup runs both phases on one thread, and the old setup used two
+  threads, reproducing the cause. This couldn't be caught earlier because
+  the dev environment has no COM.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
