@@ -273,6 +273,24 @@ from scratch.
   opcodes 0x28/0x51/0x52. The hand-written SCSI_PASS_THROUGH offsets were
   checked against .NET's layout (`tools/tests/test_scsi_layout.ps1`; all
   match, size 56). The end-to-end flow was tested with a fake drive.
+  **Definitive result (admin, MMC commands):** "disc complete (finalized),
+  last session complete, sessions 2, tracks 1-1"; track 1 (session 1):
+  start 0, size 65264 blocks (127 MB), last recorded block 41439,
+  closed. Reads at 93000-93969 return sense 5/64/00 (illegal mode for
+  this track: no track there). **Conclusion: the 4x burn's data was
+  never recorded, and the drive finalized the disc during the failure.**
+  The DVD now holds only the UDF-only first burn (unreadable by Win95)
+  and can't be written again. **The DVD is lost for this purpose.**
+  Earlier attempts left it untouched (verified each time); the final
+  drive failure ended it. Lesson: this laptop drive with this DVD-R
+  media isn't reliable for writing.
+  **Next option: the DeskCNC CD-R** (open, 676 MB free). Hypothesis: the
+  old PC couldn't read it because its last session was left open (old
+  drives often can't read an open session), which a closing burn would
+  fix. CD-R multisession is also far better supported by 2000-era drives
+  than DVD-R multi-border. Step 1 (read-only): back up the DeskCNC files
+  to the laptop, then run the verifier on the CD to read its
+  session/track state before writing anything.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

@@ -73,7 +73,11 @@ confirm it. Never design around this, in this phase or later ones.
            DVD in the laptop. It reports the disc type first, builds the
            image and verifies it ("CHECK PASSED") before asking for YES,
            then burns ISO 9660/Joliet. Send Claude a screenshot of the
-           check before typing YES.
+           check before typing YES. **2026-10-10: the DVD is lost.** The
+           laptop drive failed mid-burn, finalized the disc, and never
+           recorded the new section (confirmed via MMC track info). Next:
+           back up the DeskCNC CD-R's files, read its session state with
+           `verify_win95_disc.bat` (admin), then decide on a CD burn.
         5. [ ] Install the card driver and TCP/IP; set a static IP of
            192.168.50.2 / 255.255.255.0. **In progress 2026-09-28:**
            adapter added as the built-in "Intel EtherExpress PRO/100
