@@ -62,7 +62,7 @@ confirm it. Never design around this, in this phase or later ones.
         3. [x] Get the card's Windows 95 driver from the card maker.
            **Owner has it (2026-09-30).** Still to confirm that it's the
            Win9x version (.INF plus a WIN9X/WIN95 folder) before burning.
-        4. [ ] Get the driver onto the old PC via floppy (needs a USB
+        4. [x] Get the driver onto the old PC via floppy (needs a USB
            floppy drive on the laptop) or a CD burned by IT. **Update
            2026-09-30:** owner has a DVD and burner. Burn one data DVD
            (Mastered/ISO 9660, not UDF) with `\WIN95\` CABs +
@@ -78,6 +78,9 @@ confirm it. Never design around this, in this phase or later ones.
            recorded the new section (confirmed via MMC track info). Next:
            back up the DeskCNC CD-R's files, read its session state with
            `verify_win95_disc.bat` (admin), then decide on a CD burn.
+           **Superseded 2026-10-10: a new blank DVD-R burned
+           successfully** (4x, 142 s, ISO 9660 + Joliet at block 0).
+           Next: verify on the laptop, then read it on the Win95 PC.
         5. [ ] Install the card driver and TCP/IP; set a static IP of
            192.168.50.2 / 255.255.255.0. **In progress 2026-09-28:**
            adapter added as the built-in "Intel EtherExpress PRO/100
