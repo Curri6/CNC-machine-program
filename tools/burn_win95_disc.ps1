@@ -290,6 +290,13 @@ try {
     Write-Host "Free:    $freeMB MB"
     Write-Host ''
 
+    if ($mediaType -eq 1 -or $mediaType -eq 4) {
+        # Drives report a closed (finalized) CD-R/DVD-R as plain CD-ROM/DVD-ROM.
+        Write-Host 'This disc reads as finished (closed). Nothing more can be written to it.' -ForegroundColor Yellow
+        Write-Host 'Open it in File Explorer to see what is on it.'
+        Pause-Exit 1
+    }
+
     if (($status -band 0xF) -eq 0 -and -not ($status -band ($ST_FINALIZED -bor $ST_DAMAGED -bor $ST_ERASE_REQUIRED))) {
         Write-Host 'The drive did not report a clear disc state (it may still be busy).' -ForegroundColor Yellow
         Write-Host 'Eject the disc, put it back in, wait until the drive light stops, then try again.'
