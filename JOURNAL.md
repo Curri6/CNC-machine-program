@@ -299,6 +299,17 @@ from scratch.
   at block 0, and a non-ISO image fails. Plan: run the burn tool,
   screenshot the first screen and CHECK PASSED, choose the speed by disc
   type, burn, then run the verifier (admin) before taking it to the old PC.
+  Verifier on the new disc before burning: "disc empty ... track 1 start
+  0, size 2297888 blocks (4488 MB), BLANK", so it's a blank single-layer
+  DVD and the drive reads it fine. **Burn tool change:** the
+  `ForceMediaToBeClosed` default is now **false** (close the
+  session/border, not the whole disc). Evidence: the only successful
+  burn on this drive (Explorer, 8x) left the disc open with a closed
+  first border (track 1: 81 MB data inside a 127 MB track, so the
+  border-out was written fine), while the IMAPI 4x burn failed during the
+  full DVD-R close. A closed first border is readable on DVD-ROM drives.
+  Speed for the new disc: 8x, the only speed that has succeeded on this
+  drive with this media type.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

@@ -313,16 +313,16 @@ try {
     $mode = $null
     if ($status -band $ST_BLANK) {
         $mode = 'blank'
-        $plan = 'Burn WIN95 + INTEL onto this blank disc and close it.'
+        $plan = 'Burn WIN95 + INTEL onto this blank disc (one closed session, like the burn that worked).'
     } elseif ($status -band $ST_OVERWRITE_ONLY) {
         $mode = 'overwrite'
-        $plan = 'OVERWRITE everything on this rewritable disc with WIN95 + INTEL and close it.'
+        $plan = 'OVERWRITE everything on this rewritable disc with WIN95 + INTEL (one closed session).'
     } elseif ($isRW) {
         $mode = 'erase'
-        $plan = 'ERASE this rewritable disc, then burn WIN95 + INTEL onto it and close it.'
+        $plan = 'ERASE this rewritable disc, then burn WIN95 + INTEL onto it (one closed session).'
     } elseif ($status -band $ST_APPENDABLE) {
         $mode = 'append'
-        $plan = 'ADD a new Win95-readable section with WIN95 + INTEL to this disc and close it. ' +
+        $plan = 'ADD a new Win95-readable section with WIN95 + INTEL to this disc (closed session). ' +
                 '(What is already on the disc stays physically there but will no longer be listed.) ' +
                 'Note: some old drives only read the first section of a DVD, so this may still not show up on the old PC.'
     } else {
@@ -461,7 +461,11 @@ try {
         $global:format = New-Object -ComObject IMAPI2.MsftDiscFormat2Data
         $global:format.Recorder = $global:recorder
         $global:format.ClientName = 'CNC Win95 disc'
-        $global:format.ForceMediaToBeClosed = $true
+        # Close only the session, not the whole disc. On this laptop drive
+        # the full DVD-R close (which pads hundreds of MB) is what failed
+        # (2026-10-10); the one burn that succeeded closed just the session,
+        # like this. A closed session/border is readable on DVD-ROM drives.
+        $global:format.ForceMediaToBeClosed = $false
         if ($mode -eq 'overwrite') { $global:format.ForceOverwrite = $true }
 
         $fsi = New-Object -ComObject IMAPI2FS.MsftFileSystemImage
@@ -562,7 +566,7 @@ try {
             $global:format = New-Object -ComObject IMAPI2.MsftDiscFormat2Data
             $global:format.Recorder = $global:recorder
             $global:format.ClientName = 'CNC Win95 disc'
-            $global:format.ForceMediaToBeClosed = $true
+            $global:format.ForceMediaToBeClosed = $false
         }
         if ($speedX -gt 0) { $global:format.SetWriteSpeed([int]($speedX * $unit), $false) }
         $global:format.Write($global:stream)
