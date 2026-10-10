@@ -310,6 +310,12 @@ from scratch.
   full DVD-R close. A closed first border is readable on DVD-ROM drives.
   Speed for the new disc: 8x, the only speed that has succeeded on this
   drive with this media type.
+  **New disc, burn tool run:** DVD-R, blank (0x6), 4488 MB free; CHECK
+  PASSED at start block 0 (30 CAB, 2 INF, Joliet, no UDF, 79.7 MB). This
+  media only offers **2x/4x** (different, lower-rated stock than the
+  first disc), so 8x isn't available. Chose **4x**, the media's rated
+  maximum; the earlier 4x failure was during the full-disc close, which
+  is now disabled.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
