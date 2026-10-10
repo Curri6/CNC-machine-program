@@ -62,7 +62,7 @@ confirm it. Never design around this, in this phase or later ones.
         3. [x] Get the card's Windows 95 driver from the card maker.
            **Owner has it (2026-09-30).** Still to confirm that it's the
            Win9x version (.INF plus a WIN9X/WIN95 folder) before burning.
-        4. [x] Get the driver onto the old PC via floppy (needs a USB
+        4. [ ] Get the driver onto the old PC via floppy (needs a USB
            floppy drive on the laptop) or a CD burned by IT. **Update
            2026-09-30:** owner has a DVD and burner. Burn one data DVD
            (Mastered/ISO 9660, not UDF) with `\WIN95\` CABs +
