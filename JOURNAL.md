@@ -178,6 +178,17 @@ from scratch.
   fixed setup runs both phases on one thread, and the old setup used two
   threads, reproducing the cause. This couldn't be caught earlier because
   the dev environment has no COM.
+  **Third run (fixed tool):** CHECK PASSED again, same image, then the
+  burn failed with "The write failed because the drive returned error
+  information that could not be recovered from". That's
+  `E_IMAPI_UNEXPECTED_RESPONSE_FROM_DEVICE` (0xC0AA0301): the drive
+  itself reported a write error. The very first Explorer burn on this
+  same disc and drive also failed partway, so the laptop's GT10N drive
+  and this DVD-R look marginal together. It's unknown yet whether this
+  attempt consumed disc space. The tool now prints the write speeds
+  (current and supported), and on a failed burn shows the error code,
+  the elapsed time, and the disc state before vs. now. Next: run it only
+  to the first screen to read the disc state, then cancel.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

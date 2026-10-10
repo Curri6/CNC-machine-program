@@ -409,6 +409,28 @@ try {
         catch { if ($_.Exception.InnerException) { throw $_.Exception.InnerException } else { throw } }
     }
 
+    function Get-DiscReport {
+        try {
+            $m = New-Object -ComObject IMAPI2.MsftDiscMaster2
+            $r = New-Object -ComObject IMAPI2.MsftDiscRecorder2
+            $r.InitializeDiscRecorder($recorderId)
+            $f = New-Object -ComObject IMAPI2.MsftDiscFormat2Data
+            $f.Recorder = $r
+            $f.ClientName = 'CNC Win95 disc'
+            $st = [int]$f.CurrentMediaStatus
+            $fl = @()
+            if ($st -band $ST_BLANK)          { $fl += 'blank' }
+            if ($st -band $ST_APPENDABLE)     { $fl += 'open (more can be added)' }
+            if ($st -band $ST_FINALIZED)      { $fl += 'closed/finalized' }
+            if ($st -band $ST_DAMAGED)        { $fl += 'DAMAGED' }
+            if ($st -band $ST_ERASE_REQUIRED) { $fl += 'needs erasing first' }
+            $nwa = '?'; try { $nwa = $f.NextWritableAddress } catch { }
+            $free = [math]::Round(($f.FreeSectorsOnMedia * 2048) / 1MB)
+            foreach ($o in @($f, $r, $m)) { [void][Runtime.InteropServices.Marshal]::ReleaseComObject($o) }
+            return "Status: $($fl -join ', ') | Free: $free MB | next write block: $nwa"
+        } catch { return "Could not re-read the disc: $($_.Exception.Message)" }
+    }
+
     function Stop-All {
         try { $ps.Dispose(); $rs.Close() } catch { }
         Remove-Item -LiteralPath $stage -Recurse -Force -ErrorAction SilentlyContinue
@@ -460,6 +482,13 @@ try {
         }
         $global:fsi = $fsi
         "$summary | image $([math]::Round($image.TotalBlocks * 2048 / 1MB, 1)) MB"
+        # DVD 1x = 675 sectors/s, CD 1x = 75 sectors/s.
+        $unit = 675; if ($mediaType -le 3) { $unit = 75 }
+        $speeds = @()
+        try { foreach ($v in $global:format.SupportedWriteSpeeds) { $speeds += [math]::Round($v / $unit, 1) } } catch { }
+        $cur = '?'
+        try { $cur = [math]::Round($global:format.CurrentWriteSpeed / $unit, 1) } catch { }
+        "SPEED: current ${cur}x, drive supports for this disc: $(($speeds | Sort-Object) -join 'x, ')x"
     }
 
     try {
@@ -469,7 +498,7 @@ try {
     catch { Stop-All; throw }
     Write-Host ''
     Write-Host 'CHECK PASSED - Windows 95 will be able to read this image:' -ForegroundColor Green
-    Write-Host "  $($check -join ' ')"
+    foreach ($line in $check) { Write-Host "  $line" }
 
     # ---- 6. Confirm -----------------------------------------------------------
     Write-Host ''
@@ -502,7 +531,23 @@ try {
     $sw = [Diagnostics.Stopwatch]::StartNew()
     $result = $null
     try { $result = Run-Phase $phaseB.ToString() @($mode) 'Step 3 of 3: burning disc - do NOT eject' $est }
-    finally { Stop-All }
+    catch {
+        $e = $_.Exception
+        Stop-All
+        Write-Host ''
+        Write-Host 'The burn failed:' -ForegroundColor Red
+        Write-Host "  $($e.Message)"
+        Write-Host ("  Error code: 0x{0:X8}   after {1}s" -f $e.HResult, [int]$sw.Elapsed.TotalSeconds)
+        Write-Host ''
+        Write-Host 'Disc state BEFORE this burn:' -ForegroundColor Yellow
+        Write-Host "  Status: $($flags -join ', ') | Free: $freeMB MB"
+        Write-Host 'Disc state NOW:' -ForegroundColor Yellow
+        Write-Host "  $(Get-DiscReport)"
+        Write-Host ''
+        Write-Host 'Take a screenshot of this window and send it to Claude. Do not run it again yet.'
+        Pause-Exit 1
+    }
+    Stop-All
 
     if ($result -contains 'OK') {
         Write-Host ''
