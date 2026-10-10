@@ -220,6 +220,11 @@ from scratch.
   "may still be busy" message was wrong for this case; it now says the
   disc reads as finished/closed. Next: check E: in Explorer for WIN95 +
   INTEL (30 CABs), then try the disc in the old PC.
+  Laptop Explorer shows INTEL, WIN95, **README.TXT**, all dated
+  2026-10-08. README.TXT exists only in the first (UDF) burn, so Windows
+  11 is reading the old UDF session. That says nothing about the new
+  ISO 9660 session. The real test is the Win95 PC: WIN95 + INTEL
+  **without** README.TXT means the new session is being read.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
