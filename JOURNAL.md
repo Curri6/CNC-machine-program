@@ -315,7 +315,10 @@ from scratch.
   media only offers **2x/4x** (different, lower-rated stock than the
   first disc), so 8x isn't available. Chose **4x**, the media's rated
   maximum; the earlier 4x failure was during the full-disc close, which
-  is now disabled.
+  is now disabled. During the burn the progress bar sat at 99%. That's
+  expected: the bar is a time estimate (~92 s for 80 MB at 4x) capped at
+  99% until IMAPI2 returns, and the DVD-R session/border close happens
+  after the data. Owner told to wait (up to ~10 min) without touching it.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
