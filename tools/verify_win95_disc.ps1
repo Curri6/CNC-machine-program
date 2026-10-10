@@ -218,22 +218,45 @@ public class DiscDevice : IStream
         byte[] outBuf, int outSize, out int returned, IntPtr overlapped);
     [DllImport("kernel32.dll", SetLastError = true)]
     static extern bool SetFilePointerEx(Microsoft.Win32.SafeHandles.SafeFileHandle h, long dist, out long newPos, uint method);
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    static extern int QueryDosDevice(string deviceName, StringBuilder target, int max);
     [DllImport("kernel32.dll", SetLastError = true)]
     static extern bool ReadFile(Microsoft.Win32.SafeHandles.SafeFileHandle h, byte[] buf, int toRead, out int read, IntPtr overlapped);
 
     Microsoft.Win32.SafeHandles.SafeFileHandle h;
     long basePos, pos;
 
+    public string OpenedAs;
+
     public DiscDevice(string letter)
     {
+        // Prefer the raw drive device (\\.\CdRomN). Reading through the drive
+        // letter is limited to the first section's file system, which blocks
+        // reads past it (Windows error 1, seen on the real disc 2026-10-10).
+        StringBuilder target = new StringBuilder(260);
+        string dev = null;
+        if (QueryDosDevice(letter + ":", target, target.Capacity) > 0)
+        {
+            string t = target.ToString();
+            int i = t.IndexOf("CdRom", StringComparison.OrdinalIgnoreCase);
+            if (i >= 0) dev = "\\\\.\\" + t.Substring(i);
+        }
+        int err = 0;
         // GENERIC_READ only, so this can never write to the disc.
+        if (dev != null)
+        {
+            h = CreateFile(dev, 0x80000000, 3, IntPtr.Zero, 3, 0, IntPtr.Zero);
+            if (!h.IsInvalid) { OpenedAs = dev + " (raw drive)"; return; }
+            err = Marshal.GetLastWin32Error();
+        }
         h = CreateFile("\\\\.\\" + letter + ":", 0x80000000, 3, IntPtr.Zero, 3, 0, IntPtr.Zero);
         if (h.IsInvalid)
         {
-            int err = Marshal.GetLastWin32Error();
+            err = Marshal.GetLastWin32Error();
             throw new Exception("Could not open drive " + letter + ": (Windows error " + err + ")." +
                 (err == 5 ? " Right-click verify_win95_disc.bat and choose Run as administrator." : ""));
         }
+        OpenedAs = "\\\\.\\" + letter + ": (drive letter" + (dev != null ? "; raw drive refused, Windows error " + err : "") + ")";
         int r;
         // Let reads go past the end of the first (UDF) section. Harmless if refused.
         DeviceIoControl(h, 0x00090083, null, 0, null, 0, out r, IntPtr.Zero);
@@ -347,6 +370,7 @@ try {
 
     $disc = New-Object DiscDevice $letter
     try {
+        Write-Host "Reading via:           $($disc.OpenedAs)"
         $sessions = $disc.LastSessionNumber()
         $reported = $disc.LastSessionStart()
         Write-Host "Sessions on disc:      $sessions"
