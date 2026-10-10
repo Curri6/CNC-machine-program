@@ -324,6 +324,14 @@ from scratch.
   Joliet session at block 0, session closed (disc left open). Next: the
   laptop verifier (admin) should report VERIFIED at block 0, then test
   in the Win95 PC (expect WIN95 + INTEL in the CD drive).
+  **Laptop verifier: VERIFIED at block 0** (ISO 9660: WIN95 30 CAB,
+  INTEL 2 INF; Joliet the same; UDF none). The drive reports "disc
+  incomplete (more can be added), sessions 2, tracks 1-2". Track 1
+  (session 1) is written and closed, last recorded block 40822. Track 2
+  is the BLANK reserve track an open DVD-R keeps (start 93952), and its
+  red "not readable" was a verifier flaw, fixed so blank tracks are
+  skipped. Win95 reads the last *complete* session, which is session 1.
+  Next: read it on the Win95 PC, then install the Intel adapter + TCP/IP.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

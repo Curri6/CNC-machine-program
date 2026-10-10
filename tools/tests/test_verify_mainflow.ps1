@@ -12,6 +12,7 @@ public class ScsiDisc : IStream {
     public string DiscInfo() { return "disc complete (finalized), last session complete, sessions 2, tracks 1-2"; }
     public int LastTrack() { return 2; }
     public long TrackStart(int t) { return t == 2 ? 93952 : 0; }
+    public bool TrackBlank(int t) { return false; }
     public string DescribeTrack(int t) { return "track " + t + " (fake)"; }
     public string Probe(long s) { return "block " + s + ": read OK (fake)"; }
     public void StartAt(long sector) { basePos = sector * 2048; pos = 0; }

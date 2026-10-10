@@ -313,6 +313,7 @@ public class ScsiDisc : IStream
         return Run(cdb, 48);
     }
     public long TrackStart(int track) { return BE(TrackData(track), 8); }
+    public bool TrackBlank(int track) { return (TrackData(track)[6] & 0x40) != 0; }
     public string DescribeTrack(int track)
     {
         byte[] d = TrackData(track);
@@ -399,6 +400,8 @@ try {
             try {
                 Write-Host "  $($disc.DescribeTrack($t))"
                 $ts = $disc.TrackStart($t)
+                # Skip the empty track an open disc keeps for future writes.
+                if ($disc.TrackBlank($t)) { continue }
                 if ($ts -ge 0 -and $ts -lt 2400000 -and -not ($starts -contains $ts)) { $starts += $ts }
             } catch { Write-Host "  track ${t}: could not read info - $($_.Exception.Message)" }
         }
