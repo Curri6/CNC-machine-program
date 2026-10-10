@@ -15,6 +15,7 @@ public class DiscDevice : IStream {
     public string SessionRaw() { return "00-0A-01-02-00-14-02-00-FF-FC-FF-FF"; }
     public string[] Tracks() { return new string[] { "track 1 at block 0", "track 2 at block 93952", "end of disc at block 124000" }; }
     public void StartAt(long sector) { basePos = sector * 2048; pos = 0; }
+    public string Probe(long s) { return "block " + s + ": read OK (fake)"; }
     public void Read(byte[] pv, int cb, IntPtr pcbRead) { int n = 0; if (basePos + pos < fs.Length) { fs.Seek(basePos + pos, SeekOrigin.Begin); n = fs.Read(pv, 0, cb); } pos += n; if (pcbRead != IntPtr.Zero) Marshal.WriteInt32(pcbRead, n); }
     public void Seek(long d, int o, IntPtr p) { pos = d; }
     public void Write(byte[] pv, int cb, IntPtr w) { } public void SetSize(long s) { } public void CopyTo(IStream a, long b, IntPtr c, IntPtr d) { }

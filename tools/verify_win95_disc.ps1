@@ -292,6 +292,27 @@ public class DiscDevice : IStream
 
     public void StartAt(long sector) { basePos = sector * 2048; pos = 0; }
 
+    // Reads one block and reports success or the Windows error code:
+    //   87 = outside what Windows allows on this handle (fixable),
+    //   23 = data error (CRC), 27 = sector not found, 1117 = I/O device error
+    //   (the drive found nothing readable there).
+    public string Probe(long sector)
+    {
+        long np;
+        int n;
+        byte[] buf = new byte[2048];
+        if (!SetFilePointerEx(h, sector * 2048, out np, 0))
+            return "block " + sector + ": seek failed (Windows error " + Marshal.GetLastWin32Error() + ")";
+        if (!ReadFile(h, buf, 2048, out n, IntPtr.Zero))
+            return "block " + sector + ": read FAILED (Windows error " + Marshal.GetLastWin32Error() + ")";
+        if (n == 0) return "block " + sector + ": read returned 0 bytes (past the end Windows allows)";
+        bool blank = true;
+        for (int i = 0; i < n; i++) if (buf[i] != 0) { blank = false; break; }
+        string id = Encoding.ASCII.GetString(buf, 1, 5);
+        return "block " + sector + ": read OK" + (blank ? " (all zeros)" : "") +
+               ((id == "CD001" || id == "BEA01" || id == "NSR02" || id == "NSR03") ? " [" + id + "]" : "");
+    }
+
     public void Read(byte[] pv, int cb, IntPtr pcbRead)
     {
         long np;
@@ -332,6 +353,9 @@ try {
         Write-Host "Drive says last session starts at block $reported"
         Write-Host "  (raw answer: $($disc.SessionRaw()))"
         foreach ($t in $disc.Tracks()) { Write-Host "  $t" }
+        Write-Host ''
+        Write-Host 'Read test:'
+        foreach ($b in @(16, 256, 93000, 93951, 93952, 93968, 93969)) { Write-Host "  $($disc.Probe($b))" }
         Write-Host ''
 
         $expected = 93952   # where the burn tool wrote the new section
