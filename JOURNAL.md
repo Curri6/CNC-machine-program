@@ -213,6 +213,13 @@ from scratch.
   Tally on this drive + disc: Explorer 2x failed, Explorer 8x OK (UDF
   session), IMAPI 8x failed with nothing written, IMAPI 4x failed during
   close.
+  **After eject/reinsert, the tool reads the disc as "DVD-ROM (pressed)",
+  status write-protected + unsupported (0xA000), 0 MB free.** Drives
+  report a finalized DVD-R with the DVD-ROM profile, so the close most
+  likely completed and the error came at the very end. The tool's
+  "may still be busy" message was wrong for this case; it now says the
+  disc reads as finished/closed. Next: check E: in Explorer for WIN95 +
+  INTEL (30 CABs), then try the disc in the old PC.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
