@@ -284,10 +284,18 @@ try {
     if ($status -band $ST_WRITE_PROTECT)  { $flags += 'write-protected' }
     if ($status -band $ST_UNSUPPORTED)    { $flags += 'unsupported' }
 
+    if ($flags.Count -eq 0) { $flags += 'unknown' }
     Write-Host "Disc:    $mediaName"
-    Write-Host "Status:  $($flags -join ', ')"
+    Write-Host ("Status:  {0}   (code 0x{1:X})" -f ($flags -join ', '), $status)
     Write-Host "Free:    $freeMB MB"
     Write-Host ''
+
+    if (($status -band 0xF) -eq 0 -and -not ($status -band ($ST_FINALIZED -bor $ST_DAMAGED -bor $ST_ERASE_REQUIRED))) {
+        Write-Host 'The drive did not report a clear disc state (it may still be busy).' -ForegroundColor Yellow
+        Write-Host 'Eject the disc, put it back in, wait until the drive light stops, then try again.'
+        Write-Host 'Nothing was written.'
+        Pause-Exit 1
+    }
 
     if ($status -band ($ST_DAMAGED -bor $ST_WRITE_PROTECT -bor $ST_UNSUPPORTED)) {
         Write-Host 'This disc cannot be written.' -ForegroundColor Red
@@ -424,6 +432,7 @@ try {
             if ($st -band $ST_FINALIZED)      { $fl += 'closed/finalized' }
             if ($st -band $ST_DAMAGED)        { $fl += 'DAMAGED' }
             if ($st -band $ST_ERASE_REQUIRED) { $fl += 'needs erasing first' }
+            if ($fl.Count -eq 0) { $fl += ('unknown (code 0x{0:X}) - drive may still be busy' -f $st) }
             $nwa = '?'; try { $nwa = $f.NextWritableAddress } catch { }
             $free = [math]::Round(($f.FreeSectorsOnMedia * 2048) / 1MB)
             foreach ($o in @($f, $r, $m)) { [void][Runtime.InteropServices.Marshal]::ReleaseComObject($o) }
