@@ -8,7 +8,8 @@ It reads what Windows 95 will read:
   2. that section itself, straight off the disc, through the same check
      the burn tool uses (ISO 9660 + Joliet, WIN95 with .CAB files, INTEL
      with an .INF, every address inside the section).
-It opens the drive for reading only. It cannot write to the disc.
+It only ever sends the drive three READ commands (enforced in the code).
+Needs Run as administrator (Windows requires it for direct drive commands).
 
 Start it with verify_win95_disc.bat (double-click).
 #>
@@ -205,10 +206,11 @@ public static class Win95DiscCheck
     }
 }
 
-// Read-only access to the disc in a drive: the session list (where the
-// last burned section starts) and raw 2048-byte sectors, exposed as an
-// IStream so Win95DiscCheck.Verify can read straight off the disc.
-public class DiscDevice : IStream
+// Talks to the drive with its own read commands (SCSI pass-through), which
+// gets past Windows' idea of where the disc ends. ONLY three read commands
+// can ever be sent: READ(10) 0x28, READ DISC INFORMATION 0x51, READ TRACK
+// INFORMATION 0x52. Anything else is refused before it reaches the drive.
+public class ScsiDisc : IStream
 {
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     static extern Microsoft.Win32.SafeHandles.SafeFileHandle CreateFile(string name, uint access, uint share,
@@ -216,132 +218,150 @@ public class DiscDevice : IStream
     [DllImport("kernel32.dll", SetLastError = true)]
     static extern bool DeviceIoControl(Microsoft.Win32.SafeHandles.SafeFileHandle h, uint code, byte[] inBuf, int inSize,
         byte[] outBuf, int outSize, out int returned, IntPtr overlapped);
-    [DllImport("kernel32.dll", SetLastError = true)]
-    static extern bool SetFilePointerEx(Microsoft.Win32.SafeHandles.SafeFileHandle h, long dist, out long newPos, uint method);
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     static extern int QueryDosDevice(string deviceName, StringBuilder target, int max);
-    [DllImport("kernel32.dll", SetLastError = true)]
-    static extern bool ReadFile(Microsoft.Win32.SafeHandles.SafeFileHandle h, byte[] buf, int toRead, out int read, IntPtr overlapped);
 
+    static readonly byte[] Allowed = new byte[] { 0x28, 0x51, 0x52 };
     Microsoft.Win32.SafeHandles.SafeFileHandle h;
     long basePos, pos;
-
     public string OpenedAs;
+    public string LastReadError = "";
 
-    public DiscDevice(string letter)
+    public ScsiDisc(string letter)
     {
-        // Prefer the raw drive device (\\.\CdRomN). Reading through the drive
-        // letter is limited to the first section's file system, which blocks
-        // reads past it (Windows error 1, seen on the real disc 2026-10-10).
         StringBuilder target = new StringBuilder(260);
-        string dev = null;
+        string dev = "\\\\.\\" + letter + ":";
         if (QueryDosDevice(letter + ":", target, target.Capacity) > 0)
         {
             string t = target.ToString();
             int i = t.IndexOf("CdRom", StringComparison.OrdinalIgnoreCase);
             if (i >= 0) dev = "\\\\.\\" + t.Substring(i);
         }
-        int err = 0;
-        // GENERIC_READ only, so this can never write to the disc.
-        if (dev != null)
-        {
-            h = CreateFile(dev, 0x80000000, 3, IntPtr.Zero, 3, 0, IntPtr.Zero);
-            if (!h.IsInvalid) { OpenedAs = dev + " (raw drive)"; return; }
-            err = Marshal.GetLastWin32Error();
-        }
-        h = CreateFile("\\\\.\\" + letter + ":", 0x80000000, 3, IntPtr.Zero, 3, 0, IntPtr.Zero);
+        // Windows requires read+write ACCESS on the handle for pass-through.
+        // That does not write anything: only the read commands above are sent.
+        h = CreateFile(dev, 0xC0000000, 3, IntPtr.Zero, 3, 0, IntPtr.Zero);
         if (h.IsInvalid)
         {
-            err = Marshal.GetLastWin32Error();
-            throw new Exception("Could not open drive " + letter + ": (Windows error " + err + ")." +
-                (err == 5 ? " Right-click verify_win95_disc.bat and choose Run as administrator." : ""));
+            int err = Marshal.GetLastWin32Error();
+            throw new Exception("Could not open " + dev + " (Windows error " + err + ")." +
+                (err == 5 ? " Close this, right-click verify_win95_disc.bat and choose Run as administrator." : ""));
         }
-        OpenedAs = "\\\\.\\" + letter + ": (drive letter" + (dev != null ? "; raw drive refused, Windows error " + err : "") + ")";
-        int r;
-        // Let reads go past the end of the first (UDF) section. Harmless if refused.
-        DeviceIoControl(h, 0x00090083, null, 0, null, 0, out r, IntPtr.Zero);
+        OpenedAs = dev;
     }
 
-    byte[] SessionData()
-    {
-        byte[] inb = new byte[4];
-        inb[0] = 1;                       // CDROM_READ_TOC_EX_FORMAT_SESSION, LBA addresses
-        byte[] outb = new byte[12];
-        int r;
-        if (!DeviceIoControl(h, 0x00024054, inb, 4, outb, outb.Length, out r, IntPtr.Zero))
-            throw new Exception("Could not read the disc's session list (Windows error " + Marshal.GetLastWin32Error() + ").");
-        return outb;
-    }
+    static void PutInt(byte[] b, int o, int v) { b[o] = (byte)v; b[o + 1] = (byte)(v >> 8); b[o + 2] = (byte)(v >> 16); b[o + 3] = (byte)(v >> 24); }
+    static int GetInt(byte[] b, int o) { return b[o] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24); }
+    static long BE(byte[] b, int o) { return ((long)b[o] << 24) | ((long)b[o + 1] << 16) | ((long)b[o + 2] << 8) | b[o + 3]; }
 
-    public int LastSessionNumber() { return SessionData()[3]; }
-
-    public string SessionRaw()
+    byte[] Run(byte[] cdb, int dataLen)
     {
-        byte[] b = SessionData();
-        return BitConverter.ToString(b);
-    }
-
-    // Plain track list (TOC format 0): "track N starts at block X", one per
-    // track, so the session starts can be read even if the session-format
-    // answer looks odd.
-    public string[] Tracks()
-    {
-        byte[] inb = new byte[4];
-        inb[0] = 0;                       // CDROM_READ_TOC_EX_FORMAT_TOC, LBA addresses
-        inb[1] = 1;                       // starting from track 1
-        byte[] outb = new byte[4 + 8 * 100];
-        int r;
-        if (!DeviceIoControl(h, 0x00024054, inb, 4, outb, outb.Length, out r, IntPtr.Zero))
-            return new string[] { "track list unavailable (Windows error " + Marshal.GetLastWin32Error() + ")" };
-        int len = (outb[0] << 8) | outb[1];
-        int count = Math.Min((len - 2) / 8, 100);
-        System.Collections.Generic.List<string> list = new System.Collections.Generic.List<string>();
-        for (int i = 0; i < count; i++)
+        if (Array.IndexOf(Allowed, cdb[0]) < 0) throw new Exception("Refusing non-read drive command 0x" + cdb[0].ToString("X2"));
+        bool x64 = IntPtr.Size == 8;
+        int sptLen = x64 ? 56 : 44;          // sizeof(SCSI_PASS_THROUGH)
+        int senseOff = sptLen;
+        int dataOff = x64 ? 88 : 76;
+        byte[] buf = new byte[dataOff + dataLen];
+        buf[0] = (byte)sptLen;               // Length
+        buf[6] = (byte)cdb.Length;           // CdbLength
+        buf[7] = 32;                         // SenseInfoLength
+        buf[8] = 1;                          // DataIn = SCSI_IOCTL_DATA_IN
+        PutInt(buf, 12, dataLen);            // DataTransferLength
+        PutInt(buf, 16, 30);                 // TimeOutValue (s)
+        if (x64) { PutInt(buf, 24, dataOff); PutInt(buf, 32, senseOff); Array.Copy(cdb, 0, buf, 36, cdb.Length); }
+        else     { PutInt(buf, 20, dataOff); PutInt(buf, 24, senseOff); Array.Copy(cdb, 0, buf, 28, cdb.Length); }
+        int ret;
+        if (!DeviceIoControl(h, 0x0004D004, buf, buf.Length, buf, buf.Length, out ret, IntPtr.Zero))
+            throw new Exception("drive command 0x" + cdb[0].ToString("X2") + " failed (Windows error " + Marshal.GetLastWin32Error() + ")");
+        if (buf[2] != 0)
         {
-            int o = 4 + i * 8;
-            long a = ((long)outb[o + 4] << 24) | ((long)outb[o + 5] << 16) | ((long)outb[o + 6] << 8) | outb[o + 7];
-            int tn = outb[o + 2];
-            list.Add((tn == 0xAA ? "end of disc" : "track " + tn) + " at block " + a);
+            int key = buf[senseOff + 2] & 0x0F, asc = buf[senseOff + 12], ascq = buf[senseOff + 13];
+            string what = "";
+            if (key == 5 && asc == 0x21) what = " = address past the recorded area";
+            else if (key == 5 && asc == 0x64) what = " = illegal mode for this track";
+            else if (key == 3 && asc == 0x11) what = " = unrecoverable read error (unreadable data)";
+            else if (key == 3 && asc == 0x02) what = " = no seek complete";
+            else if (key == 3) what = " = medium error";
+            else if (key == 2) what = " = drive not ready";
+            throw new Exception("drive said sense " + key.ToString("X") + "/" + asc.ToString("X2") + "/" + ascq.ToString("X2") + what);
         }
-        return list.ToArray();
+        int got = GetInt(buf, 12);
+        if (got <= 0 || got > dataLen) got = dataLen;
+        byte[] data = new byte[got];
+        Array.Copy(buf, dataOff, data, 0, got);
+        return data;
     }
 
-    // Start of the last session = where Windows 95 looks for files.
-    public long LastSessionStart()
+    int lastTrack = 1;
+    public string DiscInfo()
     {
-        byte[] b = SessionData();
-        return ((long)b[8] << 24) | ((long)b[9] << 16) | ((long)b[10] << 8) | b[11];
+        byte[] cdb = new byte[10]; cdb[0] = 0x51; cdb[8] = 34;
+        byte[] d = Run(cdb, 34);
+        string[] st = new string[] { "empty", "incomplete (more can be added)", "complete (finalized)", "other" };
+        string[] ss = new string[] { "empty", "incomplete", "reserved", "complete" };
+        int sessions = d[4] | (d[9] << 8);
+        lastTrack = d[6] | (d[11] << 8);
+        return "disc " + st[d[2] & 3] + ", last session " + ss[(d[2] >> 2) & 3] +
+               ", sessions " + sessions + ", tracks " + (d[3]) + "-" + lastTrack;
+    }
+    public int LastTrack() { return lastTrack; }
+
+    byte[] TrackData(int track)
+    {
+        byte[] cdb = new byte[10]; cdb[0] = 0x52; cdb[1] = 0x01;
+        cdb[2] = (byte)(track >> 24); cdb[3] = (byte)(track >> 16); cdb[4] = (byte)(track >> 8); cdb[5] = (byte)track;
+        cdb[8] = 48;
+        return Run(cdb, 48);
+    }
+    public long TrackStart(int track) { return BE(TrackData(track), 8); }
+    public string DescribeTrack(int track)
+    {
+        byte[] d = TrackData(track);
+        bool blank = (d[6] & 0x40) != 0, rt = (d[6] & 0x80) != 0, lraV = (d[7] & 0x02) != 0, nwaV = (d[7] & 1) != 0;
+        string state = blank ? "BLANK (nothing written)" : (rt ? "reserved/incomplete" : "written");
+        return "track " + track + " (session " + (d[3] | (d[33] << 8)) + "): start " + BE(d, 8) +
+               ", size " + BE(d, 24) + " blocks (" + (BE(d, 24) * 2048 / 1048576) + " MB), " + state +
+               (lraV ? ", last recorded block " + BE(d, 28) : "") + (nwaV ? ", next writable " + BE(d, 12) : ", closed");
+    }
+
+    public byte[] ReadBlocks(long lba, int count)
+    {
+        byte[] cdb = new byte[10]; cdb[0] = 0x28;
+        cdb[2] = (byte)(lba >> 24); cdb[3] = (byte)(lba >> 16); cdb[4] = (byte)(lba >> 8); cdb[5] = (byte)lba;
+        cdb[7] = (byte)(count >> 8); cdb[8] = (byte)count;
+        return Run(cdb, count * 2048);
+    }
+
+    public string Probe(long lba)
+    {
+        try
+        {
+            byte[] b = ReadBlocks(lba, 1);
+            bool zero = true;
+            for (int i = 0; i < b.Length; i++) if (b[i] != 0) { zero = false; break; }
+            string id = b.Length >= 6 ? Encoding.ASCII.GetString(b, 1, 5) : "";
+            return "block " + lba + ": read OK" + (zero ? " (all zeros)" : "") +
+                   ((id == "CD001" || id == "BEA01" || id == "NSR02" || id == "NSR03") ? " [" + id + "]" : "");
+        }
+        catch (Exception e) { return "block " + lba + ": FAILED - " + e.Message; }
     }
 
     public void StartAt(long sector) { basePos = sector * 2048; pos = 0; }
 
-    // Reads one block and reports success or the Windows error code:
-    //   87 = outside what Windows allows on this handle (fixable),
-    //   23 = data error (CRC), 27 = sector not found, 1117 = I/O device error
-    //   (the drive found nothing readable there).
-    public string Probe(long sector)
-    {
-        long np;
-        int n;
-        byte[] buf = new byte[2048];
-        if (!SetFilePointerEx(h, sector * 2048, out np, 0))
-            return "block " + sector + ": seek failed (Windows error " + Marshal.GetLastWin32Error() + ")";
-        if (!ReadFile(h, buf, 2048, out n, IntPtr.Zero))
-            return "block " + sector + ": read FAILED (Windows error " + Marshal.GetLastWin32Error() + ")";
-        if (n == 0) return "block " + sector + ": read returned 0 bytes (past the end Windows allows)";
-        bool blank = true;
-        for (int i = 0; i < n; i++) if (buf[i] != 0) { blank = false; break; }
-        string id = Encoding.ASCII.GetString(buf, 1, 5);
-        return "block " + sector + ": read OK" + (blank ? " (all zeros)" : "") +
-               ((id == "CD001" || id == "BEA01" || id == "NSR02" || id == "NSR03") ? " [" + id + "]" : "");
-    }
-
     public void Read(byte[] pv, int cb, IntPtr pcbRead)
     {
-        long np;
         int n = 0;
-        if (SetFilePointerEx(h, basePos + pos, out np, 0) && ReadFile(h, pv, cb, out n, IntPtr.Zero)) pos += n;
-        else n = 0;
+        try
+        {
+            int count = Math.Min(cb / 2048, 16);
+            if (count > 0)
+            {
+                byte[] b = ReadBlocks((basePos + pos) / 2048, count);
+                n = Math.Min(b.Length, cb);
+                Array.Copy(b, pv, n);
+                pos += n;
+            }
+        }
+        catch (Exception e) { LastReadError = e.Message; n = 0; }
         if (pcbRead != IntPtr.Zero) Marshal.WriteInt32(pcbRead, n);
     }
     public void Seek(long dlibMove, int dwOrigin, IntPtr plibNewPosition) { pos = dlibMove; }
@@ -368,15 +388,17 @@ try {
     if (-not $letter) { $letter = 'E' }
     $letter = $letter.Trim().TrimEnd(':').ToUpper()
 
-    $disc = New-Object DiscDevice $letter
+    $disc = New-Object ScsiDisc $letter
     try {
-        Write-Host "Reading via:           $($disc.OpenedAs)"
-        $sessions = $disc.LastSessionNumber()
-        $reported = $disc.LastSessionStart()
-        Write-Host "Sessions on disc:      $sessions"
-        Write-Host "Drive says last session starts at block $reported"
-        Write-Host "  (raw answer: $($disc.SessionRaw()))"
-        foreach ($t in $disc.Tracks()) { Write-Host "  $t" }
+        Write-Host "Reading via:  $($disc.OpenedAs)  (drive's own read commands only)"
+        Write-Host "Drive says:   $($disc.DiscInfo())"
+        $track2Start = $null
+        for ($t = 1; $t -le [math]::Min($disc.LastTrack(), 10); $t++) {
+            try {
+                Write-Host "  $($disc.DescribeTrack($t))"
+                if ($t -eq 2) { $track2Start = $disc.TrackStart(2) }
+            } catch { Write-Host "  track ${t}: could not read info - $($_.Exception.Message)" }
+        }
         Write-Host ''
         Write-Host 'Read test:'
         foreach ($b in @(16, 256, 93000, 93951, 93952, 93968, 93969)) { Write-Host "  $($disc.Probe($b))" }
@@ -384,8 +406,7 @@ try {
 
         $expected = 93952   # where the burn tool wrote the new section
         $starts = @($expected)
-        if ($reported -gt 0 -and $reported -lt 2400000 -and $reported -ne $expected) { $starts += $reported }
-
+        if ($track2Start -and $track2Start -ne $expected -and $track2Start -lt 2400000) { $starts += $track2Start }
         $good = $false
         foreach ($st in $starts) {
             $disc.StartAt($st)
@@ -399,6 +420,7 @@ try {
                 $m = $_.Exception.Message
                 if ($_.Exception.InnerException) { $m = $_.Exception.InnerException.Message }
                 $m = $m -replace ' Nothing was burned\.', ''
+                if ($disc.LastReadError) { $m += " (drive: $($disc.LastReadError))" }
                 Write-Host "Not readable at block ${st}: $m" -ForegroundColor Red
             }
         }

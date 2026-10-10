@@ -263,6 +263,16 @@ from scratch.
   disc. Verifier now opens the raw device (`\\.\CdRomN` via
   QueryDosDevice) and falls back to the drive letter, showing which path
   it used.
+  **Raw-device run:** opened `\\.\CdRom0`, but reads at 93000 and
+  beyond returned 0 bytes. Windows caps reads at the capacity the drive
+  reports, which the broken track 2 apparently confuses. Verifier rewritten
+  to send the drive its own MMC read commands via SCSI pass-through
+  (needs Run as administrator): READ DISC INFORMATION, READ TRACK
+  INFORMATION (per-track start, size, blank/written, closed), and
+  READ(10) for the probe and the full check. A code allowlist permits only
+  opcodes 0x28/0x51/0x52. The hand-written SCSI_PASS_THROUGH offsets were
+  checked against .NET's layout (`tools/tests/test_scsi_layout.ps1`; all
+  match, size 56). The end-to-end flow was tested with a fake drive.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
