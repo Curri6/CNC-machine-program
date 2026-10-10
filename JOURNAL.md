@@ -159,7 +159,10 @@ from scratch.
   available here, and whether the old SD-608 drive reads a later
   session on a DVD-R. 2026-10-10: the owner was given step-by-step run
   instructions, with screenshot checkpoints after the disc report and
-  after CHECK PASSED, before typing YES.
+  after CHECK PASSED, before typing YES. **Tool's disc report:** burner
+  `E:\ HL-DT-ST DVD+-RW GT10N`; disc **DVD-R, open (more can be
+  added), 4305 MB free**. So the burn will use append mode: a new
+  ISO 9660/Joliet session after the existing UDF one, then close the disc.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
