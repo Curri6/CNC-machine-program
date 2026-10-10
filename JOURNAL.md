@@ -253,6 +253,16 @@ from scratch.
   probe (blocks 16, 256, 93000, 93951, 93952, 93968, 93969, with Windows
   error codes) to tell "Windows won't let us read that far" (error 87,
   fixable) from "the drive finds no data there" (23/27/1117).
+  **Probe result:** block 16 read OK **[BEA01]** and block 256 read OK.
+  Blocks 93000-93969 all failed with **Windows error 1**
+  (ERROR_INVALID_FUNCTION), including 93000, which lies inside the first
+  burn's area. So the drive-letter handle refuses reads past the mounted
+  UDF volume; that's a Windows restriction, not proof of bad data. Side
+  finding: block 16 = BEA01 means the first (Explorer) burn was UDF-only
+  with no ISO 9660 descriptor, which is exactly why Win95 saw an empty
+  disc. Verifier now opens the raw device (`\\.\CdRomN` via
+  QueryDosDevice) and falls back to the drive letter, showing which path
+  it used.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
