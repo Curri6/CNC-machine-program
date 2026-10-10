@@ -189,6 +189,13 @@ from scratch.
   (current and supported), and on a failed burn shows the error code,
   the elapsed time, and the disc state before vs. now. Next: run it only
   to the first screen to read the disc state, then cancel.
+  **Disc state after the failure: unchanged** (DVD-R, open, 4305 MB free,
+  start block still 93952), so the failed burn wrote nothing. The drive
+  offers 2x/4x/8x for this disc. 8x (IMAPI) and 2x (Explorer) both
+  failed, so the tool now asks for a burn speed after YES, defaulting to
+  **4x**, the untried middle speed. Choice logic tested in
+  `tools/tests/test_speed_choice.ps1` (Enter means 4x, invalid input
+  cancels without writing).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
