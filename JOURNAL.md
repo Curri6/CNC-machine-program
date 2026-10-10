@@ -157,7 +157,9 @@ from scratch.
   background runspace hand-off was tested with a stand-in stream.
   **Still untested:** the real IMAPI2 burn calls and burner, which aren't
   available here, and whether the old SD-608 drive reads a later
-  session on a DVD-R.
+  session on a DVD-R. 2026-10-10: the owner was given step-by-step run
+  instructions, with screenshot checkpoints after the disc report and
+  after CHECK PASSED, before typing YES.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
