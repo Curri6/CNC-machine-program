@@ -1,21 +1,20 @@
-# Runs verify_win95_disc.ps1 end to end with a file-backed fake drive that
-# gives the same odd session answer as the real laptop drive (2026-10-10).
-# Set FAKEDISC to an image with a session written at block 93952.
-# Runs the verifier's real main flow with DiscDevice replaced by a file-backed
-# fake that returns the same odd session answer the laptop drive gave.
+# Runs verify_win95_disc.ps1 end to end with a file-backed fake ScsiDisc.
+# Set FAKEDISC to an image with a session written at block 93952 (see
+# JOURNAL.md 2026-10-10). Run: pwsh -File test_verify_mainflow.ps1
 $src = Get-Content -Raw ../verify_win95_disc.ps1
 $cs = [regex]::Match($src, "(?s)\`$Source = @'\r?\n(.*?)\r?\n'@").Groups[1].Value
-$cs = $cs -replace 'public class DiscDevice : IStream', 'public class DiscDeviceReal : IStream' -replace 'public DiscDevice\(', 'public DiscDeviceReal('
+$cs = $cs -replace 'public class ScsiDisc : IStream', 'public class ScsiDiscReal : IStream' -replace 'public ScsiDisc\(', 'public ScsiDiscReal('
 $fake = @'
-public class DiscDevice : IStream {
+public class ScsiDisc : IStream {
     FileStream fs; long basePos, pos;
-    public DiscDevice(string l) { fs = File.OpenRead(Environment.GetEnvironmentVariable("FAKEDISC")); }
-    public int LastSessionNumber() { return 2; }
-    public long LastSessionStart() { return 4294770687L; }
-    public string SessionRaw() { return "00-0A-01-02-00-14-02-00-FF-FC-FF-FF"; }
-    public string[] Tracks() { return new string[] { "track 1 at block 0", "track 2 at block 93952", "end of disc at block 124000" }; }
-    public void StartAt(long sector) { basePos = sector * 2048; pos = 0; }
+    public string OpenedAs = "fake"; public string LastReadError = "";
+    public ScsiDisc(string l) { fs = File.OpenRead(Environment.GetEnvironmentVariable("FAKEDISC")); }
+    public string DiscInfo() { return "disc complete (finalized), last session complete, sessions 2, tracks 1-2"; }
+    public int LastTrack() { return 2; }
+    public long TrackStart(int t) { return t == 2 ? 93952 : 0; }
+    public string DescribeTrack(int t) { return "track " + t + " (fake)"; }
     public string Probe(long s) { return "block " + s + ": read OK (fake)"; }
+    public void StartAt(long sector) { basePos = sector * 2048; pos = 0; }
     public void Read(byte[] pv, int cb, IntPtr pcbRead) { int n = 0; if (basePos + pos < fs.Length) { fs.Seek(basePos + pos, SeekOrigin.Begin); n = fs.Read(pv, 0, cb); } pos += n; if (pcbRead != IntPtr.Zero) Marshal.WriteInt32(pcbRead, n); }
     public void Seek(long d, int o, IntPtr p) { pos = d; }
     public void Write(byte[] pv, int cb, IntPtr w) { } public void SetSize(long s) { } public void CopyTo(IStream a, long b, IntPtr c, IntPtr d) { }
