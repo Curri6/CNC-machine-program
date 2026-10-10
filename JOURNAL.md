@@ -319,6 +319,11 @@ from scratch.
   expected: the bar is a time estimate (~92 s for 80 MB at 4x) capped at
   99% until IMAPI2 returns, and the DVD-R session/border close happens
   after the data. Owner told to wait (up to ~10 min) without touching it.
+  **SUCCESS: "Done in 142s. The disc has been ejected."** That's the
+  first burn the tool has completed. New DVD-R, 4x, single ISO 9660 +
+  Joliet session at block 0, session closed (disc left open). Next: the
+  laptop verifier (admin) should report VERIFIED at block 0, then test
+  in the Win95 PC (expect WIN95 + INTEL in the CD drive).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
