@@ -196,6 +196,9 @@ from scratch.
   **4x**, the untried middle speed. Choice logic tested in
   `tools/tests/test_speed_choice.ps1` (Enter means 4x, invalid input
   cancels without writing).
+  Fourth run reached CHECK PASSED again with an identical result (open,
+  4305 MB, block 93952, speeds 2x/4x/8x). Owner told to type YES and take
+  the 4x default.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
