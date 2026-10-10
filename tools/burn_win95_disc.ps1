@@ -489,6 +489,7 @@ try {
         $cur = '?'
         try { $cur = [math]::Round($global:format.CurrentWriteSpeed / $unit, 1) } catch { }
         "SPEED: current ${cur}x, drive supports for this disc: $(($speeds | Sort-Object) -join 'x, ')x"
+        "@@SPEEDS $(($speeds | Sort-Object | ForEach-Object { $_.ToString([Globalization.CultureInfo]::InvariantCulture) }) -join ';')"
     }
 
     try {
@@ -498,7 +499,16 @@ try {
     catch { Stop-All; throw }
     Write-Host ''
     Write-Host 'CHECK PASSED - Windows 95 will be able to read this image:' -ForegroundColor Green
-    foreach ($line in $check) { Write-Host "  $line" }
+    $supported = @()
+    foreach ($line in $check) {
+        if ("$line".StartsWith('@@SPEEDS')) {
+            foreach ($v in ("$line".Substring(8).Trim() -split ';')) {
+                if ($v) { $supported += [double]::Parse($v, [Globalization.CultureInfo]::InvariantCulture) }
+            }
+            continue
+        }
+        Write-Host "  $line"
+    }
 
     # ---- 6. Confirm -----------------------------------------------------------
     Write-Host ''
@@ -506,9 +516,26 @@ try {
     $answer = Read-Host 'Type YES to burn (anything else cancels)'
     if ($answer -cne 'YES') { Stop-All; Write-Host 'Cancelled. Nothing was written.'; Pause-Exit 0 }
 
+    # Burn speed. 8x and 2x both failed on this drive + disc before
+    # (2026-10-10), so the default is 4x when the drive offers it.
+    $speedX = 0
+    if ($supported.Count -gt 0) {
+        $default = $supported[0]
+        if ($supported -contains 4) { $default = 4 }
+        $pick = Read-Host "Burn speed - choices: $(($supported) -join 'x, ')x. Press Enter for ${default}x"
+        if (-not $pick) { $speedX = $default }
+        else {
+            $num = 0.0
+            if ([double]::TryParse(($pick -replace '[xX ]', '' -replace ',', '.'), [Globalization.NumberStyles]::Float,
+                    [Globalization.CultureInfo]::InvariantCulture, [ref]$num) -and ($supported -contains $num)) { $speedX = $num }
+            else { Stop-All; Write-Host "'$pick' is not one of the choices. Cancelled. Nothing was written."; Pause-Exit 0 }
+        }
+        Write-Host "Burning at ${speedX}x."
+    }
+
     # ---- 7. Burn ---------------------------------------------------------------
     $phaseB = {
-        param($mode)
+        param($mode, $speedX, $unit)
         $ErrorActionPreference = 'Stop'
         if ($mode -eq 'erase') {
             $erase = New-Object -ComObject IMAPI2.MsftDiscFormat2Erase
@@ -521,6 +548,7 @@ try {
             $global:format.ClientName = 'CNC Win95 disc'
             $global:format.ForceMediaToBeClosed = $true
         }
+        if ($speedX -gt 0) { $global:format.SetWriteSpeed([int]($speedX * $unit), $false) }
         $global:format.Write($global:stream)
         $global:recorder.EjectMedia()
         'OK'
@@ -530,14 +558,16 @@ try {
     if ($mode -eq 'erase') { $est += 120 }
     $sw = [Diagnostics.Stopwatch]::StartNew()
     $result = $null
-    try { $result = Run-Phase $phaseB.ToString() @($mode) 'Step 3 of 3: burning disc - do NOT eject' $est }
+    $unit = 675; if ($mediaType -le 3) { $unit = 75 }
+    if ($speedX -gt 0) { $est = [math]::Max($est, [int]($sizeMB / ($speedX * $unit * 2048 / 1MB)) + 60) }
+    try { $result = Run-Phase $phaseB.ToString() @($mode, $speedX, $unit) 'Step 3 of 3: burning disc - do NOT eject' $est }
     catch {
         $e = $_.Exception
         Stop-All
         Write-Host ''
         Write-Host 'The burn failed:' -ForegroundColor Red
         Write-Host "  $($e.Message)"
-        Write-Host ("  Error code: 0x{0:X8}   after {1}s" -f $e.HResult, [int]$sw.Elapsed.TotalSeconds)
+        Write-Host ("  Error code: 0x{0:X8}   after {1}s   at {2}x" -f $e.HResult, [int]$sw.Elapsed.TotalSeconds, $speedX)
         Write-Host ''
         Write-Host 'Disc state BEFORE this burn:' -ForegroundColor Yellow
         Write-Host "  Status: $($flags -join ', ') | Free: $freeMB MB"
