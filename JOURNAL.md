@@ -225,6 +225,17 @@ from scratch.
   11 is reading the old UDF session. That says nothing about the new
   ISO 9660 session. The real test is the Win95 PC: WIN95 + INTEL
   **without** README.TXT means the new session is being read.
+- **Laptop-side verifier: `tools/verify_win95_disc.ps1` (+ .bat).**
+  Read-only: it opens the drive with GENERIC_READ only. It reads the
+  disc's session list (IOCTL_CDROM_READ_TOC_EX, session format) to get
+  the last session's start (where Win95 looks; expected 93952), then
+  reads that session's raw sectors and runs the same Win95DiscCheck
+  used before burning. It shares the exact verifier code with the burn
+  tool and compiles at C# 5. The offset logic was tested on a simulated
+  two-session disc (`tools/tests/test_verify_offsets.ps1`): it finds
+  session 2 at its start block and fails at the wrong start. The Windows
+  drive I/O itself is untested here (no Windows). It can't tell whether
+  the old SD-608 reads multi-session discs.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
