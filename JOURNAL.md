@@ -163,6 +163,11 @@ from scratch.
   `E:\ HL-DT-ST DVD+-RW GT10N`; disc **DVD-R, open (more can be
   added), 4305 MB free**. So the burn will use append mode: a new
   ISO 9660/Joliet session after the existing UDF one, then close the disc.
+  **First real run of the check: CHECK PASSED.** It reported start block
+  93952 | ISO 9660: WIN95 30 CAB, INTEL 2 INF | Joliet: same | UDF: none
+  | image 79.7 MB. Source: `Downloads\Win95 Network DVD\{WIN95,INTEL}`.
+  At the YES prompt Enter was pressed without typing YES, so it cancelled
+  and nothing was written. Owner told to rerun and type YES.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
