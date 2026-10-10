@@ -252,6 +252,37 @@ public class DiscDevice : IStream
 
     public int LastSessionNumber() { return SessionData()[3]; }
 
+    public string SessionRaw()
+    {
+        byte[] b = SessionData();
+        return BitConverter.ToString(b);
+    }
+
+    // Plain track list (TOC format 0): "track N starts at block X", one per
+    // track, so the session starts can be read even if the session-format
+    // answer looks odd.
+    public string[] Tracks()
+    {
+        byte[] inb = new byte[4];
+        inb[0] = 0;                       // CDROM_READ_TOC_EX_FORMAT_TOC, LBA addresses
+        inb[1] = 1;                       // starting from track 1
+        byte[] outb = new byte[4 + 8 * 100];
+        int r;
+        if (!DeviceIoControl(h, 0x00024054, inb, 4, outb, outb.Length, out r, IntPtr.Zero))
+            return new string[] { "track list unavailable (Windows error " + Marshal.GetLastWin32Error() + ")" };
+        int len = (outb[0] << 8) | outb[1];
+        int count = Math.Min((len - 2) / 8, 100);
+        System.Collections.Generic.List<string> list = new System.Collections.Generic.List<string>();
+        for (int i = 0; i < count; i++)
+        {
+            int o = 4 + i * 8;
+            long a = ((long)outb[o + 4] << 24) | ((long)outb[o + 5] << 16) | ((long)outb[o + 6] << 8) | outb[o + 7];
+            int tn = outb[o + 2];
+            list.Add((tn == 0xAA ? "end of disc" : "track " + tn) + " at block " + a);
+        }
+        return list.ToArray();
+    }
+
     // Start of the last session = where Windows 95 looks for files.
     public long LastSessionStart()
     {
@@ -296,23 +327,40 @@ try {
     $disc = New-Object DiscDevice $letter
     try {
         $sessions = $disc.LastSessionNumber()
-        $start = $disc.LastSessionStart()
+        $reported = $disc.LastSessionStart()
         Write-Host "Sessions on disc:      $sessions"
-        Write-Host "Last session starts:   block $start   (Windows 95 looks here)"
-        Write-Host '  (the burn put the new section at block 93952)'
+        Write-Host "Drive says last session starts at block $reported"
+        Write-Host "  (raw answer: $($disc.SessionRaw()))"
+        foreach ($t in $disc.Tracks()) { Write-Host "  $t" }
         Write-Host ''
 
-        $disc.StartAt($start)
-        $summary = [Win95DiscCheck]::Verify($disc, [long]$start)
-        Write-Host 'VERIFIED - the section Windows 95 reads is on the disc and complete:' -ForegroundColor Green
-        Write-Host "  $summary"
-        if ($start -ne 93952) {
-            Write-Host ''
-            Write-Host "Note: the last session starts at $start, not 93952. Tell Claude." -ForegroundColor Yellow
+        $expected = 93952   # where the burn tool wrote the new section
+        $starts = @($expected)
+        if ($reported -gt 0 -and $reported -lt 2400000 -and $reported -ne $expected) { $starts += $reported }
+
+        $good = $false
+        foreach ($st in $starts) {
+            $disc.StartAt($st)
+            try {
+                $summary = [Win95DiscCheck]::Verify($disc, [long]$st)
+                Write-Host "VERIFIED at block ${st} - the Windows 95 section is on the disc and complete:" -ForegroundColor Green
+                Write-Host "  $summary"
+                $good = $true
+            }
+            catch {
+                $m = $_.Exception.Message
+                if ($_.Exception.InnerException) { $m = $_.Exception.InnerException.Message }
+                $m = $m -replace ' Nothing was burned\.', ''
+                Write-Host "Not readable at block ${st}: $m" -ForegroundColor Red
+            }
         }
         Write-Host ''
-        Write-Host 'The disc itself is right. The one thing this cannot test is whether the'
-        Write-Host 'old PC''s drive reads a disc with more than one session - only the old PC can.'
+        if ($good) {
+            Write-Host 'The new section is on the disc and complete. Whether the old PC finds it'
+            Write-Host 'depends on its own drive reading the second session - only the old PC can test that.'
+        } else {
+            Write-Host 'Take a screenshot of this window and send it to Claude.'
+        }
     }
     finally { $disc.Close() }
     Pause-Exit

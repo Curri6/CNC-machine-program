@@ -236,6 +236,14 @@ from scratch.
   session 2 at its start block and fails at the wrong start. The Windows
   drive I/O itself is untested here (no Windows). It can't tell whether
   the old SD-608 reads multi-session discs.
+  **First real run:** "Sessions on disc: 2", which confirms the new
+  section was recorded as a second session. The session-start answer
+  was garbage (block 4294770687 = 0xFFFCFFFF), so the read went nowhere
+  ("Image ends before sector 16"). Updated the verifier: it shows the
+  raw answer, lists every track's start block (TOC format 0), and checks
+  directly at block 93952, plus the drive-reported start if that's sane.
+  The full flow was tested here with a fake drive giving the same odd
+  answer (`tools/tests/test_verify_mainflow.ps1`): VERIFIED at 93952.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
