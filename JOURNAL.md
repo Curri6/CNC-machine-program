@@ -486,7 +486,9 @@ from scratch.
   Windows 95") before Finish. Part A done: SYSTEM.INI has no WOL558
   line, so the ACPIWOL registry key was the only reference. Part B
   in progress: Network components removed (restart deferred until after
-  Part C).
+  Part C). Device Manager has no "Network adapters" category (Intel
+  entry gone); removing only "PCI Ethernet Controller" under Other
+  devices, then Part C.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
