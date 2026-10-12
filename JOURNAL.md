@@ -496,6 +496,8 @@ from scratch.
   test). Part C: the first `ren` was typed without the space before the
   new name ("Required parameter missing"); told the owner to retype it.
   Retyped correctly: 8255INDI.DLL renamed to 8255INDI.OLD (no error).
+  C:\NETSETUP\ICH created, E100B.SYS copied ("1 file(s) copied"), and
+  Notepad open on WIN95ICH.INF for typing; screenshot check before restart.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
