@@ -89,7 +89,19 @@ confirm it. Never design around this, in this phase or later ones.
            WIN95ICH.INF installs E100B.SYS cleanly, but it's Code 10
            (won't start the ICH2 chip). Next route: the ODI driver
            E100BODI.COM, which supports DEV_2449 but needs Novell's
-           LSL.COM, not on the PC; ask IT. See JOURNAL.md.) Install the card driver and TCP/IP; set a static IP of
+           LSL.COM, not on the PC; ask IT. See JOURNAL.md.)
+           **2026-10-12: LSL.COM found in the owner's Intel 6.2 download.
+           Kit built (`tools/win95/netdisc`, tested). Next:**
+           a. [ ] Burn NETDISC with burn tool option 2 onto the working
+                  DVD-R (2nd session, 45 files; photo at CHECK PASSED).
+           b. [ ] Old PC reads it? (H: shows README.TXT, COPYNET.BAT.)
+           c. [ ] `H:` → `COPYNET` (photo).
+           d. [ ] MS-DOS mode → `C:\NETUP\TEST` (photo: card found? link?).
+           e. [ ] `C:\NETUP\INSTALL`; disable the Code 10 adapter; add
+                  "Existing ODI Driver"; TCP/IP 192.168.50.2/24; restart;
+                  `C:\NETUP\CHECK` (photo).
+           f. [ ] Laptop `receive_files.bat`, old PC `C:\NETUP\SEND`;
+                  upload the zip here. Install the card driver and TCP/IP; set a static IP of
            192.168.50.2 / 255.255.255.0. **In progress 2026-09-28:**
            adapter added as the built-in "Intel EtherExpress PRO/100
            (PCI)" driver (may not fit the VE chip), TCP/IP added with

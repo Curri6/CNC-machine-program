@@ -61,6 +61,13 @@ that changes.
   performance-heavy since real-time work is offloaded to the controller
   board) — almost any current mini PC or existing laptop would do.
 
+## Backup of C:\MPSPRO (2026-10-12) - nothing to buy
+
+- Uses only what's on hand: the working DVD-R (second session for the
+  network kit), a network cable between the old PC and the laptop, and
+  free downloads the owner already made (Intel PRO/100 6.2 package with
+  Novell LSL.COM, Intel PRODOS, mTCP). Nothing to buy.
+
 ## Not needed
 
 - No air compressor / pneumatics — confirmed the small 12V pump found

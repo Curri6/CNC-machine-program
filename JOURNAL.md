@@ -593,6 +593,67 @@ from scratch.
   checks, same-thread, and speed-choice tests still pass. Note: files go
   to Win95 via Explorer/xcopy to C:\ before any MS-DOS-mode use, since DOS
   mode likely has no CD driver.
+- **Owner uploaded the downloads (2026-10-12): `PRODOS.exe`,
+  `Intel_Pro_100-6.1.7z`, `Intel_Pro_100-6.2.7z`, `mTCP_2026-10-10.zip`.**
+  Findings (7z needed real 7-Zip, BCJ2 filter):
+  - **No packet driver** in any of them (no E100BPKT.COM), so mTCP can't
+    be used yet. PRODOS.exe = Intel's NDIS2 DOS driver only
+    (`e100b.dos` v4.59, 2010).
+  - **The 6.1/6.2 packages contain Novell `LSL.COM` v2.20 (960401)** in
+    `DOS\DOS` — the file missing for the ODI route. E100BODI needs LSL
+    2.11+. `DOS\DOS\E100bodi.com` in 6.2 is **v4.13 (041123)**, newer
+    than the v4.01 we had.
+  - Chip ID 8086:2449 (bytes `86 80 49 24`) is in E100BODI v4.01 and
+    v4.13 and in e100b.dos v4.31/v4.57/v4.59. The Windows 95 `e100b.sys`
+    is the same 6.01.03 file in all packages (no new NDIS3 option).
+  - **Plan (all files on hand): Windows 95 on Intel's DOS ODI driver.**
+    AUTOEXEC loads LSL.COM + E100BODI.COM + ODIHLP.EXE (Win95's
+    ODI-to-NDIS2 shim, in the CABs). In Network settings add "Existing
+    ODI Driver" (in "(detected net drivers)") with TCP/IP
+    192.168.50.2/24, and disable the Code 10 "Intel PRO/100 VE" adapter
+    in Device Manager (hardware profile). Win95's FTP.EXE then uploads.
+    Spare: NDIS2 e100b.dos v4.59 ("Existing Ndis2 Driver").
+    Not confirmed: whether Windows itself adds an ODIHLP line to
+    AUTOEXEC.BAT (web search inconclusive; KB pages blocked). LOADODI.BAT
+    loads ODIHLP only if AUTOEXEC.BAT has no ODIHLP line, and CHECK.BAT
+    shows `mem /c` so a double load would be visible.
+  - **Built the kit, `tools/win95/netdisc/`** (disc folder = `kit/` +
+    `MKFTP.COM` + third-party files, assembled by `build_netdisc.sh` from
+    the owner's downloads; Intel/Novell files are not stored in the repo).
+    45 files, 1.5 MB, all 8.3 names:
+    COPYNET (copy to C:\NETUP, pull ODIHLP.EXE/FTP.EXE from
+    C:\NETSETUP\WIN95 CABs), TEST (one-time load in MS-DOS mode; TEST OLD
+    = v4.01), INSTALL (one line `@call C:\NETUP\LOADODI.BAT` on top of
+    AUTOEXEC.BAT, exact backup AUTOEXEC.OLD, marker INSTALL.TAG), LOADODI
+    (5 s "press N to skip" via CHOICE, then LSL /C=NET.CFG, E100BODI,
+    ODIHLP), UNDO, CHECK, SEND. NET.CFG: Ethernet_II first (TCP/IP),
+    Buffers 8 1600.
+  - **`MKFTP.COM`** (own, `src/MKFTP.ASM`, nasm, 1.2 KB): Win95 FTP.EXE
+    can't upload subfolders, so this walks C:\MPSPRO and writes BODY.FTP
+    (`mkdir` + `put` lines) and MANIFEST.TXT (`path size`). Never skips
+    silently: unreadable folders (DOS 64-char path limit) and >20 levels
+    print SKIPPED and exit 4. `tools/tests/test_mkftp.sh`: 17/17 in DOSBox.
+  - **Laptop receiver `tools/receive_files.bat/.ps1`** (no Python
+    needed): self-elevates; asks YES before setting the cable port to
+    192.168.50.1 (netsh; DHCP restored after), adds two temporary
+    firewall rules (TCP 21 + ping, from 192.168.50.x only), pings the old
+    PC every 3 s, runs a small active-mode FTP server (USER/PASS/TYPE/
+    PORT/STOR/MKD+XMKD/CWD/PWD+XPWD/CDUP/QUIT), refuses unsafe names and
+    PORT to other hosts, keeps `..` inside the backup folder, checks
+    every file against MANIFEST.TXT, zips on CHECK PASSED, and undoes the
+    settings on Q (or at the next start after a closed window).
+    `tools/tests/test_receiver.py`: 31/31; plus an end-to-end run of a
+    MKFTP-made script through the Linux `ftp` client: CHECK PASSED.
+  - `tools/tests/test_netdisc_bats.sh`: INSTALL/UNDO/LOADODI/SEND run in
+    DOSBox with stand-in programs (`stub.asm`): 26/26. DOSBox quirks
+    found: `copy /b A + B` (spaces) copied only A there, so the kit uses
+    `A+B`; a whole batch's redirected output hangs DOSBox (tests use
+    COMMAND /C).
+  - Burn tool: option 2 now steps into the inner folder when the picked
+    folder holds only one folder (Extract All makes NETDISC\NETDISC).
+    The pre-burn check passes the real kit as a session at block 320000
+    (45/45 files) and refuses a wrong count. `make_test_isos.sh` now also
+    builds `gen.iso` for `test_generic_check.ps1` (4/4).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

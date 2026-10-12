@@ -26,3 +26,12 @@ INF layout. **Not tested on real Windows 95**; there's no Win95 here.
 
 Use: put it in its own folder with a copy of `E100B.SYS` (e.g.
 `C:\NETSETUP\ICH`) and point Update Driver → Other Locations there.
+
+## Result and next route (2026-10-12)
+
+`WIN95ICH.INF` installs cleanly but `E100B.SYS` stays at Code 10. The next
+route is Intel's DOS ODI driver (`E100BODI.COM` v4.13) on Novell
+`LSL.COM` v2.20, joined to Windows 95 by `ODIHLP.EXE` and the built-in
+"Existing ODI Driver" adapter. The kit for that is in `netdisc/`: the
+disc's own `README.TXT` lists the steps, `build_netdisc.sh` assembles
+the disc folder, and `../receive_files.bat` is the laptop side.

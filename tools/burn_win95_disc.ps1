@@ -364,6 +364,14 @@ try {
         Write-Host 'Pick the folder to burn...'
         $only = Pick-Folder 'Pick the folder whose contents should go on the disc'
         if (-not $only) { Write-Host 'Cancelled. Nothing was written.'; Pause-Exit 0 }
+        # "Extract All" often makes NETDISC\NETDISC\...; burn the inner folder then.
+        while ($true) {
+            $top = @(Get-ChildItem -LiteralPath $only -Force)
+            if ($top.Count -eq 1 -and $top[0].PSIsContainer) {
+                Write-Host "  (that folder only holds the folder '$($top[0].Name)' - using that one)"
+                $only = $top[0].FullName
+            } else { break }
+        }
         $onlyFiles = @(Get-ChildItem -LiteralPath $only -Recurse -File)
         if ($onlyFiles.Count -eq 0) { Write-Host 'That folder is empty. Nothing was written.' -ForegroundColor Red; Pause-Exit 1 }
         Write-Host "  $only ($($onlyFiles.Count) files)"
