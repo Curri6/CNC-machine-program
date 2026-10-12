@@ -457,6 +457,20 @@ from scratch.
   owner to upload the Intel .INF files, then choose: Win95 built-in
   EtherExpress PRO/100 driver (files are in C:\NETSETUP\WIN95), or an
   older Intel driver version that supports this Win95 build.
+- **Root cause found (from the uploaded INTEL.rar).** It's Intel PRO/100
+  driver **6.1.3 (2002-02-25)**. Its `NET55A9X.INF` (the one matching
+  DEV_2449; the owner's device matched "Intel(R) PRO/100 Network
+  Connection" → `D110KMP.ndi`) has an **empty NDIS3 (Win95) copy list**
+  and registers the NDIS5 driver `e100bnt5.sys` plus the NDI helper
+  `8255indi.dll`, which explains the hangs on Win95. But the package's
+  Win95 driver **`E100B.SYS` (NDIS3, 6.01.03) does support DEV_2449**: it
+  has `cmp eax/ecx, 24498086h` checks. Wrote **`tools/win95/WIN95ICH.INF`**
+  (38 lines): installs only E100B.SYS as a standard Win95 NDIS3 adapter
+  with Intel's ICH2 values PcNic=1, MWIEnable=0, and no helper DLL,
+  NDIS5 driver, or WOL VxD. Not tested on real Win95. Delivery: the
+  owner types it into Notepad on the old PC (no working media path for a
+  small file). Before installing, rename `C:\WINDOWS\SYSTEM\8255INDI.DLL`
+  so the hanging helper can't run during the driver change.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
