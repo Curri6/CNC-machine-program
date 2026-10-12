@@ -363,7 +363,10 @@ from scratch.
   then restart. Network list after the driver: Client for Microsoft
   Networks, Client for NetWare Networks, Intel(R) PRO/100 Network
   Connection, IPX/SPX, NetBEUI (Windows defaults). Removing NetWare/IPX/
-  NetBEUI and adding TCP/IP next.
+  NetBEUI and adding TCP/IP next. Removing the last protocol also removed
+  Client for Microsoft Networks (and the Identification tab). That's fine:
+  FTP needs only the adapter + TCP/IP. List now: just Intel(R) PRO/100;
+  primary logon is Windows Logon.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
