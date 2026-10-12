@@ -488,7 +488,12 @@ from scratch.
   in progress: Network components removed (restart deferred until after
   Part C). Device Manager has no "Network adapters" category (Intel
   entry gone); removing only "PCI Ethernet Controller" under Other
-  devices, then Part C.
+  devices, then Part C. Other devices now shows only: PCI Card, PCI
+  Multimedia Audio Device, Unknown Device, Unsupported Device (no PCI
+  Ethernet Controller, so it's already removed). If the NIC isn't
+  re-detected after the restart, try Update Driver on "Unsupported Device"
+  with C:\NETSETUP\ICH (the INF only matches DEV_2449, so it's a safe
+  test).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
