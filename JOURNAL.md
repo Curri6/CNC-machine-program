@@ -536,7 +536,8 @@ from scratch.
   Owner was given exact regedit steps: read BUS_xx/DEV_yy from the Enum\PCI
   instance name, find the Driver value, then add string values BusNumber
   and SlotNumber (decimal, leading zero dropped) under Class\Net\000n,
-  screenshot, restart.
+  screenshot, restart. Enum\PCI on this PC lists IRQHOLDER and
+  VEN_8086 DEV_1130, 1132, 2440, 2442, 2443, 2445, 2449, 244B, 244E.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
