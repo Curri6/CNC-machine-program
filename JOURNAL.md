@@ -449,6 +449,14 @@ from scratch.
   files to check driver version/OS support. Fallback: Win95's built-in
   "Intel EtherExpress PRO/100 (PCI)" driver (Microsoft INF, no Intel NDI
   DLL), force-installed for the ICH2 LAN (82559-compatible MAC).
+  **Fourth hang, 1:43 PM:** the Update Device Driver Wizard went blank
+  with an hourglass during the Intel install, **with the disc out**. That
+  rules out the CD for this one: the Intel package's installer (class
+  installer / 8255indi.dll) hangs this Win95. Don't retry that package.
+  After restart, Cancel any New Hardware wizard at boot. Waiting on the
+  owner to upload the Intel .INF files, then choose: Win95 built-in
+  EtherExpress PRO/100 driver (files are in C:\NETSETUP\WIN95), or an
+  older Intel driver version that supports this Win95 build.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
