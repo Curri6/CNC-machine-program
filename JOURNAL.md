@@ -560,7 +560,15 @@ from scratch.
   DEV_2449 in its supported-device table. It needs LSL.COM >= 2.11. Win95
   TCP/IP can run over an existing ODI driver via ODIHLP.EXE. Next
   (read-only): check the Win95 CABs for LSL.COM and ODIHLP.EXE with
-  `extract /a /d`.
+  `extract /a /d`. **Result: ODIHLP.EXE found, LSL.COM not found.**
+  LSL.COM is Novell's Link Support Layer (NetWare client), which Win95
+  never shipped. The ODI route needs LSL.COM >= 2.11 delivered on new
+  media. Options given to owner: (1) get LSL.COM (ask IT for an old
+  NetWare client disk) plus ideally a blank CD-R, since old drives read CD
+  better than DVD; or append to the working DVD-R (risky: appends failed
+  on the last disc, and the old drive may only read session 1).
+  (2) Keep debugging E100B.SYS Code 10 (config now matches Intel's own
+  Win95 setup, so no obvious cause is left). Recommended: ask IT.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

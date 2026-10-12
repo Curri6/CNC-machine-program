@@ -85,8 +85,11 @@ confirm it. Never design around this, in this phase or later ones.
            reads it as `Win95net (H:)` with Intel + Win95 folders.
            The SD-608 had read errors/freezes during installs, so the disc
            was copied to `C:\NETSETUP` with xcopy; install from there.
-        5. [ ] (Card driver installed 2026-10-12: "Intel(R) PRO/100
-           Network Connection". TCP/IP next.) Install the card driver and TCP/IP; set a static IP of
+        5. [ ] (2026-10-12: Intel's INF hangs Win95; the custom
+           WIN95ICH.INF installs E100B.SYS cleanly, but it's Code 10
+           (won't start the ICH2 chip). Next route: the ODI driver
+           E100BODI.COM, which supports DEV_2449 but needs Novell's
+           LSL.COM, not on the PC; ask IT. See JOURNAL.md.) Install the card driver and TCP/IP; set a static IP of
            192.168.50.2 / 255.255.255.0. **In progress 2026-09-28:**
            adapter added as the built-in "Intel EtherExpress PRO/100
            (PCI)" driver (may not fit the VE chip), TCP/IP added with
