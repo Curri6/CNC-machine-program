@@ -62,7 +62,7 @@ confirm it. Never design around this, in this phase or later ones.
         3. [x] Get the card's Windows 95 driver from the card maker.
            **Owner has it (2026-09-30).** Still to confirm that it's the
            Win9x version (.INF plus a WIN9X/WIN95 folder) before burning.
-        4. [ ] Get the driver onto the old PC via floppy (needs a USB
+        4. [x] Get the driver onto the old PC via floppy (needs a USB
            floppy drive on the laptop) or a CD burned by IT. **Update
            2026-09-30:** owner has a DVD and burner. Burn one data DVD
            (Mastered/ISO 9660, not UDF) with `\WIN95\` CABs +
@@ -81,6 +81,8 @@ confirm it. Never design around this, in this phase or later ones.
            **Superseded 2026-10-10: a new blank DVD-R burned
            successfully** (4x, 142 s, ISO 9660 + Joliet at block 0).
            Next: verify on the laptop, then read it on the Win95 PC.
+           **Done 2026-10-12:** VERIFIED on the laptop, and the Win95 PC
+           reads it as `Win95net (H:)` with Intel + Win95 folders.
         5. [ ] Install the card driver and TCP/IP; set a static IP of
            192.168.50.2 / 255.255.255.0. **In progress 2026-09-28:**
            adapter added as the built-in "Intel EtherExpress PRO/100

@@ -332,6 +332,14 @@ from scratch.
   red "not readable" was a verifier flaw, fixed so blank tracks are
   skipped. Win95 reads the last *complete* session, which is session 1.
   Next: read it on the Win95 PC, then install the Intel adapter + TCP/IP.
+- **2026-10-12: THE WIN95 PC READS THE DISC.** My Computer shows
+  **Win95net (H:)** with the **Intel** and **Win95** folders. That
+  confirms the SD-608 reads this DVD-R (closed first border, open disc)
+  and the ISO 9660/Joliet layout. The CD drive is **H:** on the old PC.
+  Next: Device Manager → PCI Ethernet Controller → Driver → Change
+  Driver → Network adapters → Have Disk → `H:\INTEL`; confirm the
+  PRO/100 VE model from the list, then add TCP/IP (192.168.50.2/24) and
+  point the Win95 CD prompts at `H:\WIN95`.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
