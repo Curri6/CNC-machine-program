@@ -422,7 +422,12 @@ from scratch.
   "Bad command or file name"; the backslash is the same key without
   Shift.) **Confirmed: `dir C:\NETSETUP\WIN95\*.cab` = 30 files**, so
   the hard-drive copy is complete. Installing adapter and TCP/IP from
-  C:\NETSETUP with the disc removed.
+  C:\NETSETUP with the disc removed. The adapter install opened the
+  Network → Identification tab (Computer name "Default"). Doing it all in
+  one pass now that files come from the HDD: name `A-TECH-IBM`,
+  workgroup `WORKGROUP`; add TCP/IP **before** removing NetWare/IPX/
+  NetBEUI (so the MS client isn't auto-removed again); IP 192.168.50.2/24;
+  prompts point at `C:\NETSETUP\WIN95` / `C:\NETSETUP\INTEL`; restart.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
