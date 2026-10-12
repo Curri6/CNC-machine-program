@@ -355,6 +355,12 @@ from scratch.
   (wrong folder). That's Intel's Win9x NDI helper DLL; it should sit next
   to the PRO/100 .INF under `H:\INTEL`. Told the owner to point at
   `H:\INTEL` or browse the Intel subfolders for it, and not to skip it.
+  **Driver installed:** the wizard shows "Intel(R) PRO/100 Network
+  Connection" and moved past the file copy. Windows then asked for the
+  computer/workgroup names. Next: Identification = `A-TECH-IBM` /
+  `WORKGROUP`, remove NetWare/IPX/NetBEUI, add TCP/IP with
+  192.168.50.2/255.255.255.0, OK (CD prompts: `H:\WIN95`, `H:\INTEL`),
+  then restart.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
