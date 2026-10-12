@@ -533,6 +533,10 @@ from scratch.
   value (Net\000n), then add BusNumber/SlotNumber string values to
   HKLM\System\CurrentControlSet\Services\Class\Net\000n. Other table
   entries of note: BoardHasBridge (default 0), UseManualPciAssign (0).
+  Owner was given exact regedit steps: read BUS_xx/DEV_yy from the Enum\PCI
+  instance name, find the Driver value, then add string values BusNumber
+  and SlotNumber (decimal, leading zero dropped) under Class\Net\000n,
+  screenshot, restart.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
