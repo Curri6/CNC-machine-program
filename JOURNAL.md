@@ -471,6 +471,13 @@ from scratch.
   owner types it into Notepad on the old PC (no working media path for a
   small file). Before installing, rename `C:\WINDOWS\SYSTEM\8255INDI.DLL`
   so the hanging helper can't run during the driver change.
+  **Boot error confirms the diagnosis:** "A device file that is specified
+  in the SYSTEM.INI file is damaged... C:\WINDOWS\system\WOL558.vxd". The
+  Intel INF registered its Win98 ACPI wake-on-LAN static VxD
+  (HKLM\System\CurrentControlSet\Services\VxD\ACPIWOL, StaticVxD =
+  WOL558.vxd), which Win95 can't load. Fix: press a key to boot, delete
+  only the `ACPIWOL` key in regedit, comment out any WOL558 line in
+  SYSTEM.INI, restart. WIN95ICH.INF doesn't install it.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
