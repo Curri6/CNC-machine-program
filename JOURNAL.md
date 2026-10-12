@@ -350,7 +350,11 @@ from scratch.
   "Intel PRO Adapter CD-ROM or floppy disk". Point it at `H:\INTEL` (or
   the subfolder holding the .INF), point the Win95 CD prompts at
   `H:\WIN95`, keep newer existing files, and don't restart until TCP/IP
-  is added.
+  is added. Next prompt: "`8255indi.dll` on Intel PRO Adapter CD-ROM or
+  floppy disk could not be found", with the path box showing H:\WIN95
+  (wrong folder). That's Intel's Win9x NDI helper DLL; it should sit next
+  to the PRO/100 .INF under `H:\INTEL`. Told the owner to point at
+  `H:\INTEL` or browse the Intel subfolders for it, and not to skip it.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
