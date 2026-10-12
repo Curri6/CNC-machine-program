@@ -340,6 +340,9 @@ from scratch.
   Driver → Network adapters → Have Disk → `H:\INTEL`; confirm the
   PRO/100 VE model from the list, then add TCP/IP (192.168.50.2/24) and
   point the Win95 CD prompts at `H:\WIN95`.
+  Network panel confirmed empty (leftovers cleared). Installing via
+  Network → Add → Adapter → Have Disk → `H:\INTEL` instead (same
+  result, fewer steps from there).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
