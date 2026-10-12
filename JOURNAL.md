@@ -428,6 +428,11 @@ from scratch.
   workgroup `WORKGROUP`; add TCP/IP **before** removing NetWare/IPX/
   NetBEUI (so the MS client isn't auto-removed again); IP 192.168.50.2/24;
   prompts point at `C:\NETSETUP\WIN95` / `C:\NETSETUP\INTEL`; restart.
+  **Network list is now correct:** Client for Microsoft Networks,
+  Intel(R) PRO/100 Network Connection, TCP/IP. Final touches: confirm
+  the IP is 192.168.50.2/24, set Primary Network Logon to Windows Logon
+  (no extra login box at boot), Close, file prompts from C:\NETSETUP,
+  restart.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
