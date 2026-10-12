@@ -410,6 +410,12 @@ from scratch.
   as an audio CD. Next: close CD Player, cancel the driver wizard so it
   stops reading the drive, clean and reinsert the disc, confirm My
   Computer shows `Win95net (H:)`, then rerun the xcopy.
+  **After reinserting, the xcopy to C:\NETSETUP worked** (owner reports
+  success). Install from the hard drive now, with the disc removed:
+  adapter via Device Manager → Update Driver → `C:\NETSETUP\INTEL`
+  (file prompts: `C:\NETSETUP\INTEL` / `C:\NETSETUP\WIN95`), restart;
+  then TCP/IP 192.168.50.2/24, restart. Quick check: `dir
+  C:\NETSETUP\WIN95\*.cab` should report 30 files.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
