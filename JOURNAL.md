@@ -519,6 +519,20 @@ from scratch.
   C:\WINDOWS\SYSTEM, or no IRQ / a resource conflict (Win95 may not do
   PCI IRQ routing on the ICH2 chipset). Next: Device Manager General +
   Resources tabs, and `dir C:\WINDOWS\SYSTEM\E100B.SYS`.
+  **Results:** Device status **Code 10** (failed to start). Resources:
+  IRQ 05, Mem FEBFF000-FEBFFFFF, I/O 78C0-78FF; the "conflicts" are with the
+  PCI standard PCI-to-PCI bridge (the ICH2 hub-to-PCI bridge the NIC sits
+  behind, so likely cosmetic). E100B.SYS is present in C:\WINDOWS\SYSTEM
+  (73,488 bytes). **Driver analysis:** E100B.SYS has a parameter table
+  (name, offset, size, min, max, default); **BusNumber and SlotNumber
+  default to 0** (bus 0, device 0 is the 815 host bridge), and it calls
+  NdisReadPciSlotInformation. Intel's NDI helper would normally supply
+  the real location. Hypothesis: the driver checks the wrong PCI slot →
+  Code 10. Next: read the NIC's location from
+  HKLM\Enum\PCI\VEN_8086&DEV_2449...\BUS_xx&DEV_yy&FUNC_zz and its Driver
+  value (Net\000n), then add BusNumber/SlotNumber string values to
+  HKLM\System\CurrentControlSet\Services\Class\Net\000n. Other table
+  entries of note: BoardHasBridge (default 0), UseManualPciAssign (0).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
