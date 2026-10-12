@@ -376,6 +376,10 @@ from scratch.
   leave the disc in, and let New Hardware Found finish (`H:\INTEL`,
   `H:\WIN95`). If boot hangs, use F8 → Safe mode. C:\MPSPRO is unaffected.
   Then check what's in Control Panel → Network.
+  After the restart Windows came back and showed the Update Device Driver
+  Wizard for "PCI Ethernet Controller" (new hardware). Finishing it with
+  `H:\INTEL` / `H:\WIN95`, then checking the Network list before adding
+  TCP/IP again.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
