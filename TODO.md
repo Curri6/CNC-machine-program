@@ -83,6 +83,8 @@ confirm it. Never design around this, in this phase or later ones.
            Next: verify on the laptop, then read it on the Win95 PC.
            **Done 2026-10-12:** VERIFIED on the laptop, and the Win95 PC
            reads it as `Win95net (H:)` with Intel + Win95 folders.
+           The SD-608 had read errors/freezes during installs, so the disc
+           was copied to `C:\NETSETUP` with xcopy; install from there.
         5. [ ] (Card driver installed 2026-10-12: "Intel(R) PRO/100
            Network Connection". TCP/IP next.) Install the card driver and TCP/IP; set a static IP of
            192.168.50.2 / 255.255.255.0. **In progress 2026-09-28:**
