@@ -345,6 +345,12 @@ from scratch.
   result, fewer steps from there). The owner couldn't find H:\INTEL by
   browsing (saw only "Win95" entries), so they were told to type
   `H:\INTEL` into the "Copy manufacturer's files from" field instead.
+  **Driver matched:** the Update Device Driver Wizard says "Windows found
+  the following updated driver for this device", then asks for the
+  "Intel PRO Adapter CD-ROM or floppy disk". Point it at `H:\INTEL` (or
+  the subfolder holding the .INF), point the Win95 CD prompts at
+  `H:\WIN95`, keep newer existing files, and don't restart until TCP/IP
+  is added.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
