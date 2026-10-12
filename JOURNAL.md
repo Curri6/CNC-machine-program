@@ -512,6 +512,13 @@ from scratch.
   192.168.50.2/24, restart, check the Network list. After Finish it
   asked for the "Windows 95 CD-ROM" (expected; the network core files);
   pointing it at C:\NETSETUP\WIN95.
+  **Install completed without freezing; Windows booted normally** (first
+  time with this NIC). On boot: "Your network adapter Intel PRO/100 VE for
+  Windows 95 (0000) is not working properly." So the driver loads but the
+  adapter fails to initialize. Suspects: e100b.sys not copied to
+  C:\WINDOWS\SYSTEM, or no IRQ / a resource conflict (Win95 may not do
+  PCI IRQ routing on the ICH2 chipset). Next: Device Manager General +
+  Resources tabs, and `dir C:\WINDOWS\SYSTEM\E100B.SYS`.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
