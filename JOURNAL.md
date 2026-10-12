@@ -370,6 +370,12 @@ from scratch.
   blank (not redrawing), likely Win95 busy copying or a prompt hidden
   behind. Owner told to wait, then Alt+Tab to find any hidden
   Insert Disk box (`H:\WIN95` / `H:\INTEL`), and not to restart.
+  **Win95 froze** (the taskbar clock stopped at 1:22 PM) while adding
+  TCP/IP. Recovery plan: Ctrl+Alt+Del → End Task on anything "Not
+  responding"; otherwise restart (2nd Ctrl+Alt+Del or power button),
+  leave the disc in, and let New Hardware Found finish (`H:\INTEL`,
+  `H:\WIN95`). If boot hangs, use F8 → Safe mode. C:\MPSPRO is unaffected.
+  Then check what's in Control Panel → Network.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
