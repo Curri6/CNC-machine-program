@@ -360,7 +360,10 @@ from scratch.
   computer/workgroup names. Next: Identification = `A-TECH-IBM` /
   `WORKGROUP`, remove NetWare/IPX/NetBEUI, add TCP/IP with
   192.168.50.2/255.255.255.0, OK (CD prompts: `H:\WIN95`, `H:\INTEL`),
-  then restart.
+  then restart. Network list after the driver: Client for Microsoft
+  Networks, Client for NetWare Networks, Intel(R) PRO/100 Network
+  Connection, IPX/SPX, NetBEUI (Windows defaults). Removing NetWare/IPX/
+  NetBEUI and adding TCP/IP next.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
