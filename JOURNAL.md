@@ -397,6 +397,14 @@ from scratch.
   (`xcopy H:\ C:\NETSETUP\ /s /e` from a DOS prompt, needs ~100 MB free
   on C:); xcopy also shows which file, if any, the drive can't read.
   Then install from `C:\NETSETUP\INTEL` and `C:\NETSETUP\WIN95`.
+  **Then the blue screen: "Error Reading CD-ROM in Drive H: Please Insert
+  CD-ROM With Serial Number A79A-F874... it may require cleaning."** That
+  confirms the SD-608 can't read some sectors of the burned DVD-R (the
+  laptop verified the whole image, so the burn itself is good). Plan:
+  Enter once to retry, else Esc. Then `xcopy H:\ C:\NETSETUP\ /s /e /c`,
+  pressing Esc on each read error, to learn which files are unreadable.
+  If only a few fail, work out which ones the network install actually
+  needs and get them over another way.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
