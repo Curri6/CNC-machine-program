@@ -549,7 +549,18 @@ from scratch.
   Class\Net\0000. Confirmed in regedit: Class\Net\0000 now has
   DeviceVxDs=e100b.sys, DevLoader=*ndis, EnumPropPages, InfPath=WIN95ICH.INF,
   MWIEnable=0, PcNic=1, **BusNumber="1", SlotNumber="8"**. Restarting to
-  test.
+  test. **Result: still "not working properly" (Code 10).** Further
+  analysis: Intel's 8255INDI.DLL is a 16-bit NDI installer that picks
+  ndis3/4/5 by Windows/ndis.vxd version and sets DeviceVxDs = prefix +
+  ".sys" for NDIS3. That's what WIN95ICH.INF already does, so the config
+  now matches Intel's intended Win95 setup. Conclusion: E100B.SYS (NDIS3)
+  likely just doesn't start the ICH2 LAN on this Win95, consistent with
+  Intel leaving the NDIS3 copy list empty for DEV_2449. **New route:** the
+  package's real-mode ODI driver **E100BODI.COM v4.01 (2001-11-30)** has
+  DEV_2449 in its supported-device table. It needs LSL.COM >= 2.11. Win95
+  TCP/IP can run over an existing ODI driver via ODIHLP.EXE. Next
+  (read-only): check the Win95 CABs for LSL.COM and ODIHLP.EXE with
+  `extract /a /d`.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
