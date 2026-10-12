@@ -342,7 +342,9 @@ from scratch.
   point the Win95 CD prompts at `H:\WIN95`.
   Network panel confirmed empty (leftovers cleared). Installing via
   Network → Add → Adapter → Have Disk → `H:\INTEL` instead (same
-  result, fewer steps from there).
+  result, fewer steps from there). The owner couldn't find H:\INTEL by
+  browsing (saw only "Win95" entries), so they were told to type
+  `H:\INTEL` into the "Copy manufacturer's files from" field instead.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
