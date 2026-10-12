@@ -569,6 +569,18 @@ from scratch.
   on the last disc, and the old drive may only read session 1).
   (2) Keep debugging E100B.SYS Code 10 (config now matches Intel's own
   Win95 setup, so no obvious cause is left). Recommended: ask IT.
+- **Owner has one blank 700 MB CD-R left (the last disc).** Plan: make it
+  count with a DOS-level fallback that skips Win95 networking entirely.
+  Contents: Intel's DOS packet driver E100BPKT.COM (from Intel's
+  PRO/100 & PRO/1000 driver CD v9.0, archive.org/details/pro1001000),
+  plus any E100B.DOS / E100BODI.COM / LSL.COM there, plus **mTCP** (free
+  DOS TCP/IP and FTP, brutman.com/mTCP). Route: Restart in MS-DOS mode →
+  load the packet driver → mTCP FTP → `mput` C:\MPSPRO to pyftpdlib on the
+  laptop. This session can't download them (network policy blocks
+  brutman.com and archive.org; GitHub search is repo-scoped), so the
+  owner downloads and uploads them here for checking (DEV_2449 support)
+  first. The burn tool will need a generic-folder mode for this disc.
+  Don't burn until checked.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
