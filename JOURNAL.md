@@ -440,6 +440,15 @@ from scratch.
   the driver: F8 → Safe mode to disable it. Possible fix if prompts keep
   defaulting to H:: set HKLM\Software\Microsoft\Windows\CurrentVersion\
   Setup\SourcePath to C:\NETSETUP\WIN95.
+  Owner: it froze **the instant Close was pressed** on the Network
+  dialog. That's when Win95 copies files and runs the Intel NDI helper
+  (8255indi.dll). The first freeze was at the same step. Leading
+  hypothesis: this Intel PRO/100 Win9x package (or its NDI DLL) isn't
+  compatible with this Win95 build. Next: reboot with the disc out,
+  check the Network list, and have the owner upload the two Intel .INF
+  files to check driver version/OS support. Fallback: Win95's built-in
+  "Intel EtherExpress PRO/100 (PCI)" driver (Microsoft INF, no Intel NDI
+  DLL), force-installed for the ICH2 LAN (82559-compatible MAC).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
