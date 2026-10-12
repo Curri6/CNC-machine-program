@@ -83,7 +83,8 @@ confirm it. Never design around this, in this phase or later ones.
            Next: verify on the laptop, then read it on the Win95 PC.
            **Done 2026-10-12:** VERIFIED on the laptop, and the Win95 PC
            reads it as `Win95net (H:)` with Intel + Win95 folders.
-        5. [ ] Install the card driver and TCP/IP; set a static IP of
+        5. [ ] (Card driver installed 2026-10-12: "Intel(R) PRO/100
+           Network Connection". TCP/IP next.) Install the card driver and TCP/IP; set a static IP of
            192.168.50.2 / 255.255.255.0. **In progress 2026-09-28:**
            adapter added as the built-in "Intel EtherExpress PRO/100
            (PCI)" driver (may not fit the VE chip), TCP/IP added with
