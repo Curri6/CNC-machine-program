@@ -495,6 +495,7 @@ from scratch.
   with C:\NETSETUP\ICH (the INF only matches DEV_2449, so it's a safe
   test). Part C: the first `ren` was typed without the space before the
   new name ("Required parameter missing"); told the owner to retype it.
+  Retyped correctly: 8255INDI.DLL renamed to 8255INDI.OLD (no error).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
