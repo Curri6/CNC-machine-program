@@ -538,6 +538,12 @@ from scratch.
   and SlotNumber (decimal, leading zero dropped) under Class\Net\000n,
   screenshot, restart. Enum\PCI on this PC lists IRQHOLDER and
   VEN_8086 DEV_1130, 1132, 2440, 2442, 2443, 2445, 2449, 244B, 244E.
+  The DEV_2449 instance key is **`40F000`** (Win95-style instance ID).
+  Read as devfn 0x40 → device 8, function 0, which matches the usual ICH2
+  LAN position. Bus 1 because there's no 815 AGP bridge (no DEV_1131), so
+  the hub-to-PCI bridge (244E) is the first secondary bus. Trying
+  BusNumber=1, SlotNumber=8 (string values) under Class\Net\<Driver#>.
+  A wrong value just leaves Code 10.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
