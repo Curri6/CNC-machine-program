@@ -366,7 +366,10 @@ from scratch.
   NetBEUI and adding TCP/IP next. Removing the last protocol also removed
   Client for Microsoft Networks (and the Identification tab). That's fine:
   FTP needs only the adapter + TCP/IP. List now: just Intel(R) PRO/100;
-  primary logon is Windows Logon.
+  primary logon is Windows Logon. Next screen: the wizard window went
+  blank (not redrawing), likely Win95 busy copying or a prompt hidden
+  behind. Owner told to wait, then Alt+Tab to find any hidden
+  Insert Disk box (`H:\WIN95` / `H:\INTEL`), and not to restart.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
