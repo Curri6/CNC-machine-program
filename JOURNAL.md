@@ -543,7 +543,10 @@ from scratch.
   LAN position. Bus 1 because there's no 815 AGP bridge (no DEV_1131), so
   the hub-to-PCI bridge (244E) is the first secondary bus. Trying
   BusNumber=1, SlotNumber=8 (string values) under Class\Net\<Driver#>.
-  A wrong value just leaves Code 10.
+  A wrong value just leaves Code 10. Devnode 40F000: Class=Net,
+  Driver=**Net\0000**, ConfigFlags=0x10, DeviceDesc "Intel PRO/100 VE for
+  Windows 95", HWRevision 001, Mfg Intel. Adding the values under
+  Class\Net\0000.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
