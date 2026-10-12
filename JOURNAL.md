@@ -418,7 +418,9 @@ from scratch.
   C:\NETSETUP\WIN95\*.cab` should report 30 files.
   xcopy result: **68 File(s) copied**, no visible errors, list ending
   WIN95_10..28.CAB, WINSETUP.BIN, WOWKIT.EXE, XMSMMGR.EXE (INTEL copies
-  first alphabetically).
+  first alphabetically). (A `dir` check typo'd `|` for `\`, which gives
+  "Bad command or file name"; the backslash is the same key without
+  Shift.)
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
