@@ -546,7 +546,10 @@ from scratch.
   A wrong value just leaves Code 10. Devnode 40F000: Class=Net,
   Driver=**Net\0000**, ConfigFlags=0x10, DeviceDesc "Intel PRO/100 VE for
   Windows 95", HWRevision 001, Mfg Intel. Adding the values under
-  Class\Net\0000.
+  Class\Net\0000. Confirmed in regedit: Class\Net\0000 now has
+  DeviceVxDs=e100b.sys, DevLoader=*ndis, EnumPropPages, InfPath=WIN95ICH.INF,
+  MWIEnable=0, PcNic=1, **BusNumber="1", SlotNumber="8"**. Restarting to
+  test.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
