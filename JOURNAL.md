@@ -500,8 +500,12 @@ from scratch.
   Notepad open on WIN95ICH.INF for typing; screenshot check before restart.
   First half reviewed from a screenshot: one typo
   (`"netdi.dll,EnumPropPage"` missing the final "s"), told the owner to
-  fix it; [Version] through DefUpper otherwise correct. Waiting on the
-  second half.
+  fix it; [Version] through DefUpper otherwise correct. Second half: one
+  more typo, `[SourceDiskFiles]` should be `[SourceDisksFiles]` (matters:
+  it maps e100b.sys to its source disk). `Deflower` and `[Ich2.files]`
+  are fine (case-insensitive). After both fixes: save, restart, then Update
+  Driver → Other Locations → C:\NETSETUP\ICH, and screenshot the found
+  driver before Finish.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
