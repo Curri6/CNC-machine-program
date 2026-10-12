@@ -433,6 +433,13 @@ from scratch.
   the IP is 192.168.50.2/24, set Primary Network Logon to Windows Logon
   (no extra login box at boot), Close, file prompts from C:\NETSETUP,
   restart.
+  **Froze a third time** around Close/file copy. Unknown yet whether it's
+  the CD drive again (disc still in? light blinking? file prompt still
+  pointing at H:) or the Intel driver hanging the PC when it loads.
+  Recovery: restart with the disc removed. If boot hangs, that points to
+  the driver: F8 → Safe mode to disable it. Possible fix if prompts keep
+  defaulting to H:: set HKLM\Software\Microsoft\Windows\CurrentVersion\
+  Setup\SourcePath to C:\NETSETUP\WIN95.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
