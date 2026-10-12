@@ -390,6 +390,13 @@ from scratch.
   then restart; (2) TCP/IP only. The freeze happened when adapter and
   TCP/IP were being installed through nested Network → Add → Update
   Driver windows in one pass.
+  **Froze again during the adapter-only install, with the CD drive
+  light blinking.** New diagnosis: the SD-608 is retrying reads on the
+  burned DVD-R, and Win95 hangs while it waits. Both freezes happened
+  during file copies from H:. Fix: first copy the disc to the hard drive
+  (`xcopy H:\ C:\NETSETUP\ /s /e` from a DOS prompt, needs ~100 MB free
+  on C:); xcopy also shows which file, if any, the drive can't read.
+  Then install from `C:\NETSETUP\INTEL` and `C:\NETSETUP\WIN95`.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
