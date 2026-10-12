@@ -405,6 +405,11 @@ from scratch.
   pressing Esc on each read error, to learn which files are unreadable.
   If only a few fail, work out which ones the network install actually
   needs and get them over another way.
+  The xcopy run copied only **`Track01.cda`**, and the taskbar showed
+  **CD Player**: after the read errors the SD-608 misidentified the disc
+  as an audio CD. Next: close CD Player, cancel the driver wizard so it
+  stops reading the drive, clean and reinsert the disc, confirm My
+  Computer shows `Win95net (H:)`, then rerun the xcopy.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
