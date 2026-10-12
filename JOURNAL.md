@@ -478,6 +478,12 @@ from scratch.
   WOL558.vxd), which Win95 can't load. Fix: press a key to boot, delete
   only the `ACPIWOL` key in regedit, comment out any WOL558 line in
   SYSTEM.INI, restart. WIN95ICH.INF doesn't install it.
+  The owner was given one consolidated checklist: (A) remove ACPIWOL /
+  WOL558, (B) remove the broken Network + Device Manager entries,
+  (C) rename 8255INDI.DLL, make C:\NETSETUP\ICH with E100B.SYS, type
+  WIN95ICH.INF in Notepad, restart, (D) Update Driver → Other Locations →
+  C:\NETSETUP\ICH, then screenshot the found driver ("Intel PRO/100 VE for
+  Windows 95") before Finish.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
