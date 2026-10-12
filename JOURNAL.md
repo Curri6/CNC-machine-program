@@ -581,6 +581,18 @@ from scratch.
   owner downloads and uploads them here for checking (DEV_2449 support)
   first. The burn tool will need a generic-folder mode for this disc.
   Don't burn until checked.
+- **The old PC can't read the CD either**, so reuse the working DVD-R
+  (open, ~4300 MB free) for a second session. Caveats given to owner:
+  appending is what failed on the first DVD (now session-close only,
+  the mode that worked), and the SD-608 may only read session 1. Burn
+  tool updated: option **2 = one folder of your choice** stages that
+  folder's contents at the disc root, and the pre-burn check counts every
+  file (`Win95DiscCheck.ExpectedFiles`) instead of requiring WIN95/INTEL.
+  Tested in `tools/tests/test_generic_check.ps1` (4/4: right count passes;
+  wrong count, wrong start, and wrong mode fail), and the original 7
+  checks, same-thread, and speed-choice tests still pass. Note: files go
+  to Win95 via Explorer/xcopy to C:\ before any MS-DOS-mode use, since DOS
+  mode likely has no CD driver.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

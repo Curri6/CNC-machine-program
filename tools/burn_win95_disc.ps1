@@ -162,12 +162,25 @@ public static class Win95DiscCheck
         return n;
     }
 
+    // -1 = the usual WIN95 + INTEL check. Otherwise the exact number of files
+    // the disc must contain (generic "burn this folder" mode).
+    public static int ExpectedFiles = -1;
+
     static string CheckTree(Reader r, long start, uint vol, byte[] vd, bool joliet)
     {
         uint rootLba = U32(vd, 158);
         uint rootLen = U32(vd, 166);
         List<Entry> root = ReadDir(r, start, vol, rootLba, rootLen, joliet);
         string which = joliet ? "Joliet" : "ISO 9660";
+        if (ExpectedFiles >= 0)
+        {
+            Entry top = new Entry();
+            top.Lba = rootLba; top.Len = rootLen; top.IsDir = true; top.Name = "";
+            int all = CountFiles(r, start, vol, top, joliet, "", 0);
+            if (all != ExpectedFiles)
+                throw new Exception(which + " listing has " + all + " files, expected " + ExpectedFiles + ". Nothing was burned.");
+            return which + ": all " + all + " files present";
+        }
         Entry win95 = Find(root, "WIN95", true);
         Entry intel = Find(root, "INTEL", true);
         if (win95 == null) throw new Exception(which + " listing has no WIN95 folder. Nothing was burned.");
@@ -322,7 +335,7 @@ try {
         $plan = 'ERASE this rewritable disc, then burn WIN95 + INTEL onto it (one closed session).'
     } elseif ($status -band $ST_APPENDABLE) {
         $mode = 'append'
-        $plan = 'ADD a new Win95-readable section with WIN95 + INTEL to this disc (closed session). ' +
+        $plan = 'ADD a new Win95-readable section with the chosen files to this disc (closed session). ' +
                 '(What is already on the disc stays physically there but will no longer be listed.) ' +
                 'Note: some old drives only read the first section of a DVD, so this may still not show up on the old PC.'
     } else {
@@ -341,27 +354,44 @@ try {
         return $dlg.SelectedPath
     }
 
-    Write-Host 'Pick the WIN95 folder (the one with the .CAB files)...'
-    $win95 = Pick-Folder 'Pick the WIN95 folder (the one full of .CAB files)'
-    if (-not $win95) { Write-Host 'Cancelled. Nothing was written.'; Pause-Exit 0 }
-    $cabs = @(Get-ChildItem -LiteralPath $win95 -Filter *.cab -File)
-    if ($cabs.Count -eq 0) {
-        Write-Host "No .CAB files directly inside $win95 - wrong folder? Nothing was written." -ForegroundColor Red
-        Pause-Exit 1
-    }
-    Write-Host "  $win95 ($($cabs.Count) .CAB files)"
+    Write-Host 'What do you want to burn?'
+    Write-Host '  1 = the WIN95 + INTEL folders (Windows 95 network files)'
+    Write-Host '  2 = one folder of your choice (everything inside it goes on the disc)'
+    $what = Read-Host 'Type 1 or 2'
+    $generic = $false
+    if ($what -eq '2') {
+        $generic = $true
+        Write-Host 'Pick the folder to burn...'
+        $only = Pick-Folder 'Pick the folder whose contents should go on the disc'
+        if (-not $only) { Write-Host 'Cancelled. Nothing was written.'; Pause-Exit 0 }
+        $onlyFiles = @(Get-ChildItem -LiteralPath $only -Recurse -File)
+        if ($onlyFiles.Count -eq 0) { Write-Host 'That folder is empty. Nothing was written.' -ForegroundColor Red; Pause-Exit 1 }
+        Write-Host "  $only ($($onlyFiles.Count) files)"
+        $win95 = $only; $intel = $only
+    } elseif ($what -eq '1') {
+        Write-Host 'Pick the WIN95 folder (the one with the .CAB files)...'
+        $win95 = Pick-Folder 'Pick the WIN95 folder (the one full of .CAB files)'
+        if (-not $win95) { Write-Host 'Cancelled. Nothing was written.'; Pause-Exit 0 }
+        $cabs = @(Get-ChildItem -LiteralPath $win95 -Filter *.cab -File)
+        if ($cabs.Count -eq 0) {
+            Write-Host "No .CAB files directly inside $win95 - wrong folder? Nothing was written." -ForegroundColor Red
+            Pause-Exit 1
+        }
+        Write-Host "  $win95 ($($cabs.Count) .CAB files)"
 
-    Write-Host 'Pick the INTEL driver folder (the one with the .INF file)...'
-    $intel = Pick-Folder 'Pick the Intel PRO/100 VE Windows 95 driver folder (contains a .INF file)'
-    if (-not $intel) { Write-Host 'Cancelled. Nothing was written.'; Pause-Exit 0 }
-    $infs = @(Get-ChildItem -LiteralPath $intel -Filter *.inf -File -Recurse)
-    if ($infs.Count -eq 0) {
-        Write-Host "No .INF file inside $intel - wrong folder? Nothing was written." -ForegroundColor Red
-        Pause-Exit 1
-    }
-    Write-Host "  $intel ($($infs.Count) .INF file(s))"
+        Write-Host 'Pick the INTEL driver folder (the one with the .INF file)...'
+        $intel = Pick-Folder 'Pick the Intel PRO/100 VE Windows 95 driver folder (contains a .INF file)'
+        if (-not $intel) { Write-Host 'Cancelled. Nothing was written.'; Pause-Exit 0 }
+        $infs = @(Get-ChildItem -LiteralPath $intel -Filter *.inf -File -Recurse)
+        if ($infs.Count -eq 0) {
+            Write-Host "No .INF file inside $intel - wrong folder? Nothing was written." -ForegroundColor Red
+            Pause-Exit 1
+        }
+        Write-Host "  $intel ($($infs.Count) .INF file(s))"
+    } else { Write-Host "'$what' is not 1 or 2. Nothing was written."; Pause-Exit 0 }
 
-    $sizeMB = [math]::Round(((Get-ChildItem -LiteralPath $win95, $intel -Recurse -File | Measure-Object Length -Sum).Sum) / 1MB, 1)
+    $srcs = @($win95, $intel); if ($generic) { $srcs = @($win95) }
+    $sizeMB = [math]::Round(((Get-ChildItem -LiteralPath $srcs -Recurse -File | Measure-Object Length -Sum).Sum) / 1MB, 1)
     Write-Host "Total:   $sizeMB MB"
     if ($sizeMB -ge $freeMB) {
         Write-Host 'That does not fit on this disc. Nothing was written.' -ForegroundColor Red
@@ -371,16 +401,19 @@ try {
     # ---- 4. Stage files into WIN95NET\WIN95 and WIN95NET\INTEL --------------
     $stage = Join-Path $env:TEMP 'WIN95NET_stage'
     if (Test-Path $stage) { Remove-Item -LiteralPath $stage -Recurse -Force }
-    New-Item -ItemType Directory -Path (Join-Path $stage 'WIN95') | Out-Null
-    New-Item -ItemType Directory -Path (Join-Path $stage 'INTEL') | Out-Null
+    New-Item -ItemType Directory -Path $stage | Out-Null
+    $pairs = @(@($win95, 'WIN95'), @($intel, 'INTEL'))
+    if ($generic) { $pairs = @(, @($win95, '')) }
 
     $jobs = @()
-    foreach ($pair in @(@($win95, 'WIN95'), @($intel, 'INTEL'))) {
+    foreach ($pair in $pairs) {
         $base = (Resolve-Path -LiteralPath $pair[0]).Path.TrimEnd('\')
+        $destBase = $stage; if ($pair[1]) { $destBase = Join-Path $stage $pair[1] }
         foreach ($f in Get-ChildItem -LiteralPath $base -Recurse -File) {
-            $jobs += , @($f.FullName, (Join-Path (Join-Path $stage $pair[1]) $f.FullName.Substring($base.Length + 1)))
+            $jobs += , @($f.FullName, (Join-Path $destBase $f.FullName.Substring($base.Length + 1)))
         }
     }
+    if ($generic) { [Win95DiscCheck]::ExpectedFiles = $jobs.Count }
     for ($i = 0; $i -lt $jobs.Count; $i++) {
         Write-Progress -Activity 'Step 1 of 3: preparing files' -Status "$($i + 1) of $($jobs.Count)" `
             -PercentComplete ([int](100 * $i / [math]::Max(1, $jobs.Count)))
