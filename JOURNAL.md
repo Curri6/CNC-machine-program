@@ -509,7 +509,9 @@ from scratch.
   **WIN95ICH.INF accepted by Windows 95:** the Update Device Driver Wizard
   found "Intel PRO/100 VE for Windows 95" in the Ich folder. Next: Finish
   (prompts: C:\NETSETUP\ICH / C:\NETSETUP\WIN95), add TCP/IP
-  192.168.50.2/24, restart, check the Network list.
+  192.168.50.2/24, restart, check the Network list. After Finish it
+  asked for the "Windows 95 CD-ROM" (expected; the network core files);
+  pointing it at C:\NETSETUP\WIN95.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
