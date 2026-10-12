@@ -379,7 +379,11 @@ from scratch.
   After the restart Windows came back and showed the Update Device Driver
   Wizard for "PCI Ethernet Controller" (new hardware). Finishing it with
   `H:\INTEL` / `H:\WIN95`, then checking the Network list before adding
-  TCP/IP again.
+  TCP/IP again. Back at the desktop at 1:27 PM with the clock running, so
+  Windows is healthy (My Computer shows A:, C:-G:, and the disc as H:).
+  Before retrying TCP/IP: check the Network list and Device Manager →
+  Network adapters for a yellow "!" (a resource conflict could explain
+  the freeze).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
