@@ -829,6 +829,10 @@ from scratch.
   just failing to reach the laptop. Next: Device Manager status of
   "Existing ODI Driver", then a logged boot (F8 → Logged \BOOTLOG.TXT) and
   `find /i` for odi / ndis / vtcp in C:\BOOTLOG.TXT.
+- **2026-10-14: Device Manager → Network adapters:** **Existing ODI Driver
+  has a yellow "!"** (problem); Intel PRO/100 VE has the red X (disabled,
+  as intended). Asked for the ODI driver's General (Code) and Resources
+  tabs.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
