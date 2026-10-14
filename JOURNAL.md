@@ -966,6 +966,13 @@ from scratch.
     G41 2, G40 1; M6 3, M3 3, M30 2, M0 2, M7 1, M2 1. Job sizes: FACEF/
     FACER 3.26 × 1.98 in, KNIGHT 2 × 2 in, GEAR 1.12 in dia, ELLIPSE
     2 × 1 in, TEXTDEMO 1.95 × 0.23 in.
+- **2026-10-14: owner asked "now what".** Options given: (1) Phase 0
+  acrylic test cut with the original MPS2003 (person present; P preview,
+  then dry run); (2) let the laptop send jobs *to* the old PC over the
+  same cable (receiver gets RETR so Win95 `ftp` can `get` a .TAP; laptop
+  side only, no new disc); (3) try a real job end to end: make or pick a
+  .TAP in the Windows 11 app → send → preview on MPS2003. Recommended
+  order 2 → 3 → 1. Stale TODO items (backup, PARAM files) ticked.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

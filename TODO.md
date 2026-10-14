@@ -187,12 +187,10 @@ full retrofit becomes necessary again.
 - [x] Power on the Windows 95 machine and check for the original
       software. **Done** — `C:\MPSPRO` is fully intact (MPS2003 and
       relatives, plus config files). See `JOURNAL.md`.
-- [ ] **Back up `C:\MPSPRO` entirely** (ideally a full disk image) before
-      anything ever happens to that drive — it's a working reference
-      for the exact G-code dialect and motion parameters. Not yet done.
-- [ ] Open the remaining config files not yet checked: `Param3.dat`,
-      `Param51.dat`, `Param51s.dat`, `Paramp3.dat` (Notepad, like
-      `Params.dat` already read).
+- [x] **Back up `C:\MPSPRO` entirely** — done 2026-10-14 over the network
+      (all 20 files; owner keeps the zip). A full disk image is still not done.
+- [x] Open the remaining config files — done 2026-10-14, decoded in
+      `machine-backup/README.md` (MPS2003 uses PARAM3.DAT).
 - [x] ~~Physically trace the PC's parallel port cable~~ — **resolved by
       cross-checking both manuals instead** (2026-09-22): neither
       manual mentions the other company's product, and the spectraLIGHT
