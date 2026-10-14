@@ -682,6 +682,10 @@ from scratch.
   Verifier needs: generic mode (file count / NETDISC.TAG), skip BLANK
   tracks, judge by the last written track. Owner sent to check H: on the
   old PC.
+- **2026-10-14:** owner asked what the receive files are for. Answer:
+  keep receive_files.bat/.ps1 together in Downloads; used only at the
+  last step (cable, run .bat, YES for 192.168.50.1, wait for ping YES,
+  C:\NETUP\SEND on the old PC, CHECK PASSED, Q, upload zip).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
