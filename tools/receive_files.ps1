@@ -5,6 +5,12 @@
 # MANIFEST.TXT listing every file's size. This script checks every file
 # against that list and zips the result.
 #
+# It also works the other way: put a job file (e.g. JOB1.TAP) in
+# Downloads\CNC_backup\to_old_pc and the old PC can fetch it with Windows
+# 95's own ftp ("get JOB1.TAP"). Only files in that folder can be fetched.
+# Text job files (.TAP .NC .TXT .GCO .CNC) are sent with DOS (CRLF) line
+# endings, which MPS2003 expects.
+#
 # It changes two settings only while it runs and puts them back when you
 # press Q: the cable port's IP address (only if you type YES) and two
 # temporary firewall rules (FTP port 21 and ping, only from 192.168.50.x).
@@ -191,6 +197,48 @@ function Check-Backup {
     return $false
 }
 
+# ---------------------------------------------------------------- outbox
+$TextJob = '\.(TAP|NC|TXT|GCO|CNC|NCC)$'
+
+function Is-DosName([string]$n) {
+    return $n -match '^[A-Za-z0-9_$~!#%&{}()@^-]{1,8}(\.[A-Za-z0-9_$~!#%&{}()@^-]{1,3})?$'
+}
+
+function Outbox-Files {
+    return @(Get-ChildItem -LiteralPath $script:Outbox -File -ErrorAction SilentlyContinue |
+             Sort-Object Name)
+}
+
+function Outbox-Bytes($file) {
+    # What the old PC will receive: text jobs get CRLF line endings.
+    $b = [System.IO.File]::ReadAllBytes($file.FullName)
+    if ($file.Name -notmatch $TextJob) { return ,$b }
+    $t = $Latin1.GetString($b) -replace "`r`n", "`n" -replace "`r", "`n" -replace "`n", "`r`n"
+    return ,$Latin1.GetBytes($t)
+}
+
+function Find-Outbox([string]$arg) {
+    # Only a plain file name that is really in the outbox; no paths.
+    $name = ($arg.Trim() -split '[\\/:]')[-1]
+    if (-not $name -or $name -eq '.' -or $name -eq '..') { return $null }
+    foreach ($f in Outbox-Files) { if ($f.Name -ieq $name) { return $f } }
+    return $null
+}
+
+function Show-Outbox {
+    $files = Outbox-Files
+    if ($files.Count -eq 0) {
+        Say "To send a job TO the old PC: put it in $script:Outbox"
+        return
+    }
+    Say "Ready to send to the old PC (in $script:Outbox):"
+    foreach ($f in $files) {
+        $note = ''
+        if (-not (Is-DosName $f.Name)) { $note = '  <- rename to 8 letters + .TAP (DOS can''t use this name)' }
+        Say ("  {0}  {1} bytes{2}" -f $f.Name, $f.Length, $note)
+    }
+}
+
 # ---------------------------------------------------------------- FTP
 function Send-Line($stream, [string]$text) {
     $b = $Latin1.GetBytes($text + "`r`n")
@@ -323,6 +371,43 @@ function Run-Session($client) {
                     Send-Line $s ("226 Done, {0} bytes" -f $n)
                     break
                 }
+                '^RETR$' {
+                    $f = Find-Outbox $arg
+                    if ($null -eq $f) { Send-Line $s '550 Not in the to_old_pc folder'; break }
+                    if ($null -eq $dataEp) { Send-Line $s '425 Send PORT first'; break }
+                    $bytes = Outbox-Bytes $f
+                    $dc = Open-Data $dataEp
+                    $dataEp = $null
+                    if ($null -eq $dc) { Send-Line $s '425 Could not connect back to the old PC'; break }
+                    Send-Line $s ("150 Sending {0} ({1} bytes)" -f $f.Name, $bytes.Length)
+                    $okFile = $true
+                    try { $ds = $dc.GetStream(); $ds.Write($bytes, 0, $bytes.Length); $ds.Flush() }
+                    catch { $okFile = $false } finally { $dc.Close() }
+                    if ($okFile) {
+                        Send-Line $s ("226 Done, {0} bytes" -f $bytes.Length)
+                        Say ("  SENT to old PC: {0}  {1} bytes" -f $f.Name, $bytes.Length) Green
+                    } else { Send-Line $s '426 Transfer broke off'; Say "  FAILED sending $($f.Name)" Red }
+                    break
+                }
+                '^(LIST|NLST)$' {
+                    if ($null -eq $dataEp) { Send-Line $s '425 Send PORT first'; break }
+                    $out = New-Object System.Text.StringBuilder
+                    foreach ($f in Outbox-Files) {
+                        if ($cmd -eq 'NLST') { [void]$out.Append($f.Name + "`r`n") }
+                        else {
+                            $n = (Outbox-Bytes $f).Length
+                            [void]$out.Append(('-rw-r--r-- 1 owner group {0,10} {1} {2}' -f $n, $f.LastWriteTime.ToString('MMM dd HH:mm', [Globalization.CultureInfo]::InvariantCulture), $f.Name) + "`r`n")
+                        }
+                    }
+                    $bytes = $Latin1.GetBytes($out.ToString())
+                    $dc = Open-Data $dataEp
+                    $dataEp = $null
+                    if ($null -eq $dc) { Send-Line $s '425 Could not connect back to the old PC'; break }
+                    Send-Line $s '150 Files in to_old_pc'
+                    try { $ds = $dc.GetStream(); $ds.Write($bytes, 0, $bytes.Length) } catch { } finally { $dc.Close() }
+                    Send-Line $s '226 Done'
+                    break
+                }
                 '^QUIT$' { Send-Line $s '221 Bye'; return }
                 default  { Send-Line $s '502 Not supported here' }
             }
@@ -342,6 +427,8 @@ if ($OutDir) { $script:OutBase = $OutDir }
 else { $script:OutBase = Join-Path $env:USERPROFILE 'Downloads\CNC_backup' }
 $script:Root = Join-Path $script:OutBase ("received_" + $script:Stamp)
 [void][System.IO.Directory]::CreateDirectory($script:Root)
+$script:Outbox = Join-Path $script:OutBase 'to_old_pc'
+[void][System.IO.Directory]::CreateDirectory($script:Outbox)
 $script:Expect = $null; $script:ExpectBytes = 0L
 
 Say '=== Receive the CNC backup from the old Windows 95 PC ===' Cyan
@@ -357,6 +444,7 @@ try {
     Say ''
     Say "Ready. Files will be saved in: $script:Root" Green
     Say 'Now, on the old PC, open an MS-DOS Prompt and type:  C:\NETUP\SEND'
+    Show-Outbox
     Say 'Press Q here when you are finished (this puts the network settings back).'
     $ping = New-Object System.Net.NetworkInformation.Ping
     $lastPing = [DateTime]::MinValue; $lastAns = $null; $passed = $false

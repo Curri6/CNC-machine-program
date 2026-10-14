@@ -973,6 +973,20 @@ from scratch.
   side only, no new disc); (3) try a real job end to end: make or pick a
   .TAP in the Windows 11 app → send → preview on MPS2003. Recommended
   order 2 → 3 → 1. Stale TODO items (backup, PARAM files) ticked.
+- **2026-10-14: laptop → old PC direction built** (owner chose to go
+  ahead). `receive_files.ps1` now also serves files from
+  `Downloads\CNC_backup\to_old_pc` (created at start, listed in the
+  window with a warning for non-8.3 names): RETR (plain file name only,
+  case-insensitive, must be in that folder — paths, `..`, drive letters
+  refused), NLST/LIST (`ls`/`dir`). Text jobs (.TAP .NC .TXT .GCO .CNC
+  .NCC) are sent with CRLF line endings; other files byte-for-byte.
+  Laptop window prints "SENT to old PC: name bytes". Tests: receiver
+  46/46 (15 new); end-to-end `dir` + `get` with the Linux ftp client in
+  active mode OK. Old PC needs nothing new: Win95 `ftp 192.168.50.1`,
+  user anonymous, any password, `lcd C:\MPSPRO`, `get NAME.TAP`, `quit`.
+  Test job `tools/jobs/SQUARE1.TAP`: 0.5 in square at Z+0.25 (cuts air),
+  G90/G00/G01/M02 only, no parser warnings. Plan: fetch it, open in
+  MPS2003 (2 = Load Program, extension TAP), **P = Plot Preview only**.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
