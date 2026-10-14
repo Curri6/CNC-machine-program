@@ -573,6 +573,7 @@ try {
 
     # ---- 6. Confirm -----------------------------------------------------------
     Write-Host ''
+    if ($generic) { $plan = $plan.Replace('WIN95 + INTEL', "the $($jobs.Count) files from the chosen folder") }
     Write-Host "PLAN: $plan" -ForegroundColor Yellow
     $answer = Read-Host 'Type YES to burn (anything else cancels)'
     if ($answer -cne 'YES') { Stop-All; Write-Host 'Cancelled. Nothing was written.'; Pause-Exit 0 }
