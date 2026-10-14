@@ -704,6 +704,10 @@ from scratch.
   suggested: "WIN95NET – BACKUP (Oct 2026) / Old PC sees: WIN95 + INTEL /
   New PCs see: NETDISC kit / Don't burn more on this disc" (felt-tip, label
   side only).
+  Short on-disc versions: old disc "WIN95NET BACKUP / Win95 net files +
+  Intel driver / Oct 2026 – don't reburn"; new disc "NETDISC – Win95
+  network kit / Intel DOS driver + FTP send / Oct 2026" (write after
+  burning).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
