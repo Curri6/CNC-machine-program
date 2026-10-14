@@ -872,6 +872,12 @@ from scratch.
   and COMMAND.COM rejects `@` inside FOR ... DO ("Bad command or file
   name" per file). Retrying with `for %f in (C:\WINDOWS\INF\NET*.INF) do
   find /i /c "msodisup" %f`.
+  Partial output showed NETTDKP/NETTRANS/NETTULIP/NETUB/NETXIR/NETZNOTE
+  all 0 (rest scrolled). Redirected both searches to C:\NETUP\HITS.TXT;
+  next screenshot was blank (unclear if `find /v ": 0"` ran) — asked to
+  rerun. Note: Ndi\Interfaces (odi/ethernet) exist, so Odi.ndi.reg *was*
+  applied and evidently does not set DeviceVxDs; MSODISUP may instead be
+  a static VxD — asked to check HKLM\...\Services\VxD for MSODISUP.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
