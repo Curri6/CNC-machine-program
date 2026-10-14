@@ -851,6 +851,12 @@ from scratch.
   for 0001\NDIS, 0001\Ndi(\Install) and
   `find /i "odi" C:\WINDOWS\INF\NETGEN.INF` to confirm what the INF
   sets before any change.
+- **2026-10-14:** 0001\Ndi: DeviceID="*PNP8ffd", InfSection="*PNP8ffd.ndi",
+  InstallInf="" (has subkeys). 0001\NDIS: LogDriverName="*PNP8ffd",
+  MajorNdisVersion 03, MinorNdisVersion 0a. So the adapter is NETGEN.INF's
+  *PNP8FFD (Existing ODI Driver). Asked for 0001\Ndi\Install and
+  `find /i "8ffd"` / `find /i "msodisup"` in C:\WINDOWS\INF\NETGEN.INF to
+  get the exact DeviceVxDs value the INF intends.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
