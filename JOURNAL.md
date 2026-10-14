@@ -715,6 +715,12 @@ from scratch.
   reads session 1 = WIN95 + INTEL anyway). Then NETDISC goes on a new
   blank DVD-R as session 1 (option 2, start block 0). Steps given for both,
   photo checkpoints before each YES.
+- **2026-10-14: new blank DVD-R, NETDISC:** blank (code 0x6), 4488 MB free,
+  45 files, CHECK PASSED at **start block 0**, Joliet 45/45, no UDF.
+  Approved YES at 4x. Cosmetic bug: PLAN line said "Burn WIN95 + INTEL"
+  in option-2 mode (plan text was built before the choice) — fixed to
+  "the N files from the chosen folder". A window behind showed an earlier
+  "Done" (Part 1, old disc?) — asked owner to confirm WIN95/INTEL show.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
