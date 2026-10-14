@@ -802,6 +802,10 @@ from scratch.
   (no NET START; PROTOCOL.INI contents), or the adapter's status. Asked
   for photos: Driver Type tab, Device Manager network adapters,
   `type C:\WINDOWS\PROTOCOL.INI | more`.
+- **2026-10-14:** Existing ODI Driver → Driver Type = **Real mode (16 bit)
+  ODI driver** (only enabled option); Bindings = **TCP/IP -> Existing ODI
+  Driver ticked**. Both correct. Waiting on PROTOCOL.INI and Device
+  Manager photos.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
