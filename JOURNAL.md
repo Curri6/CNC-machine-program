@@ -748,6 +748,14 @@ from scratch.
   1514, Bus ID 4; Boards 1–4 = Ethernet_II, 802.2, 802.3, SNAP. So the
   hardware is fine; the Code 10 was the Win95 NDIS3 driver only.
   Next: key → `C:\NETUP\INSTALL` (photo) → EXIT → Windows network setup.
+- **2026-10-14:** TEST unload OK ("E100BODI driver has been successfully
+  removed", "The LSL has been successfully removed"). **`C:\NETUP\INSTALL`
+  → "FAILED - C:\AUTOEXEC.BAT was NOT changed."** (AUTOEXEC.BAT exists,
+  else the no-AUTOEXEC path would have run.) Failure is either the copy
+  to AUTOEXEC.OLD or the concatenation to AUTOEXEC.NEW; `> nul` hid the
+  COPY message. Main suspect: a 0-byte AUTOEXEC.BAT (MS-DOS COPY skips
+  zero-length files; DOSBox doesn't, so the tests didn't catch it).
+  Asked for `dir C:\AUTOEXEC.*` and `dir C:\NETUP\AUTOEXEC.*`.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
