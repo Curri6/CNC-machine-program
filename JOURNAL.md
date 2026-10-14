@@ -788,6 +788,9 @@ from scratch.
   prompt; answer **No** to restart; then `type C:\AUTOEXEC.BAT` (photo) to
   see what lines Windows added (risk: double LSL, or an ODIHLP line before
   ours making LOADODI skip ODIHLP).
+- **2026-10-14:** owner clicked Yes to restart by mistake (before the
+  AUTOEXEC check). Boot: no error messages, not stuck; Windows came up.
+  Next: `C:\NETUP\CHECK` (photo).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
