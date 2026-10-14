@@ -668,6 +668,10 @@ from scratch.
   message, not the burn tool's; burn result unknown. Asked for a photo of
   the burn window (Done / still burning / error). Told owner not to eject
   by hand while it may still be writing.
+- **2026-10-14: burn tool says Done** (NETDISC, second session at block
+  93952). The Explorer eject error was Explorer racing the tool's own
+  eject. Next: verifier (admin) should show VERIFIED at 93952, then H: on
+  the old PC.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
