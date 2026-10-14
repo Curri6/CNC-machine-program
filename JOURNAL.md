@@ -924,6 +924,18 @@ from scratch.
   Ready, saving to C:\Users\curri\Downloads\CNC_backup\received_20261014_145353;
   **"Old PC (192.168.50.2) answers ping: YES - the network works."**
   Next: `C:\NETUP\SEND` on the old PC; wait for CHECK PASSED + zip.
+- **2026-10-14: 🎉 C:\MPSPRO BACKED UP OVER THE NETWORK.** `C:\NETUP\SEND`
+  on the old PC → FTP.EXE over the ODI stack → laptop receiver.
+  **CHECK PASSED: all 20 files arrived with the right sizes (832,754
+  bytes).** Zip: C:\Users\curri\Downloads\CNC_backup\MPSPRO_backup_20261014_145353.zip.
+  Files (flat folder, no subfolders — "Install"/"Mill"/etc. in the
+  2026-09-22 listing were files): MPSM97.EXE 90362, TEXTM97.EXE 85722,
+  INSTALL.BAT 54, TEXTDEMO.TAP 6370, ELLIPSE.TAP 472, BOLTHOLE.TAP 303,
+  FACEF.TAP 154859, FACER.TAP 53870, KNIGHT.TAP 153257, GEAR.TAP 17765,
+  PARAM51.DAT 229, PARAM51S.DAT 229, MPS2003.EXE 88618, STEPTXT.EXE 84042,
+  PARAMS.DAT 237, PARAM3.DAT 232, MPSPROB3.EXE 94842, PARAMP3.DAT 302,
+  MILL.BAT 22, INSTALL.PIF 967. Transfer speed ~860 KB/s. Next: owner
+  presses Q (restores firewall), uploads the zip for review.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
