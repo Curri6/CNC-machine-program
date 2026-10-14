@@ -806,6 +806,19 @@ from scratch.
   ODI driver** (only enabled option); Bindings = **TCP/IP -> Existing ODI
   Driver ticked**. Both correct. Waiting on PROTOCOL.INI and Device
   Manager photos.
+- **2026-10-14: PROTOCOL.INI** = [ndishlp$] DriverName=ndishlp$ Bindings=
+  (empty); [protman$] DriverName=protman$ priority=ndishlp$; [data]
+  version=v4.00.1111 netcards= (empty). **That matches Microsoft's own
+  ODI example** (Win98 Resource Kit ch. 15, Table 15.18: empty ndishlp$
+  Bindings and netcards for ODI), so it is not the fault.
+  **Win98 Resource Kit ch. 17 (Third-Party Networks), Table 17.4:**
+  "Msodisup.vxd is the ODI support layer that maps NDIS 3.1 and later
+  protocols to an ODI driver, and Odihlp.exe is the real-mode stub that
+  allows LSL to complete its binding process in real mode." Table 17.2:
+  "You must add the ETHERNET_II frame type for Microsoft TCP/IP to work
+  over ODI drivers" (we have it). Next check (no changes): `dir` for
+  C:\WINDOWS\SYSTEM\MSODISUP.VXD, VTCP.386, WSOCK.VXD, VIP.386, and
+  `winipcfg`. If MSODISUP.VXD is missing, extract it from the CABs.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
