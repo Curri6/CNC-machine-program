@@ -725,6 +725,10 @@ from scratch.
   files (EXTRA, NDIS2, ODI + 13 files; folders dated 10/14 10:21). Asked
   which disc it is (old disc's last session would look the same). Next:
   new disc → H: on the old PC.
+- **2026-10-14: owner: both burns done** (old disc = WIN95+INTEL again as
+  session 3; new DVD-R = NETDISC session 1). Owner checking: old disc on
+  laptop should show WIN95/INTEL; new disc on old PC H: should show
+  README.TXT/COPYNET.BAT. If OK, next is `H:` → `COPYNET` (photo of RESULT).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
