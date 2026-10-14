@@ -654,6 +654,10 @@ from scratch.
     The pre-burn check passes the real kit as a session at block 320000
     (45/45 files) and refuses a wrong count. `make_test_isos.sh` now also
     builds `gen.iso` for `test_generic_check.ps1` (4/4).
+- **2026-10-14:** owner asked for the steps. Given: extract NETDISC.zip,
+  replace the burn tool .ps1, burn option 2 → NETDISC (45 files), photo at
+  CHECK PASSED before YES, then check H: on the old PC (README.TXT and
+  COPYNET.BAT visible = second session readable).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
