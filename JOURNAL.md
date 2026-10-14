@@ -729,6 +729,11 @@ from scratch.
   session 3; new DVD-R = NETDISC session 1). Owner checking: old disc on
   laptop should show WIN95/INTEL; new disc on old PC H: should show
   README.TXT/COPYNET.BAT. If OK, next is `H:` → `COPYNET` (photo of RESULT).
+- **2026-10-14: THE OLD PC READS THE NETDISC DVD.** `Win95net (H:)` shows
+  16 objects, 12.7 KB at the top level: Extra, Ndis2, Odi, Check, Copynet,
+  Head.ftp, Install, Loadodi, Mkftp, Netdisc.tag, Readme, Send, Tail.ftp,
+  Test, Topline, Undo. A fresh disc with NETDISC as session 1 works.
+  Next: MS-DOS Prompt → `H:` → `COPYNET` (photo of RESULT).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
