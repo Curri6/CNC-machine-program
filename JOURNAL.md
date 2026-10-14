@@ -892,6 +892,13 @@ from scratch.
   so MSODISUP must fail at boot. Next: logged boot (F8 → Logged), watch
   for ODIHLP/LSL/MSODISUP messages, then `find /i "msodisup"` and
   `find /i "ndis"` in C:\BOOTLOG.TXT.
+- **2026-10-14: BOOTLOG.TXT:** msodisup.vxd LoadSuccess, SYSCRITINIT/
+  DEVICEINIT/INITCOMPLETE all SUCCESS; ndis.vxd LoadSuccess and all init
+  SUCCESS; ndis2sup.vxd LoadFailed (normal, no NDIS2 driver). So VxDs are
+  fine; Code 2 means MSODISUP/NDIS did not get an adapter — suspect
+  ODIHLP did not bind to the MLID's boards. Next: `find /i "fail"` in the
+  bootlog, then F8 → "Command prompt only" to read LSL/E100BODI/ODIHLP
+  messages on screen, then `win`.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
