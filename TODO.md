@@ -98,6 +98,9 @@ confirm it. Never design around this, in this phase or later ones.
                   judge by last written track (2026-10-14 false alarm).
            b0. [x] Session 2 on the old DVD: old drive reads only session 1
                   (2026-10-14). Re-burn NETDISC on a NEW blank DVD-R.
+           b1. [ ] Old disc: burn WIN95 + INTEL again as session 3 (option 1)
+                  so new PCs show them; keep as labeled backup.
+           b2. [ ] New DVD-R: burn NETDISC as session 1 (option 2).
            b. [ ] Old PC reads it? (H: shows README.TXT, COPYNET.BAT.)
            c. [ ] `H:` → `COPYNET` (photo).
            d. [ ] MS-DOS mode → `C:\NETUP\TEST` (photo: card found? link?).

@@ -708,6 +708,13 @@ from scratch.
   Intel driver / Oct 2026 – don't reburn"; new disc "NETDISC – Win95
   network kit / Intel DOS driver + FTP send / Oct 2026" (write after
   burning).
+- **2026-10-14: plan to make the old disc show WIN95 + INTEL on new PCs
+  again:** new PCs show the last session (NETDISC). Re-burn WIN95 + INTEL
+  as session 3 with burn tool option 1 (~127 MB of 4291 MB free; needs the
+  original WIN95 and INTEL folders on the laptop). Old PC unaffected (it
+  reads session 1 = WIN95 + INTEL anyway). Then NETDISC goes on a new
+  blank DVD-R as session 1 (option 2, start block 0). Steps given for both,
+  photo checkpoints before each YES.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
