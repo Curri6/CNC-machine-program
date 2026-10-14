@@ -721,6 +721,10 @@ from scratch.
   in option-2 mode (plan text was built before the choice) — fixed to
   "the N files from the chosen folder". A window behind showed an earlier
   "Done" (Part 1, old disc?) — asked owner to confirm WIN95/INTEL show.
+- **2026-10-14:** laptop Explorer shows a WIN95NET disc with all NETDISC
+  files (EXTRA, NDIS2, ODI + 13 files; folders dated 10/14 10:21). Asked
+  which disc it is (old disc's last session would look the same). Next:
+  new disc → H: on the old PC.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
