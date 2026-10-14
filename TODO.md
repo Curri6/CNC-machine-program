@@ -92,7 +92,7 @@ confirm it. Never design around this, in this phase or later ones.
            LSL.COM, not on the PC; ask IT. See JOURNAL.md.)
            **2026-10-12: LSL.COM found in the owner's Intel 6.2 download.
            Kit built (`tools/win95/netdisc`, tested). Next:**
-           a. [ ] Burn NETDISC with burn tool option 2 onto the working
+           a. [x] (2026-10-14, Done) Burn NETDISC with burn tool option 2 onto the working
                   DVD-R (2nd session, 45 files; photo at CHECK PASSED).
            b. [ ] Old PC reads it? (H: shows README.TXT, COPYNET.BAT.)
            c. [ ] `H:` → `COPYNET` (photo).
