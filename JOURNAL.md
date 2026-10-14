@@ -781,6 +781,13 @@ from scratch.
   Driver**, TCP/IP -> Intel PRO/100 VE. Left the disabled Intel entries in
   place. Told owner to confirm 192.168.50.2/24 on the ODI binding, OK,
   CD path C:\NETSETUP\WIN95 if asked, restart, then CHECK (photo).
+- **2026-10-14:** on OK, Windows asked: "The file 'lsl.com' on Novell
+  Netware Dos driver disk could not be found" (default path H:\WIN95). So
+  the "Existing ODI Driver" INF copies LSL.COM itself (likely to
+  C:\WINDOWS). Told owner: path C:\NETUP\ODI; photo any further file
+  prompt; answer **No** to restart; then `type C:\AUTOEXEC.BAT` (photo) to
+  see what lines Windows added (risk: double LSL, or an ODIHLP line before
+  ours making LOADODI skip ODIHLP).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
