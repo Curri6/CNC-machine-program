@@ -104,7 +104,7 @@ confirm it. Never design around this, in this phase or later ones.
            b. [x] (2026-10-14) Old PC reads it? (H: shows README.TXT, COPYNET.BAT.)
            c. [x] (2026-10-14 OK; ODIHLP + FTP found) `H:` → `COPYNET` (photo).
            d. [x] (2026-10-14 PASSED: 8086/2449, 100 Mbps full duplex) MS-DOS mode → `C:\NETUP\TEST` (photo: card found? link?).
-           e. [ ] `C:\NETUP\INSTALL`; disable the Code 10 adapter; add
+           e. [x] (2026-10-14: AUTOEXEC line typed by hand — file was 0 bytes; ODI adapter working) `C:\NETUP\INSTALL`; disable the Code 10 adapter; add
                   "Existing ODI Driver"; TCP/IP 192.168.50.2/24; restart;
                   `C:\NETUP\CHECK` (photo).
            f. [ ] Laptop `receive_files.bat`, old PC `C:\NETUP\SEND`;

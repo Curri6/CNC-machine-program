@@ -908,6 +908,12 @@ from scratch.
   E100BODI"** (ODIHLP OK). The real-mode side is fully working; the fault
   is inside Windows (Code 2 on the ODI adapter). Next: `win`, recheck
   Device Manager and winipcfg.
+- **2026-10-14: after F8 "Command prompt only" → `win`: Existing ODI
+  Driver = "This device is working properly."** (Code 2 gone; cause not
+  pinned down — possibly the first boots after adding the adapter. Watch
+  whether a normal boot keeps it working.) Next: winipcfg on the old PC
+  (expect 192.168.50.2); laptop receive_files.bat → YES → wait for
+  "answers ping: YES"; photos before SEND.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
