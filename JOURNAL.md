@@ -862,6 +862,12 @@ from scratch.
   **0001\NDIS\ODI: DriverName="E100BODI", FileName="E100BODI.com"** —
   Windows found our MLID by name. Still no DeviceVxDs. Waiting on the
   NETGEN.INF `find` output.
+- **2026-10-14: NETGEN.INF** (Generic ODI driver): `[*PNP8ffd.ndi]
+  AddReg=*PNP8ffd.ndi.reg, Odi.ndi.reg`, DeviceID=*PNP8ffd;
+  [*PNP8ffd.ndi.reg] only sets Ndi DeviceID and NDIS LogDriverName.
+  "msodisup" is not in NETGEN.INF, so Odi.ndi.reg (defined in another
+  INF) must carry the MSODISUP setup. Asked owner to locate it with
+  `find /i /c ... C:\WINDOWS\INF\*.INF | find /v ": 0"`.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
