@@ -1,3 +1,4 @@
 machine-backup/*.DAT -text
 machine-backup/*.BAT -text
 machine-backup/MANIFEST.TXT -text
+tools/jobs/*.TAP -text
