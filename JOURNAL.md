@@ -833,6 +833,16 @@ from scratch.
   has a yellow "!"** (problem); Intel PRO/100 VE has the red X (disabled,
   as intended). Asked for the ODI driver's General (Code) and Resources
   tabs.
+- **2026-10-14: Existing ODI Driver = "Device failure ... (Code 2.)"**
+  (Win95: the device loader failed to load the device); Manufacturer
+  "(detected net drivers)"; Driver tab: date 8-24-1996, "No driver files
+  are required or have been loaded for this device". No Resources tab.
+  MS KB Q108700 (WfW 3.11): MSODISUP fails if ODIHLP loads before LSL or
+  before the MLID ("not bound to any boards"); ODIHLP "hooks all the
+  real-mode entry points so that MSODISUP can use this information"; it
+  accepts every frame type in NET.CFG. Our order is right (LSL, E100BODI,
+  ODIHLP). Next: regedit Class\Net\000x for the ODI adapter (DevLoader,
+  DeviceVxDs, NDIS subkey), then a logged boot if needed.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
