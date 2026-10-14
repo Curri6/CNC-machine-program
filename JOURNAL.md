@@ -918,6 +918,12 @@ from scratch.
   Adapter", MAC 00-02-55-74-CC-51, **IP 192.168.50.2 / 255.255.255.0**, no
   gateway. **Windows 95 TCP/IP is up on the ODI driver.** Next: laptop
   receiver.
+- **2026-10-14: THE NETWORK WORKS.** Laptop receive_files.bat: "This
+  laptop already has 192.168.50.1 on 'Ethernet'. Good." (left from the
+  earlier static setup, so no IP change needed); firewall rules added;
+  Ready, saving to C:\Users\curri\Downloads\CNC_backup\received_20261014_145353;
+  **"Old PC (192.168.50.2) answers ping: YES - the network works."**
+  Next: `C:\NETUP\SEND` on the old PC; wait for CHECK PASSED + zip.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
