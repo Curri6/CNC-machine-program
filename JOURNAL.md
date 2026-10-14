@@ -658,6 +658,11 @@ from scratch.
   replace the burn tool .ps1, burn option 2 → NETDISC (45 files), photo at
   CHECK PASSED before YES, then check H: on the old PC (README.TXT and
   COPYNET.BAT visible = second session readable).
+- **2026-10-14: burn tool on the working DVD-R:** open (code 0x4), 4305 MB
+  free; option 2 stepped into NETDISC\NETDISC (45 files, 1.3 MB);
+  CHECK PASSED at start block 93952 (ISO 9660 + Joliet 45/45, no UDF);
+  speeds 2/4/8x. Told owner to type YES at 4x, then run the verifier and
+  check H: on the old PC.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
