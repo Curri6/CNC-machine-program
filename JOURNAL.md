@@ -693,6 +693,13 @@ from scratch.
   H: is missing, empty, erroring, or showing the old WIN95/INTEL files
   (= drive reads only session 1). Asked for photos: My Computer after a
   30 s wait, H: contents/error, and `dir H:` in an MS-DOS Prompt.
+- **2026-10-14: confirmed — the old PC's drive reads only session 1.** H:
+  still shows WIN95/INTEL after the NETDISC second session. **Multisession
+  is a dead end on this drive.** Owner got two new DVD-Rs. Plan: burn
+  NETDISC as the first (only) session on a new blank DVD-R (option 2,
+  start block 0, 4x, session closed, disc left open — same as the WIN95
+  disc that worked). Keep the second DVD as a spare. Photo checkpoints:
+  disc report (blank) and CHECK PASSED (start block 0) before YES.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
