@@ -67,6 +67,9 @@ that changes.
   network kit), a network cable between the old PC and the laptop, and
   free downloads the owner already made (Intel PRO/100 6.2 package with
   Novell LSL.COM, Intel PRODOS, mTCP). Nothing to buy.
+- 2026-10-14: owner got two new blank DVD-Rs (one for NETDISC as a
+  first session, one spare). The old drive reads only a disc's first
+  section, so each new kit needs a fresh disc.
 
 ## Not needed
 
