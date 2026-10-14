@@ -819,6 +819,11 @@ from scratch.
   over ODI drivers" (we have it). Next check (no changes): `dir` for
   C:\WINDOWS\SYSTEM\MSODISUP.VXD, VTCP.386, WSOCK.VXD, VIP.386, and
   `winipcfg`. If MSODISUP.VXD is missing, extract it from the CABs.
+- **2026-10-14:** all present in C:\WINDOWS\SYSTEM, dated 08-24-96 11:11a
+  (so this is **Windows 95 OSR2**, 4.00.1111): MSODISUP.VXD 23,897;
+  VTCP.386 47,377; WSOCK.VXD 15,523; VIP.386 62,614. Waiting on winipcfg.
+  If still unclear: logged boot (F8 → BOOTLOG.TXT) and search it for
+  ODI/MSODISUP/VTCP failures.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
