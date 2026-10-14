@@ -102,7 +102,7 @@ confirm it. Never design around this, in this phase or later ones.
                   so new PCs show them; keep as labeled backup.
            b2. [x] (2026-10-14 done) New DVD-R: burn NETDISC as session 1 (option 2).
            b. [x] (2026-10-14) Old PC reads it? (H: shows README.TXT, COPYNET.BAT.)
-           c. [ ] `H:` → `COPYNET` (photo).
+           c. [x] (2026-10-14 OK; ODIHLP + FTP found) `H:` → `COPYNET` (photo).
            d. [ ] MS-DOS mode → `C:\NETUP\TEST` (photo: card found? link?).
            e. [ ] `C:\NETUP\INSTALL`; disable the Code 10 adapter; add
                   "Existing ODI Driver"; TCP/IP 192.168.50.2/24; restart;
