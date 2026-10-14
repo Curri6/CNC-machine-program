@@ -824,6 +824,11 @@ from scratch.
   VTCP.386 47,377; WSOCK.VXD 15,523; VIP.386 62,614. Waiting on winipcfg.
   If still unclear: logged boot (F8 → BOOTLOG.TXT) and search it for
   ODI/MSODISUP/VTCP failures.
+- **2026-10-14: winipcfg → "Fatal Error: Cannot read IP configuration"** —
+  the TCP/IP stack is not running at all (no active adapter binding), not
+  just failing to reach the laptop. Next: Device Manager status of
+  "Existing ODI Driver", then a logged boot (F8 → Logged \BOOTLOG.TXT) and
+  `find /i` for odi / ndis / vtcp in C:\BOOTLOG.TXT.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
