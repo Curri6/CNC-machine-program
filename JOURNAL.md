@@ -734,6 +734,10 @@ from scratch.
   Head.ftp, Install, Loadodi, Mkftp, Netdisc.tag, Readme, Send, Tail.ftp,
   Test, Topline, Undo. A fresh disc with NETDISC as session 1 works.
   Next: MS-DOS Prompt → `H:` → `COPYNET` (photo of RESULT).
+- **2026-10-14: COPYNET OK on the old PC:** "Kit copied to C:\NETUP: OK",
+  ODIHLP.EXE found, FTP.EXE found (extract loop ran through the CABs,
+  "No matching files" for the rest). Next: cable to laptop, restart in
+  MS-DOS mode, `C:\NETUP\TEST` (photo before the key press), EXIT.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
