@@ -774,6 +774,13 @@ from scratch.
   TCP/IP -> Existing ODI Driver → 192.168.50.2 / 255.255.255.0; photo of
   the Network list before OK; restart (CD path C:\NETSETUP\WIN95); then
   C:\NETUP\CHECK (photo).
+- **2026-10-14: Device Manager:** Intel PRO/100 VE (Code 10) set to
+  "Disable in this hardware profile". **Network list now:** Client for
+  Microsoft Networks, **Existing ODI Driver** (found under detected net
+  drivers), Intel PRO/100 VE for Windows 95, **TCP/IP -> Existing ODI
+  Driver**, TCP/IP -> Intel PRO/100 VE. Left the disabled Intel entries in
+  place. Told owner to confirm 192.168.50.2/24 on the ODI binding, OK,
+  CD path C:\NETSETUP\WIN95 if asked, restart, then CHECK (photo).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
