@@ -767,6 +767,13 @@ from scratch.
   it). Manual undo on this PC if ever needed: `del C:\AUTOEXEC.BAT` and
   `del C:\NETUP\INSTALL.TAG` (the original was empty anyway), or press N
   at the start-up question.
+- **2026-10-14: manual install done.** `type C:\AUTOEXEC.BAT` now prints
+  `@call C:\NETUP\LOADODI.BAT`; INSTALL.TAG = none. Next given: EXIT;
+  Device Manager → Intel PRO/100 VE → "Disable in this hardware profile";
+  Network → Add → Adapter → (detected net drivers) → Existing ODI Driver;
+  TCP/IP -> Existing ODI Driver → 192.168.50.2 / 255.255.255.0; photo of
+  the Network list before OK; restart (CD path C:\NETSETUP\WIN95); then
+  C:\NETUP\CHECK (photo).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
