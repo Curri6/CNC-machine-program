@@ -899,6 +899,15 @@ from scratch.
   ODIHLP did not bind to the MLID's boards. Next: `find /i "fail"` in the
   bootlog, then F8 → "Command prompt only" to read LSL/E100BODI/ODIHLP
   messages on screen, then `win`.
+- **2026-10-14:** bootlog "fail" lines: ndis2sup.vxd LoadFailed, vshare
+  LoadFailed, SDVXD INITCOMPLETEFAILED — all normal/benign on Win95.
+  **F8 → Command prompt only:** LSL used C:\NETUP\ODI\NET.CFG (Max Boards
+  4, Max Stacks 4, Buffers 8 × 1600, pool 4096); E100BODI v4.13 found
+  8086/2449, full duplex, 100 Mbps, Slot 40 IRQ 5 Port 78C0, Boards 1–4;
+  **"Microsoft WorkGroups ODI/NDIS3 Mapper Version 2.0 — Bound to Adapter:
+  E100BODI"** (ODIHLP OK). The real-mode side is fully working; the fault
+  is inside Windows (Code 2 on the ODI adapter). Next: `win`, recheck
+  Device Manager and winipcfg.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
