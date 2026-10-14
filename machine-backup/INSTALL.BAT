@@ -1,0 +1,4 @@
+MD C:\MPSPRO
+COPY A:\*.* C:\MPSPRO\*.*
+CD\MPSPRO
+
