@@ -686,6 +686,9 @@ from scratch.
   keep receive_files.bat/.ps1 together in Downloads; used only at the
   last step (cable, run .bat, YES for 192.168.50.1, wait for ping YES,
   C:\NETUP\SEND on the old PC, CHECK PASSED, Q, upload zip).
+- **2026-10-14:** owner asked if WIN95 files are still listed on the disc.
+  Answer: No — they are physically there but only the newest section
+  (NETDISC) is listed; copies are already in C:\NETSETUP on the old PC.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
