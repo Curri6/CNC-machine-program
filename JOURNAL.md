@@ -878,6 +878,15 @@ from scratch.
   rerun. Note: Ndi\Interfaces (odi/ethernet) exist, so Odi.ndi.reg *was*
   applied and evidently does not set DeviceVxDs; MSODISUP may instead be
   a static VxD — asked to check HKLM\...\Services\VxD for MSODISUP.
+- **2026-10-14: found it in C:\WINDOWS\INF\NET.INF** (6 hits, all
+  msodisup; "odi.ndi" not in NET.INF): `[379] ;msodisup vxd install`,
+  `[380] HKLM,SYSTEM\CurrentControlSet\Services\VxD\MSODISUP,StaticVxD,,
+  "msodisup.vxd"`, `[381] ...\MSODISUP,Start,1,00`,
+  `[382] ...\MSODISUP,NetClean,1,1`, `[384] msodisup.vxd` (copy list),
+  `[391] ...\MSODISUP,StaticVxD` (a delete entry). **MSODISUP is a static
+  VxD, not the adapter's DeviceVxDs** — so the missing DeviceVxDs is normal.
+  Next: does HKLM\System\CurrentControlSet\Services\VxD\MSODISUP exist?
+  If not, create it with those three values; if yes, logged boot.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
