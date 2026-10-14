@@ -843,6 +843,14 @@ from scratch.
   accepts every frame type in NET.CFG. Our order is right (LSL, E100BODI,
   ODIHLP). Next: regedit Class\Net\000x for the ODI adapter (DevLoader,
   DeviceVxDs, NDIS subkey), then a logged boot if needed.
+- **2026-10-14: registry Class\Net\0001 (Existing ODI Driver):**
+  DevLoader="*ndis", DriverDate=" 8-24-1996", DriverDesc="Existing ODI
+  Driver", EnumPropPages="netdi.dll,EnumPropPages", InfPath="NETGEN.INF".
+  **No DeviceVxDs value** (0000/Intel has DeviceVxDs=e100b.sys). Likely
+  cause of Code 2: *ndis has no VxD to load — expected msodisup.vxd. Asked
+  for 0001\NDIS, 0001\Ndi(\Install) and
+  `find /i "odi" C:\WINDOWS\INF\NETGEN.INF` to confirm what the INF
+  sets before any change.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
