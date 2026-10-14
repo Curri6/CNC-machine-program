@@ -791,6 +791,17 @@ from scratch.
 - **2026-10-14:** owner clicked Yes to restart by mistake (before the
   AUTOEXEC check). Boot: no error messages, not stuck; Windows came up.
   Next: `C:\NETUP\CHECK` (photo).
+- **2026-10-14: CHECK after restart:** AUTOEXEC.BAT = only
+  `@call C:\NETUP\LOADODI.BAT` (Windows added no lines). In memory once
+  each: LSL 23,456 B, E100BODI 35,664 B, ODIHLP 1,168 B. ODIHLP.EXE,
+  FTP.EXE, PROTOCOL.INI found. **Ping 192.168.50.1: "transmit failed,
+  error code 10043"** (WSAEPROTONOSUPPORT) — the TCP/IP stack on the old
+  PC isn't running/bound (an unreachable laptop would give "Request timed
+  out"). Suspects: the Existing ODI Driver's Driver Type tab (should be
+  "Real mode (16 bit) ODI driver"), the real-mode NDIS2 bind not happening
+  (no NET START; PROTOCOL.INI contents), or the adapter's status. Asked
+  for photos: Driver Type tab, Device Manager network adapters,
+  `type C:\WINDOWS\PROTOCOL.INI | more`.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
