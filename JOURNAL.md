@@ -738,6 +738,16 @@ from scratch.
   ODIHLP.EXE found, FTP.EXE found (extract loop ran through the CABs,
   "No matching files" for the rest). Next: cable to laptop, restart in
   MS-DOS mode, `C:\NETUP\TEST` (photo before the key press), EXIT.
+- **2026-10-14: TEST PASSED — INTEL'S DOS DRIVER RUNS THE CARD.** In
+  MS-DOS mode with the cable to the laptop: LSL loaded (Max Boards 4, Max
+  Stacks 4, Buffers 8 × 1600, Memory pool 4096). E100BODI v4.13 (041123):
+  **PCI ID 8086/2449/1014/01CE/0001**, 10BASE-T/100BASE-TX, **Full
+  Duplex, Line Speed 100 Mbps** (link up — no "could not detect a cable
+  link"), Early Receive disabled, Interrupt Sharing disabled, **Slot 40,
+  IRQ 5, Port 78C0**, Node Address 25574CC51… (photo cut off), Max Frame
+  1514, Bus ID 4; Boards 1–4 = Ethernet_II, 802.2, 802.3, SNAP. So the
+  hardware is fine; the Code 10 was the Win95 NDIS3 driver only.
+  Next: key → `C:\NETUP\INSTALL` (photo) → EXIT → Windows network setup.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
