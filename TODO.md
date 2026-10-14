@@ -94,6 +94,8 @@ confirm it. Never design around this, in this phase or later ones.
            Kit built (`tools/win95/netdisc`, tested). Next:**
            a. [x] (2026-10-14, Done) Burn NETDISC with burn tool option 2 onto the working
                   DVD-R (2nd session, 45 files; photo at CHECK PASSED).
+           a2. [ ] Fix verify_win95_disc: generic mode, skip BLANK track,
+                  judge by last written track (2026-10-14 false alarm).
            b. [ ] Old PC reads it? (H: shows README.TXT, COPYNET.BAT.)
            c. [ ] `H:` → `COPYNET` (photo).
            d. [ ] MS-DOS mode → `C:\NETUP\TEST` (photo: card found? link?).

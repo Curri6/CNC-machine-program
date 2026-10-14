@@ -672,6 +672,16 @@ from scratch.
   93952). The Explorer eject error was Explorer racing the tool's own
   eject. Next: verifier (admin) should show VERIFIED at 93952, then H: on
   the old PC.
+- **2026-10-14: verifier on the burned DVD:** sessions 3, tracks 1-3:
+  track 1 (session 1) start 0, closed; **track 2 (session 2) start 93952,
+  752 blocks, closed**; track 3 BLANK (reserve, next writable 100864).
+  Reads at 93968/93969 OK [CD001]. Reported VERIFIED at block 0 and "no
+  WIN95 folder" at 93952 — **verifier limitation**: it only knows the
+  WIN95/INTEL disc, judged by session 1, and tried the blank reserve
+  track (100864, sense 5/64/00). Session 2 itself is written and readable.
+  Verifier needs: generic mode (file count / NETDISC.TAG), skip BLANK
+  tracks, judge by the last written track. Owner sent to check H: on the
+  old PC.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
