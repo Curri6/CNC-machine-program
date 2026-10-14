@@ -14,17 +14,25 @@ from dataclasses import dataclass, field
 
 SUPPORTED_G_CODES = {
     "G00", "G01", "G02", "G03", "G17", "G20", "G21", "G43", "G81", "G83",
-    "G98", "G99",
+    "G90", "G91", "G92", "G98", "G99",
 }
-SUPPORTED_M_CODES = {"M02", "M97", "M99"}
+# M00 (program stop) and M06 (tool change) are both documented in the
+# manual's M-Codes section, and M30 is what MPS2003's own digitizer
+# appends to the files it writes.
+SUPPORTED_M_CODES = {"M00", "M02", "M06", "M30", "M97", "M99"}
 
 # G-codes that move the tool (used to build the toolpath preview).
 _LINEAR_MOVES = {"G00", "G01"}
 _ARC_MOVES = {"G02", "G03"}
+_DRILL_CYCLES = {"G81", "G83"}
+# Codes that stay in effect for following lines that only give X/Y/Z.
+_MOTION_MODES = _LINEAR_MOVES | _ARC_MOVES | _DRILL_CYCLES
 
 _COMMENT_PAREN_RE = re.compile(r"\([^)]*\)")
 _COMMENT_SEMI_RE = re.compile(r";.*$")
-_WORD_RE = re.compile(r"([A-Za-z])\s*(-?\d+\.?\d*)")
+# Numbers may have no leading digit (Z.1, Z-.070 -- common in the
+# machine's own sample jobs) and may have a space after the letter.
+_WORD_RE = re.compile(r"([A-Za-z])\s*([-+]?(?:\d+\.?\d*|\.\d+))")
 
 
 @dataclass
@@ -123,11 +131,12 @@ def _arc_to_polyline(
     start_angle = _angle(cx, cy, sx, sy)
     end_angle = _angle(cx, cy, ex, ey)
 
+    # ">=" / "<=" so an arc that ends where it starts is a full circle
     if clockwise:
-        while end_angle > start_angle:
+        while end_angle >= start_angle:
             end_angle -= 2 * 3.141592653589793
     else:
-        while end_angle < start_angle:
+        while end_angle <= start_angle:
             end_angle += 2 * 3.141592653589793
 
     radius = ((sx - cx) ** 2 + (sy - cy) ** 2) ** 0.5
@@ -159,16 +168,33 @@ def _sin(t: float) -> float:
 def parse_gcode(text: str) -> ParseResult:
     """Parse a full G-code program and build a preview-ready toolpath.
 
-    Positioning is treated as absolute throughout: the MPS2003 manual
-    only documents absolute-mode examples for G02/G03 and never shows
-    G90/G91, so incremental mode is out of scope for this parser.
+    Tracks the modal state that real jobs rely on (checked against the
+    sample jobs in the machine's own C:\\MPSPRO, 2026-10-14):
+
+    * the motion mode (G00/G01/G02/G03/G81/G83) carries on to following
+      lines that only give coordinates -- most CAM output is written
+      this way, so without it a 10,000-line job previews as 3 moves;
+    * G90 absolute / G91 incremental positioning (manual p. 25);
+    * G92 setting a new reference position (manual p. 25);
+    * G81/G83 drill cycles: each hole is drawn as rapid over the hole,
+      rapid down to R, feed to the Z depth, and rapid back to R (G99)
+      or to the starting height (G98).
+
+    Preview coordinates are machine coordinates: what G92 shifts is
+    the program's coordinates, not where the tool really is.
     """
     lines: list[ParsedLine] = []
     warnings: list[str] = []
     segments: list[ToolpathSegment] = []
     units = "in"
 
-    pos = (0.0, 0.0, 0.0)
+    pos = (0.0, 0.0, 0.0)          # machine position
+    offset = [0.0, 0.0, 0.0]       # machine = program + offset (G92)
+    motion: str | None = None      # modal motion code
+    incremental = False            # G91
+    retract_to_r = False           # G99 (else G98: back to start height)
+    drill_r: float | None = None   # modal R plane (program coords)
+    drill_z: float | None = None   # modal drill depth (program coords)
 
     for i, raw in enumerate(text.splitlines(), start=1):
         parsed = parse_line(i, raw)
@@ -183,40 +209,91 @@ def parse_gcode(text: str) -> ParseResult:
                 f"unexpectedly if sent as-is."
             )
 
-        if "G20" in parsed.codes:
+        codes = parsed.codes
+        words = parsed.words
+        if "G20" in codes:
             units = "in"
-        if "G21" in parsed.codes:
+        if "G21" in codes:
             units = "mm"
+        if "G90" in codes:
+            incremental = False
+        if "G91" in codes:
+            incremental = True
+        if "G98" in codes:
+            retract_to_r = False
+        if "G99" in codes:
+            retract_to_r = True
 
-        target = (
-            parsed.words.get("X", pos[0]),
-            parsed.words.get("Y", pos[1]),
-            parsed.words.get("Z", pos[2]),
-        )
-
-        moved_codes = [c for c in parsed.codes if c in _LINEAR_MOVES | _ARC_MOVES]
-        if not moved_codes:
-            # No motion command on this line (e.g. a lone G17/G20/M02);
-            # still worth tracking Z-only or XY-only moves that ride
-            # along on a previous modal G-code, but for a beta preview
-            # we only draw moves that explicitly carry a G-word.
+        if "G92" in codes:
+            # New reference: the current machine position now reads as
+            # the given program coordinates. No movement.
+            for axis, letter in enumerate("XYZ"):
+                if letter in words:
+                    offset[axis] = pos[axis] - words[letter]
             continue
 
-        code = moved_codes[-1]
-        if code in _LINEAR_MOVES:
+        for code in codes:
+            if code in _MOTION_MODES:
+                motion = code
+
+        has_xyz = any(k in words for k in "XYZ")
+        # a G02/G03 with only I/J is a full circle back to the start
+        if motion in _ARC_MOVES and ("I" in words or "J" in words):
+            has_xyz = True
+        if motion is None or not has_xyz:
+            # e.g. a lone G17/G20/M02, or a feed-only line
+            if motion in _DRILL_CYCLES and "R" in words:
+                drill_r = words["R"]
+            continue
+
+        def axis_target(axis: int, letter: str) -> float:
+            if letter not in words:
+                return pos[axis]
+            if incremental:
+                return pos[axis] + words[letter]
+            return words[letter] + offset[axis]
+
+        if motion in _DRILL_CYCLES:
+            if "R" in words:
+                drill_r = words["R"]
+            if "Z" in words:
+                drill_z = words["Z"]
+            x = axis_target(0, "X")
+            y = axis_target(1, "Y")
+            start_z = pos[2]
+            r_z = start_z if drill_r is None else drill_r + offset[2]
+            depth = r_z if drill_z is None else drill_z + offset[2]
+            end_z = r_z if retract_to_r else start_z
+            path = [
+                ((pos[0], pos[1], start_z), (x, y, start_z), True),
+                ((x, y, start_z), (x, y, r_z), True),
+                ((x, y, r_z), (x, y, depth), False),
+                ((x, y, depth), (x, y, end_z), True),
+            ]
+            for a, b, rapid in path:
+                if a != b:
+                    segments.append(
+                        ToolpathSegment(points=[a, b], rapid=rapid, source_line=i)
+                    )
+            pos = (x, y, end_z)
+            continue
+
+        target = (axis_target(0, "X"), axis_target(1, "Y"), axis_target(2, "Z"))
+
+        if motion in _LINEAR_MOVES:
             segments.append(
                 ToolpathSegment(
-                    points=[pos, target], rapid=(code == "G00"), source_line=i
+                    points=[pos, target], rapid=(motion == "G00"), source_line=i
                 )
             )
-        elif code in _ARC_MOVES:
-            i_off = parsed.words.get("I", 0.0)
-            j_off = parsed.words.get("J", 0.0)
+        else:
+            i_off = words.get("I", 0.0)
+            j_off = words.get("J", 0.0)
             arc_points = _arc_to_polyline(
                 start=pos,
                 end_xy=(target[0], target[1]),
                 center_offset=(i_off, j_off),
-                clockwise=(code == "G02"),
+                clockwise=(motion == "G02"),
                 z=target[2],
             )
             segments.append(

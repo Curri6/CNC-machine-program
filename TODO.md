@@ -25,7 +25,7 @@ confirm it. Never design around this, in this phase or later ones.
 
 - [x] Motors (X/Y/Z), spindle motor, and original MPS2003 software
       confirmed working (2026-09-28, per owner).
-- [x] **Back up `C:\MPSPRO`.** (2026-10-14: done over the network; zip to upload/review.) Networking isn't installed on the Win95
+- [x] **Back up `C:\MPSPRO`.** (2026-10-14: done over the network; zip reviewed; settings in `machine-backup/`.) Networking isn't installed on the Win95
       PC and there are no install files to add it, and Win95 can't
       read USB drives, so the network/FTP attempt was abandoned. See
       `JOURNAL.md` (2026-09-28). Two working options:
@@ -107,6 +107,9 @@ confirm it. Never design around this, in this phase or later ones.
            e. [x] (2026-10-14: AUTOEXEC line typed by hand — file was 0 bytes; ODI adapter working) `C:\NETUP\INSTALL`; disable the Code 10 adapter; add
                   "Existing ODI Driver"; TCP/IP 192.168.50.2/24; restart;
                   `C:\NETUP\CHECK` (photo).
+           g. [ ] Ask whether MPS2003 really ignores M03/M07/G40/G41 (factory
+                  samples use them): run GEAR.TAP in Plot Preview (P) — no
+                  movement — and watch for an error. Person present.
            f. [x] (2026-10-14 DONE: 20 files, 832,754 bytes, CHECK PASSED) Laptop `receive_files.bat`, old PC `C:\NETUP\SEND`;
                   upload the zip here. Install the card driver and TCP/IP; set a static IP of
            192.168.50.2 / 255.255.255.0. **In progress 2026-09-28:**

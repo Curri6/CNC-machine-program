@@ -936,6 +936,36 @@ from scratch.
   PARAMS.DAT 237, PARAM3.DAT 232, MPSPROB3.EXE 94842, PARAMP3.DAT 302,
   MILL.BAT 22, INSTALL.PIF 967. Transfer speed ~860 KB/s. Next: owner
   presses Q (restores firewall), uploads the zip for review.
+- **2026-10-14: backup zip reviewed.** Unzipped: MANIFEST.TXT + 20 files,
+  every size matches the manifest. Settings files and batch files copied
+  to `machine-backup/` (with README); EXEs and sample TAP jobs are
+  MicroProto files, kept out of the repo.
+  - **Correction to the 2026-09-22 entry:** each program reads its own
+    settings file (name found inside each EXE). `MILL.BAT` (`cd`, `cd
+    mpspro`, `mps2003`) starts **MPS2003.EXE → PARAM3.DAT**, not
+    PARAMS.DAT (STEPTXT's). MPSM97 → PARAM51.DAT, TEXTM97 → PARAM51S.DAT,
+    MPSPROB3 (V2.2, probe) → PARAMP3.DAT. All use ports 888/890/632.
+  - **PARAM3.DAT:** position 2226, 0, -1189, 0 steps; ports 888/890/632;
+    Rapid Start 600, Accel Steps 800, Step Inc 1.5 (top rapid 1800
+    steps/s = 13.5 in/min); INCH; **8000 steps/inch X, Y, Z**; A 80;
+    TAP; C:\MPSPRO. Line-by-line guesses in machine-backup/README.md.
+  - **Sample jobs vs the app's G-code reader** (windows-app/gcode/parser.py):
+    three real bugs, now fixed. (1) Moves that carry over from the line
+    before (bare `X.. Y..` lines) were never drawn: KNIGHT.TAP (10,654 lines)
+    showed 3 moves, now 10,650; FACEF 9 → 9,620. (2) Numbers with no
+    leading digit (`Z.1`, `Z-.070` in GEAR.TAP) were dropped. (3) G90, G91,
+    G92, M0, M6 (all in the manual) and M30 (written by MPS2003's own
+    digitizer) were flagged as unsupported. Also added: G91 incremental
+    moves, G92 shifting the coordinates, G81/G83 holes drawn one by one
+    (BOLTHOLE's 10 holes), full circles with only I/J. Tests: 3 old + 7
+    new, all pass. Still flagged (not in the manual, but present in factory
+    samples, so MPS2003 probably ignores them): M03 (FACEF/FACER/KNIGHT),
+    G41 (GEAR), G40 and M07 (KNIGHT). No cutter-comp text in any EXE, so
+    G41 is most likely skipped by MPS2003.
+  - G-codes in the samples: G1 ×791, G0 67, G3 3, G2 1, G83 1, G90 2,
+    G41 2, G40 1; M6 3, M3 3, M30 2, M0 2, M7 1, M2 1. Job sizes: FACEF/
+    FACER 3.26 × 1.98 in, KNIGHT 2 × 2 in, GEAR 1.12 in dia, ELLIPSE
+    2 × 1 in, TEXTDEMO 1.95 × 0.23 in.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
