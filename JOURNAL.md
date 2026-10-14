@@ -914,6 +914,10 @@ from scratch.
   whether a normal boot keeps it working.) Next: winipcfg on the old PC
   (expect 192.168.50.2); laptop receive_files.bat → YES → wait for
   "answers ping: YES"; photos before SEND.
+- **2026-10-14: winipcfg on the old PC works:** adapter "Intel(R) PRO PCI
+  Adapter", MAC 00-02-55-74-CC-51, **IP 192.168.50.2 / 255.255.255.0**, no
+  gateway. **Windows 95 TCP/IP is up on the ODI driver.** Next: laptop
+  receiver.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
