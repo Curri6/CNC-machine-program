@@ -857,6 +857,11 @@ from scratch.
   *PNP8FFD (Existing ODI Driver). Asked for 0001\Ndi\Install and
   `find /i "8ffd"` / `find /i "msodisup"` in C:\WINDOWS\INF\NETGEN.INF to
   get the exact DeviceVxDs value the INF intends.
+- **2026-10-14:** 0001\Ndi has only an Interfaces subkey (no Install):
+  DefLower/Lower/LowerRange="ethernet", DefUpper/Upper/UpperRange="odi".
+  **0001\NDIS\ODI: DriverName="E100BODI", FileName="E100BODI.com"** —
+  Windows found our MLID by name. Still no DeviceVxDs. Waiting on the
+  NETGEN.INF `find` output.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
