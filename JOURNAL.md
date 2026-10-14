@@ -868,6 +868,10 @@ from scratch.
   "msodisup" is not in NETGEN.INF, so Odi.ndi.reg (defined in another
   INF) must carry the MSODISUP setup. Asked owner to locate it with
   `find /i /c ... C:\WINDOWS\INF\*.INF | find /v ": 0"`.
+  Win95 FIND takes no wildcards ("File not found - C:\WINDOWS\INF\*.INF"),
+  and COMMAND.COM rejects `@` inside FOR ... DO ("Bad command or file
+  name" per file). Retrying with `for %f in (C:\WINDOWS\INF\NET*.INF) do
+  find /i /c "msodisup" %f`.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
