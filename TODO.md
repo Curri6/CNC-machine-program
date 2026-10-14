@@ -101,7 +101,7 @@ confirm it. Never design around this, in this phase or later ones.
            b1. [x] (2026-10-14 done) Old disc: burn WIN95 + INTEL again as session 3 (option 1)
                   so new PCs show them; keep as labeled backup.
            b2. [x] (2026-10-14 done) New DVD-R: burn NETDISC as session 1 (option 2).
-           b. [ ] Old PC reads it? (H: shows README.TXT, COPYNET.BAT.)
+           b. [x] (2026-10-14) Old PC reads it? (H: shows README.TXT, COPYNET.BAT.)
            c. [ ] `H:` → `COPYNET` (photo).
            d. [ ] MS-DOS mode → `C:\NETUP\TEST` (photo: card found? link?).
            e. [ ] `C:\NETUP\INSTALL`; disable the Code 10 adapter; add
