@@ -700,6 +700,10 @@ from scratch.
   start block 0, 4x, session closed, disc left open — same as the WIN95
   disc that worked). Keep the second DVD as a spare. Photo checkpoints:
   disc report (blank) and CHECK PASSED (start block 0) before YES.
+- **2026-10-14:** owner keeping the old 2-session DVD-R as a backup. Label
+  suggested: "WIN95NET – BACKUP (Oct 2026) / Old PC sees: WIN95 + INTEL /
+  New PCs see: NETDISC kit / Don't burn more on this disc" (felt-tip, label
+  side only).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
