@@ -689,6 +689,10 @@ from scratch.
 - **2026-10-14:** owner asked if WIN95 files are still listed on the disc.
   Answer: No — they are physically there but only the newest section
   (NETDISC) is listed; copies are already in C:\NETSETUP on the old PC.
+- **2026-10-14: old PC: NETDISC "doesn't show up".** Unclear yet whether
+  H: is missing, empty, erroring, or showing the old WIN95/INTEL files
+  (= drive reads only session 1). Asked for photos: My Computer after a
+  30 s wait, H: contents/error, and `dir H:` in an MS-DOS Prompt.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
