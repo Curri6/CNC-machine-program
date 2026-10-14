@@ -60,6 +60,18 @@ check "$r" "1" "UNDO when not installed changes nothing"
 cmp -s "$W/c/AUTOEXEC.BAT" "$W/orig.bat" && r=1 || r=0
 check "$r" "1" "AUTOEXEC.BAT still original after second UNDO"
 
+# ---------- INSTALL / UNDO with an EMPTY (0-byte) AUTOEXEC.BAT ----------
+# (the real old PC had this; DOS COPY skips 0-byte files, 2026-10-14)
+fresh
+: > "$W/c/AUTOEXEC.BAT"
+run 'command /c C:\NETUP\INSTALL.BAT > C:\OUT.TXT'
+check "$(t "$W/c/AUTOEXEC.BAT")" '@call C:\NETUP\LOADODI.BAT' "INSTALL on an empty AUTOEXEC.BAT adds the line"
+[ -f "$W/c/NETUP/AUTOEXEC.OLD" ] && [ ! -s "$W/c/NETUP/AUTOEXEC.OLD" ] && r=1 || r=0
+check "$r" "1" "INSTALL keeps an (empty) AUTOEXEC.OLD"
+run 'command /c C:\NETUP\UNDO.BAT > C:\OUT.TXT'
+[ -f "$W/c/AUTOEXEC.BAT" ] && [ ! -s "$W/c/AUTOEXEC.BAT" ] && r=1 || r=0
+check "$r" "1" "UNDO puts the empty AUTOEXEC.BAT back"
+
 # ---------- INSTALL with no AUTOEXEC.BAT ----------
 fresh
 run 'command /c C:\NETUP\INSTALL.BAT > C:\OUT.TXT'

@@ -6,11 +6,12 @@ if exist C:\NETUP\AUTOEXEC.OLD goto restore
 rem There was no AUTOEXEC.BAT before INSTALL; keep any lines Windows added
 rem since, but take out ours.
 find /v /i "NETUP\LOADODI" < C:\AUTOEXEC.BAT > C:\NETUP\AUTOEXEC.TMP
-copy C:\NETUP\AUTOEXEC.TMP C:\AUTOEXEC.BAT > nul
+type C:\NETUP\AUTOEXEC.TMP > C:\AUTOEXEC.BAT
 del C:\NETUP\AUTOEXEC.TMP
 goto undone
 :restore
-copy C:\NETUP\AUTOEXEC.OLD C:\AUTOEXEC.BAT > nul
+rem TYPE, not COPY, so an empty (0-byte) old file is restored too
+type C:\NETUP\AUTOEXEC.OLD > C:\AUTOEXEC.BAT
 :undone
 del C:\NETUP\INSTALL.TAG
 echo UNDONE. C:\AUTOEXEC.BAT is back to how it was. Restart the computer.
