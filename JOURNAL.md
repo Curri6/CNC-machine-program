@@ -887,6 +887,11 @@ from scratch.
   VxD, not the adapter's DeviceVxDs** — so the missing DeviceVxDs is normal.
   Next: does HKLM\System\CurrentControlSet\Services\VxD\MSODISUP exist?
   If not, create it with those three values; if yes, logged boot.
+- **2026-10-14:** HKLM\...\Services\VxD\**MSODISUP exists** with NetClean 01,
+  Start 00, StaticVxD "msodisup.vxd" (matches NET.INF). Config is right,
+  so MSODISUP must fail at boot. Next: logged boot (F8 → Logged), watch
+  for ODIHLP/LSL/MSODISUP messages, then `find /i "msodisup"` and
+  `find /i "ndis"` in C:\BOOTLOG.TXT.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
