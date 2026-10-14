@@ -756,6 +756,17 @@ from scratch.
   COPY message. Main suspect: a 0-byte AUTOEXEC.BAT (MS-DOS COPY skips
   zero-length files; DOSBox doesn't, so the tests didn't catch it).
   Asked for `dir C:\AUTOEXEC.*` and `dir C:\NETUP\AUTOEXEC.*`.
+- **2026-10-14: confirmed — `C:\AUTOEXEC.BAT` is 0 bytes** (10-12-26 2:27p),
+  and no AUTOEXEC.OLD/NEW in C:\NETUP. Manual fix given (nothing to lose):
+  `type C:\NETUP\TOPLINE.TXT > C:\AUTOEXEC.BAT`,
+  `echo none > C:\NETUP\INSTALL.TAG`, `type C:\AUTOEXEC.BAT`.
+  **Kit fixed in the repo:** INSTALL/UNDO now use `type` + redirection
+  instead of COPY (works for 0-byte files); new DOSBox tests for an empty
+  AUTOEXEC.BAT (29/29 pass). The copy on the old PC is the old version:
+  its UNDO would fail here (the filtered file is 0 bytes, so COPY skips
+  it). Manual undo on this PC if ever needed: `del C:\AUTOEXEC.BAT` and
+  `del C:\NETUP\INSTALL.TAG` (the original was empty anyway), or press N
+  at the start-up question.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

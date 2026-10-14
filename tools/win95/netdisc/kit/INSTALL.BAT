@@ -9,18 +9,22 @@ if not exist C:\NETUP\TOPLINE.TXT goto nokit
 if exist C:\NETUP\INSTALL.TAG goto already
 if not exist C:\AUTOEXEC.BAT goto noauto
 attrib -r -h -s C:\AUTOEXEC.BAT
-copy C:\AUTOEXEC.BAT C:\NETUP\AUTOEXEC.OLD > nul
+rem TYPE + redirection, not COPY: DOS COPY skips a 0-byte file, and Windows
+rem 95 often leaves C:\AUTOEXEC.BAT empty (it did on this PC, 2026-10-14).
+if exist C:\NETUP\AUTOEXEC.OLD del C:\NETUP\AUTOEXEC.OLD
+type C:\AUTOEXEC.BAT > C:\NETUP\AUTOEXEC.OLD
 if not exist C:\NETUP\AUTOEXEC.OLD goto fail
 if exist C:\NETUP\AUTOEXEC.NEW del C:\NETUP\AUTOEXEC.NEW
-copy /b C:\NETUP\TOPLINE.TXT+C:\AUTOEXEC.BAT C:\NETUP\AUTOEXEC.NEW > nul
+type C:\NETUP\TOPLINE.TXT > C:\NETUP\AUTOEXEC.NEW
+type C:\AUTOEXEC.BAT >> C:\NETUP\AUTOEXEC.NEW
 if not exist C:\NETUP\AUTOEXEC.NEW goto fail
-copy C:\NETUP\AUTOEXEC.NEW C:\AUTOEXEC.BAT > nul
+type C:\NETUP\AUTOEXEC.NEW > C:\AUTOEXEC.BAT
 del C:\NETUP\AUTOEXEC.NEW
 echo had > C:\NETUP\INSTALL.TAG
 goto done
 :noauto
 if exist C:\NETUP\AUTOEXEC.OLD del C:\NETUP\AUTOEXEC.OLD
-copy C:\NETUP\TOPLINE.TXT C:\AUTOEXEC.BAT > nul
+type C:\NETUP\TOPLINE.TXT > C:\AUTOEXEC.BAT
 echo none > C:\NETUP\INSTALL.TAG
 goto done
 
