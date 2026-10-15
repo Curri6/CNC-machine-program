@@ -1,66 +1,66 @@
-# A-Tech CNC Job Sender (beta)
+# A-Tech CNC (Windows 11 app)
 
-Windows 11 desktop app for the A-Tech CNC machine project. See
-`JOURNAL.md`, `TODO.md`, and `PARTS_LIST.md` in the repo root for the
-full backstory — short version: the old Windows 95 PC keeps running
-the original MPS2003 software exactly as it always has, and this app
-is the modern front end that lets you open a G-code file, check it
-against what MPS2003 actually supports, preview the toolpath, and
-export a copy ready to carry over to the machine.
+Jobs, preview and file transfer for the school's MicroMill, whose old
+Windows 95 PC runs MPS2003. The full how-to is in the app's **Help** tab.
 
-**Status: beta.** Built to unblock development while the machine's
-mechanical/electrical soundness is being verified separately (Phase 0
-in `TODO.md`).
+| Tab | What it does |
+| --- | --- |
+| **Jobs** | Library of job files (add, or drag them in). Preview in top, front, side and 3D, colored by depth. ▶ Play moves the tool through the job; clicking the preview finds that G-code line. Summary (size, deepest cut, estimated time, feeds). Checks against MPS2003 and your limits. **Send to old PC** / **Save copy to USB**. |
+| **Machine Link** | Lights for the laptop address (192.168.50.1), the old PC (192.168.50.2 ping) and the link. One-time **Set up network…** (asks for admin). Jobs waiting for the old PC, backups received (checked against the old PC's manifest and zipped), activity log, and the commands to type on the old PC. |
+| **Help** | Step-by-step instructions. |
 
-## What this app does
+**The app never starts a job and can't move the machine.** A person at the
+machine loads and runs each job in MPS2003.
 
-- Opens a G-code file (`.tap`, `.nc`, `.gcode`, or plain `.txt`).
-- Checks every command against the exact set MPS2003 understands
-  (`gcode/parser.py` — see `JOURNAL.md` for where that list came from)
-  and lists anything unsupported as a warning before you export it.
-- Renders a 2D top-down toolpath preview (rapid moves dashed gray,
-  cutting moves solid blue) so you can sanity-check the job visually.
-- Exports a copy of the file to wherever you choose — a USB drive, a
-  floppy, anywhere — ready to carry over to the machine.
+## Getting it
 
-## What this app deliberately does NOT do
+* **ATechCNC.exe**: built by GitHub Actions on every change to
+  `windows-app/` (workflow **Build Windows app**, artifact
+  `ATechCNC-windows`). It's one file; double-click to run. Windows may show
+  "Windows protected your PC" the first time; click **More info → Run anyway**.
+* **From source**: install Python 3.10+ from python.org, then double-click
+  `run_app.bat`. The first run installs PySide6.
+* **Developers**: `pip install -r requirements.txt`, then `python main.py`.
 
-- **No networking.** The CNC machine is in a teacher's classroom, so
-  every job already has to be carried over there in person regardless
-  — a network transfer feature wouldn't save that step. (An earlier
-  version of this app had a network sender; it was removed once that
-  became clear. See `JOURNAL.md` if you're wondering where it went.)
-- It does not talk to the CNC machine directly, and it never will
-  unless the hardware retrofit plan (currently out of scope — see
-  `JOURNAL.md`) is revisited.
-- It never auto-runs anything. Per the project's standing safety rule,
-  a person must always be physically present at the old computer to
-  load and start a job in MPS2003 themselves.
-- It's not a CAD/CAM tool. It imports G-code made elsewhere (any
-  computer in the school, any CAM software) rather than generating
-  toolpaths from scratch.
+## How the cable link works
 
-## Running it
+The old PC only has Windows 95's own `FTP.EXE`, so the app is a small FTP
+server (`link/ftp_server.py`), and the old PC always starts each transfer:
+
+* **Backup, old PC → app**: `C:\NETUP\SEND` uploads C:\MPSPRO plus a
+  MANIFEST.TXT of sizes. Each backup goes into `Documents\A-Tech CNC\Received`
+  and is checked against the manifest, then zipped if every file matches.
+* **Jobs, app → old PC**: **Send to old PC** puts the job under an 8.3 name
+  with DOS line endings into `Documents\A-Tech CNC\To Old PC`. The old PC
+  runs `C:\NETUP\GET NAME.TAP`. `GET.BAT` itself is served by the app; the
+  Help tab shows how to fetch it the first time.
+
+Only active-mode FTP is offered (the mode Windows 95 uses). The data
+connection may only go back to the computer that connected. Only
+192.168.50.x can connect. Uploads can't leave the backup folder, and
+downloads only come from To Old PC.
+
+## Files
+
+| Path | |
+| --- | --- |
+| `main.py` | entry point |
+| `app_config.py` | folders (`Documents\A-Tech CNC`) and settings.json |
+| `library.py` | job library, DOS names, putting jobs in To Old PC |
+| `gcode/parser.py` | G-code reader (modal moves, G90/G91/G92, arcs, G81/G83) |
+| `gcode/analysis.py` | summary, time estimate, checks |
+| `gcode/dosfile.py` | 8.3 names, CRLF |
+| `link/ftp_server.py` | the link |
+| `link/netcheck.py`, `link/network_setup.ps1` | address check, ping, one-time setup (admin) |
+| `link/old_pc_files.py` | GET.BAT |
+| `ui/` | screens and theme |
+| `ATechCNC.spec` | PyInstaller recipe for the exe |
+
+## Tests
 
 ```
-pip install -r requirements.txt
-python main.py
+python -m tests.test_parser    # G-code reader
+python -m tests.test_core      # settings, DOS names, analysis, library
+python -m tests.test_link      # FTP link, incl. the real `ftp` client if installed
+python -m tests.test_ui        # the screens, offscreen (QT_QPA_PLATFORM=offscreen)
 ```
-
-## Layout
-
-```
-main.py              entry point
-gcode/parser.py       G-code parsing + MPS2003 command validation + toolpath flattening
-ui/main_window.py     the whole app window
-ui/toolpath_view.py   2D toolpath preview widget
-tests/                sanity tests (no test framework needed: `python tests/test_parser.py`)
-```
-
-## Known gaps / not done yet
-
-- Toolpath preview assumes absolute positioning throughout (matches
-  what the MPS2003 manual documents — G90/G91 were never shown in its
-  examples). An imported file using incremental mode will be flagged
-  as using an unsupported code rather than rendered incorrectly.
-- No packaging/installer yet for handing this to someone else to run.

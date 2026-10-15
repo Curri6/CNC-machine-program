@@ -987,6 +987,48 @@ from scratch.
   Test job `tools/jobs/SQUARE1.TAP`: 0.5 in square at Z+0.25 (cuts air),
   G90/G00/G01/M02 only, no parser warnings. Plan: fetch it, open in
   MPS2003 (2 = Load Program, extension TAP), **P = Plot Preview only**.
+- **2026-10-15: Windows 11 app rebuilt ("A-Tech CNC", windows-app/).**
+  Owner asked for one program to add jobs, preview them, and send/receive
+  over Ethernet, looking nice, with a Help tab. Built (Python + PySide6):
+  - **Jobs tab:** library in Documents\A-Tech CNC\Jobs (add / drag-drop,
+    copies only, Remove deletes only the copy); preview widget with Top /
+    Front / Side / 3D, cuts colored by depth, rapids dashed, zoom/pan/fit,
+    click → G-code line; ▶ Play with slider and speed; Summary tiles
+    (size, deepest cut, estimated time from feeds and the 13.5 in/min top
+    speed, moves, feeds, lines); Checks (unsupported codes, depth limit,
+    optional work area, cut before any F, feed over top speed, M6/M0
+    pauses, mm units, non-8.3 name); G-code view; **Send to old PC** (8.3
+    name dialog: blocks .EXE/.DAT/.BAT/.COM/.PIF/.SYS, warns if the last
+    backup's manifest shows the old PC already has that name) and **Save
+    copy to USB** (CRLF).
+  - **Machine Link tab:** Python FTP server (link/ftp_server.py, same
+    rules as receive_files.ps1: active mode only, PORT only back to the
+    caller, only 192.168.50.x, uploads can't leave the backup folder,
+    downloads only from To Old PC); turns on when the app opens; lights for
+    192.168.50.1 present / old PC ping / link on; one-time **Set up
+    network…** (link/network_setup.ps1 elevated: static IP if DHCP, or
+    adds the address; firewall TCP 21 + ping from 192.168.50.0/24; Undo
+    reverses from a state file); waiting list; backups (manifest check,
+    zip, "Add its jobs to library"); activity log; commands to type.
+  - **GET.BAT** (new, served by the app and added to the netdisc kit):
+    `C:\NETUP\GET JOB1.TAP` writes an FTP script (user anonymous, binary,
+    lcd C:\MPSPRO, get, quit) and runs FTP.EXE. One-time fetch of GET.BAT
+    itself: ftp 192.168.50.1 / anonymous / x / lcd C:\NETUP / get GET.BAT
+    / quit. DOSBox tests added (now 31/31).
+  - **Help tab:** quick start, jobs and preview, checks, sending (incl.
+    first-time GET.BAT), backups, network setup, troubleshooting, folders
+    and settings. **Settings** (⚙): top speed, depth limit, work area,
+    default feed, addresses, port.
+  - Parser now tracks the feed (F) per move and M6/M0 counts.
+  - Tests: parser 10, core 8, link 40 (incl. real Linux `ftp` client
+    send + get), UI 40 offscreen (add/refuse files, tiles, playback ↔ code
+    highlight, all views paint, send-name rules, link serving a job and
+    GET.BAT, help sections). Screenshots checked offscreen.
+  - Packaging: ATechCNC.spec (PyInstaller one-file, icon assets/app.ico);
+    Linux test build starts and makes its folders; GitHub Actions workflow
+    `.github/workflows/build-windows-app.yml` runs the tests on Windows and
+    builds `ATechCNC.exe` (artifact ATechCNC-windows). `run_app.bat` runs
+    from source if Python is installed.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

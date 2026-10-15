@@ -137,5 +137,17 @@ run 'command /c C:\NETUP\SEND.BAT > C:\OUT.TXT'
 grep -q 'FTP.EXE is missing' "$W/c/OUT.TXT" && r=1 || r=0
 check "$r" "1" "SEND without FTP.EXE says so"
 
+# ---------- GET.BAT (fetch a job from the laptop app) ----------
+fresh; mkdir -p "$W/c/MPSPRO"; rm -f "$W/c/LOG.TXT"
+run 'command /c C:\NETUP\GET.BAT JOB1.TAP > C:\OUT.TXT'
+check "$(t "$W/c/LOG.TXT")" 'FTP -n -s:C:\NETUP\GET.FTP 192.168.50.1' "GET runs FTP with its script"
+check "$(t "$W/c/NETUP/GET.FTP")" "$(printf 'user anonymous x\nbinary\nlcd C:\\MPSPRO\nget JOB1.TAP\nquit')" "GET.FTP has login, lcd, get, quit"
+fresh; rm -f "$W/c/LOG.TXT"; mkdir -p "$W/c/MPSPRO"
+run 'command /c C:\NETUP\GET.BAT > C:\OUT.TXT'
+[ -f "$W/c/LOG.TXT" ] && r=0 || r=1
+check "$r" "1" "GET with no name does not start FTP"
+grep -q 'Type the job name' "$W/c/OUT.TXT" && r=1 || r=0
+check "$r" "1" "GET with no name explains"
+
 [ $fail = 0 ] && echo "ALL PASS" || echo "SOME FAILED"
 exit $fail

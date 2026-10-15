@@ -33,6 +33,7 @@ Files:
  UNDO.BAT     remove it again
  CHECK.BAT    show the set-up for a photo (changes nothing)
  SEND.BAT     send C:\MPSPRO (uses MKFTP.COM and Windows' FTP.EXE)
+ GET.BAT      fetch a job from the laptop app:  C:\NETUP\GET JOB1.TAP
  MKFTP.COM    makes the FTP list of every file and a MANIFEST.TXT of sizes
  ODI\         LSL.COM (Novell v2.20), E100BODI.COM (Intel v4.13, 2004),
               NET.CFG; ODI\OLD\E100BODI.COM = Intel v4.01 (2001)

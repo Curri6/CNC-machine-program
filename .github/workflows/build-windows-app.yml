@@ -1,0 +1,53 @@
+# Builds A-Tech CNC.exe for Windows 11 and runs the app's tests on Windows.
+# The exe is attached to each run as the "ATechCNC-windows" artifact.
+name: Build Windows app
+
+on:
+  push:
+    paths:
+      - "windows-app/**"
+      - ".github/workflows/build-windows-app.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: windows-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller
+      - name: Tests
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          python -m tests.test_parser
+          python -m tests.test_core
+          python -m tests.test_link
+          python -m tests.test_ui
+      - name: Build exe
+        run: pyinstaller --noconfirm ATechCNC.spec
+      - name: Smoke test (starts and makes its folders)
+        shell: pwsh
+        env:
+          QT_QPA_PLATFORM: offscreen
+          CNC_APP_HOME: ${{ runner.temp }}\cnchome
+        run: |
+          $p = Start-Process -FilePath dist\ATechCNC.exe -PassThru
+          Start-Sleep -Seconds 15
+          if ($p.HasExited) { throw "ATechCNC.exe exited early (code $($p.ExitCode))" }
+          Stop-Process -Id $p.Id
+          if (-not (Test-Path "$env:CNC_APP_HOME\Jobs")) { throw "no Jobs folder made" }
+          Get-Item dist\ATechCNC.exe | Format-List Name, Length
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ATechCNC-windows
+          path: windows-app/dist/ATechCNC.exe
+          if-no-files-found: error

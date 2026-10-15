@@ -107,6 +107,8 @@ confirm it. Never design around this, in this phase or later ones.
            e. [x] (2026-10-14: AUTOEXEC line typed by hand — file was 0 bytes; ODI adapter working) `C:\NETUP\INSTALL`; disable the Code 10 adapter; add
                   "Existing ODI Driver"; TCP/IP 192.168.50.2/24; restart;
                   `C:\NETUP\CHECK` (photo).
+           i. [ ] Try the new app on the laptop (ATechCNC.exe): Set up network…,
+                  fetch GET.BAT once on the old PC, then Send to old PC + GET.
            h. [ ] Laptop → old PC: fetch tools/jobs/SQUARE1.TAP with Win95 ftp
                   and Plot Preview (P) it in MPS2003 (no movement). Built and
                   tested 2026-10-14; waiting on the real try.

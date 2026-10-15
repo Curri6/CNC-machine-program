@@ -5,3 +5,7 @@ windows-app/dev_tools/received_jobs/
 tools/tests/src/
 tools/tests/src2/
 tools/tests/src3/
+windows-app/.venv/
+windows-app/build/
+windows-app/dist/
+__pycache__/
