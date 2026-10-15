@@ -1049,6 +1049,10 @@ from scratch.
   shows ✓ and a zip. Checked the wording against the code (GET.BAT's
   "Done: … is ready", SQUARE1's "only moves in the air" check, Settings
   re-checks the jobs). Waiting on the owner's photos.
+- **2026-10-15: owner asked whether the app has settings for different
+  drill bits.** No: Settings covers top speed, depth limit, work area,
+  default feed and network only; M6 tool changes are flagged as pauses but
+  tools aren't named or sized. Added TODO j.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

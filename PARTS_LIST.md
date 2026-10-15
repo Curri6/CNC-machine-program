@@ -75,6 +75,7 @@ that changes.
   adapter it already has.
 - 2026-10-15: the app's test checklist (windows-app/TESTING.md) needs
   nothing new: the laptop, the cable, the old PC, mill switched off.
+- 2026-10-15: drill-bit settings question: software only, nothing to buy.
 
 ## Not needed
 
