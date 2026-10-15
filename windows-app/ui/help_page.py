@@ -32,7 +32,9 @@ or make one on the <b>Make G-code</b> tab and click <b>Save to Jobs ➜</b>.</li
 <li><b>Check it:</b> look at the preview, the <b>Summary</b> and the <b>Checks</b>. Press <b>▶ Play</b> to watch the tool move.</li>
 <li><b>Send it:</b> click <b>Send to old PC ➜</b>. The job waits in the <b>To Old PC</b> folder.</li>
 <li><b>On the old PC</b> (MS-DOS Prompt): <table class="cmdt" cellpadding="6" cellspacing="0" bgcolor="#eef2f7"><tr><td><code>C:\\NETUP\\GET JOB1.TAP</code></td></tr></table></li>
-<li><b>In MPS2003:</b> press <b>2</b> (Load Program), type <code>TAP</code>, pick the job, press <b>P</b> (Plot Preview) and run it once with no movement before cutting.</li>
+<li><b>In MPS2003:</b> press <b>2</b> (Load Program), type <code>TAP</code> and Enter, press ↓ to the job and Enter.
+Then preview it: <b>M</b> (second menu), <b>P</b> (the words PLOT PREVIEW appear on the left), <b>M</b>, <b>3</b>
+(Run Program), <b>C</b>. It draws the job; at each pause press <b>C</b> again. Watch it all before cutting.</li>
 </ol>
 <p class="box"><b>Safety:</b> the app never starts a job and can't move the machine. A person
 at the machine always loads and starts each job in MPS2003, and stays there while it runs.</p>
@@ -91,6 +93,9 @@ out without deleting it. Click a cut in the preview to jump to the step that mad
 <p>The preview shows the stock (dark box), every cut, and — with <b>Show bit width</b> — how
 wide the bit really cuts. <b>Checks</b> lists anything wrong: <span class="warn">✗</span> must be
 fixed before saving, <span class="warn">⚠</span> is worth a look.</p>
+<p><b>Save a dry run</b> saves copies named <code>Dry …</code> that are the same job raised so
+the deepest cut is ¼ in above the top: the mill does every move but touches nothing. Run one
+before the first real cut of a new job.</p>
 <p><b>Save to Jobs ➜</b> puts the job file(s) in the Jobs library, where you check them and
 <b>Send to old PC</b> as usual. <b>Save…</b> (top of the Project card) keeps the project itself so
 you can change it later; the app also remembers the last project when it closes.</p>
@@ -137,7 +142,9 @@ old PC). Run them in the order shown in the Make tab:</p>
 <ol>
 <li>Clamp the stock. Zero X and Y where the project says (lower-left corner or centre) and
 Z on the <b>top</b> of the stock (MPS2003 option 4).</li>
-<li>Load the first file, press <b>P</b> (Plot Preview) and check it.</li>
+<li>Load the first file and Plot Preview it (<b>M</b>, <b>P</b>, <b>M</b>, <b>3</b>, <b>C</b> — see Quick start).
+For the very first job, also save and run a <b>dry run</b> (button on the Make tab): the same job
+raised above the stock, so the mill really moves but cuts only air.</li>
 <li>Run it. It starts with a pause (M0): put in the bit it names, set the spindle to the speed
 it names, switch the spindle on, then press <b>C</b>. Stay at the machine.</li>
 <li>When it finishes: spindle off, change to the next bit, <b>zero Z again</b> on the top of the
@@ -261,7 +268,9 @@ file was empty before) and restart.</td></tr>
 <tr><td><b>Deepest cut warning</b></td><td>default 0.5 in.</td></tr>
 <tr><td><b>Work area</b></td><td>table travel X × Y; 0 = don't check.</td></tr>
 <tr><td><b>Spindle speeds</b></td><td>the speeds your spindle can be set to (typical Taig belt
-steps to start with — change them to the ones on your mill). One number = one-speed spindle.</td></tr>
+steps to start with — change them to the ones on your mill). <b>From pulleys…</b> works them out:
+measure the motor and spindle pulley steps for each belt position; spindle RPM = 3250 (motor label)
+× motor step ÷ spindle step. One number = one-speed spindle.</td></tr>
 <tr><td><b>Safe height</b></td><td>how high above the top the bit travels between cuts (0.1 in).</td></tr>
 <tr><td><b>Holding tab thickness</b></td><td>0.03 in.</td></tr>
 <tr><td><b>Climb milling</b></td><td>off = conventional milling, kinder to an older mill with some play in it.</td></tr>

@@ -8,6 +8,7 @@ first, change the bit, zero Z on the top of the stock again, run the next.
 from __future__ import annotations
 
 import json
+import math
 import re
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -114,6 +115,45 @@ def step_cut(step: Step, tool: Tool, project: Project, settings: Settings) -> Cu
         pass
     return cutting_data(tool, project.material, settings.rapid_in_per_min, settings.rpm_choices(),
                         depth=ctx_depth, overrides=step.over)
+
+
+_Z_WORD = re.compile(r"Z(-?\d+\.\d+)")
+
+
+def dry_run_lift(out: "Output") -> float:
+    """How far to raise a job so its deepest cut ends 0.25 in above the top."""
+    deepest = 0.0
+    for f in out.files:
+        for ln in f.text.splitlines():
+            if ln.startswith(("G00", "G01")):
+                for m in _Z_WORD.finditer(ln):
+                    deepest = min(deepest, float(m.group(1)))
+    return round(math.ceil((-deepest + 0.25) / 0.05) * 0.05, 2)
+
+
+def lift_text(text: str, lift: float) -> str:
+    """The same job raised by `lift` inches: every Z on a move goes up."""
+    out = []
+    for ln in text.splitlines():
+        if ln.startswith(("G00", "G01")):
+            ln = _Z_WORD.sub(lambda m: "Z" + f"{float(m.group(1)) + lift:.4f}", ln)
+        out.append(ln)
+    return "\n".join(out) + "\n"
+
+
+def dry_run(out: "Output") -> list[OutFile]:
+    """Copies of the job files that run the whole job in the air, above the
+    stock: for watching the moves (and the M0 pauses) before a real cut."""
+    lift = dry_run_lift(out)
+    files = []
+    for f in out.files:
+        stem = f.name[:-4] if f.name.lower().endswith(".tap") else f.name
+        body = lift_text(f.text, lift).splitlines()
+        note = [f"(DRY RUN: EVERYTHING IS {lift:.2f} IN HIGHER THAN THE REAL JOB)",
+                "(NOTHING TOUCHES THE STOCK. ZERO Z ON THE TOP OF THE STOCK AS USUAL)"]
+        text = "\n".join(body[:1] + note + body[1:]) + "\n"
+        files.append(OutFile(f.tool, f"Dry {stem}.tap", text, f.steps))
+    return files
 
 
 def generate(project: Project, tools: ToolLibrary, settings: Settings) -> Output:

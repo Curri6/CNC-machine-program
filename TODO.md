@@ -116,8 +116,10 @@ confirm it. Never design around this, in this phase or later ones.
            k. [ ] (needed before the first made job is cut) At the mill: write down the real spindle speeds (belt steps) and
                   put them in Settings → Spindle speeds; check the bits you have
                   and enter them in ⛏ Bits (TESTING.md part E).
-           l. [ ] Plot Preview (P) a made job (NAMEPLT5.TAP) in MPS2003: does it
-                  take every line, and does M00 pause and wait for C? No cutting.
+           l. [~] (2026-10-15: PASSED in DOSBox with the real MPS2003.EXE — all step
+                  types, M00 pause + C) Same on the real old PC: NAMEPLT5.TAP,
+                  M, P, M, 3, C. No cutting.
+           o. [ ] Dry run DRYNAMT5.TAP on the mill (spindle off, cuts air), person present.
            m. [ ] Later, if wanted: import drawings (DXF/SVG) into the Make tab;
                   filled (pocketed) letters.
            n. [ ] After the first real cuts, adjust the material numbers if they

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from PySide6.QtWidgets import (
-    QCheckBox, QDialog, QDialogButtonBox, QDoubleSpinBox, QFormLayout, QLabel, QLineEdit, QSpinBox,
-    QVBoxLayout,
+    QCheckBox, QDialog, QDialogButtonBox, QDoubleSpinBox, QFormLayout, QHBoxLayout, QLabel,
+    QLineEdit, QPushButton, QSpinBox, QVBoxLayout,
 )
 
 from app_config import Settings
@@ -57,7 +57,13 @@ class SettingsDialog(QDialog):
         form.addRow("Work area Y (0 = off)", self.wy)
         form.addRow("Feed if none is set", self.feed)
         form.addRow(self._head("Making G-code"))
-        form.addRow("Spindle speeds (RPM)", self.rpms)
+        rp = QHBoxLayout()
+        rp.addWidget(self.rpms, 1)
+        calc = QPushButton("From pulleys…")
+        calc.setToolTip("Work the speeds out from the belt pulley sizes")
+        calc.clicked.connect(self._pulleys)
+        rp.addWidget(calc)
+        form.addRow("Spindle speeds (RPM)", rp)
         form.addRow("Safe height above the top", self.safez)
         form.addRow("Holding tab thickness", self.tabh)
         form.addRow("", self.climb)
@@ -83,6 +89,12 @@ class SettingsDialog(QDialog):
         l = QLabel(text)
         l.setStyleSheet("font-weight: 600; margin-top: 6px;")
         return l
+
+    def _pulleys(self) -> None:
+        from ui.pulley_dialog import PulleyDialog
+        dlg = PulleyDialog(self)
+        if dlg.exec() and dlg.speeds():
+            self.rpms.setText(", ".join(str(v) for v in dlg.speeds()))
 
     def _defaults(self) -> None:
         d = Settings()

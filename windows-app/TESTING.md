@@ -78,8 +78,11 @@ the link at a time). Cable plugged in, old PC on and at the Windows desktop.
         T3 1/8 ball, T4 1/8 drill, T5 60° V-bit. Change them to the bits you
         really have (size, flutes, cutting length). Click each and read
         "What the app will do". (Photo.)
-20. [ ] **Settings → Spindle speeds**: type the speeds your spindle can be set
-        to (look on the mill's belt guard or manual). Save.
+20. [ ] **Settings → Spindle speeds → From pulleys…**: unplug the mill, open the
+        belt cover, and for each belt position measure across the motor pulley
+        step and the spindle pulley step the belt sits on. Type them in; the
+        app works out each speed (motor 3250 RPM, from its label). Use these
+        speeds → Save. (Photo of the pulleys.)
 21. [ ] **Make G-code** tab: it opens with a sample "Name plate" (text, 2
         holes, a cut-out). Click each step; the right side says which bit,
         the RPM, feed and passes. Try 3D. (Photo.)
@@ -89,8 +92,19 @@ the link at a time). Cable plugged in, old PC on and at the Windows desktop.
 23. [ ] **Save to Jobs ➜**: three files appear on the Jobs tab
         (Name plate T5 / T4 / T1). Each shows ✓ in its Checks.
 24. [ ] Send **Name plate T5.tap** to the old PC (name NAMEPLT5.TAP), fetch it
-        with `C:\NETUP\GET NAMEPLT5.TAP`, and Plot Preview (P) it in MPS2003.
-        **Do not run it.** Does MPS2003 accept every line? (Photo.)
+        with `C:\NETUP\GET NAMEPLT5.TAP`, and Plot Preview it in MPS2003:
+        2, `TAP`, Enter, ↓, Enter, then M, P (PLOT PREVIEW shows on the left),
+        M, 3, C. It stops at the first line with the bit and RPM message:
+        press C. It draws the letters. (Photo.) Already checked in an emulator
+        with the real MPS2003.EXE on 2026-10-15; this checks the real PC.
+25. [ ] **Dry run** (the mill moves, cuts only air): Make tab → **Save a dry
+        run** → send **Dry Name plate T5.tap** (DRYNAMT5.TAP). Clamp nothing
+        under the bit, zero X, Y and Z, spindle OFF. Plot Preview OFF, run it,
+        hand near the stop/power switch the whole time. Every move should be
+        at least 1/4 in above Z0.
+26. [ ] **First real cut** (Phase 0, person present): scrap acrylic, the name
+        plate's T5 file only (engraving 0.02 in deep), spindle on at the speed
+        it shows. Stop at once if anything sounds or looks wrong.
 
 ## If something goes wrong
 
