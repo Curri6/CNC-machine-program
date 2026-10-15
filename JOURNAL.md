@@ -1095,6 +1095,11 @@ from scratch.
     part (GEARJOV2 for "gear job v2").
   - Not checked on the real machine yet: that MPS2003 accepts the generated
     files (expected: same codes as its samples) — TESTING.md part E.
+- **2026-10-15: owner asked whether materials are in.** Yes: the Make tab's
+  Material (acrylic, wax, wood/MDF, HDPE, foam, aluminum, brass) changes
+  spindle speed, feed, depth per pass, stepover and pecks, so harder
+  materials get lighter, slower cuts and longer jobs (e.g. 1/8 end mill:
+  acrylic F13.5 / 0.0625 per pass, aluminum F8.4 / 0.025 per pass).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

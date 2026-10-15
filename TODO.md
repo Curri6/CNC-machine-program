@@ -120,6 +120,8 @@ confirm it. Never design around this, in this phase or later ones.
                   take every line, and does M00 pause and wait for C? No cutting.
            m. [ ] Later, if wanted: import drawings (DXF/SVG) into the Make tab;
                   filled (pocketed) letters.
+           n. [ ] After the first real cuts, adjust the material numbers if they
+                  feel too slow or too aggressive (cam/tools.py MATERIALS).
            h. [ ] Laptop → old PC: fetch tools/jobs/SQUARE1.TAP with Win95 ftp
                   and Plot Preview (P) it in MPS2003 (no movement). Built and
                   tested 2026-10-14; waiting on the real try.
