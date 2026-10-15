@@ -1037,6 +1037,8 @@ from scratch.
     a storage host this session can't reach, so the workflow now also
     publishes builds of main as the **app-latest** release:
     https://github.com/Curri6/CNC-machine-program/releases/latest/download/ATechCNC.exe
+    Main build bcc00fb: tests, exe, smoke test and publish all green;
+    release **app-latest** has ATechCNC.exe (49,619,445 bytes).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
