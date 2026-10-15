@@ -1104,6 +1104,33 @@ from scratch.
   Answered No: the software is done, but three things only the mill can
   settle are still open — real spindle speeds (TODO k), MPS2003 accepting a
   made file in Plot Preview (TODO l), and the Phase 0 acrylic test cut.
+- **2026-10-15: owner: "do it then". Did what can be done off the mill:**
+  - **Ran the real MPS2003.EXE** (from Tuesday's backup, with PARAM3.DAT)
+    in DOSBox under Xvfb, driven by xdotool (tools/tests/mps2003_emu/).
+    It shows "M P S 2000 V3.0". Loaded app-made jobs: the name plate (T5
+    letters, T4 drill, T1 cut-out with tabs) and ALLT1.TAP (1,479 lines:
+    rectangle pocket, circle pocket, milled holes, lines, text, round
+    cut-out with tabs, facing). **Every file loaded, plotted in the right
+    place and ran to END OF PROGRAM; no error.** M00 pauses with "PROGRAM
+    STOP" and shows the comment line above it ("PUT IN T4, SPINDLE ON AT
+    4000 RPM, THEN PRESS C"); C continues. Ends at X0 Y0 Z0.1.
+    images/mps2003-emulator-*.png.
+  - Learned the real keys: Plot Preview is on the second menu (M), P turns
+    PLOT PREVIEW on, then M, 3 (Run Program), C (continuous). Preview runs
+    at the real feed rate (ALLT1 took ~7 min). The load list needs ↓
+    before Enter. Plot is centred on X0 Y0. Help, the Next-steps box and
+    TESTING.md now say this.
+  - **Spindle:** the motor label photo says **3250 RPM** (the 2026-09-22
+    entry had 3450; corrected). Belt on a step pulley, ratios unknown.
+    Factory jobs ask for S6000-S20000, so the real top speed may be higher
+    than the default list. Added Settings → Spindle speeds → **From
+    pulleys…** (spindle RPM = 3250 × motor step ÷ spindle step).
+  - **Dry run:** Make tab → **Save a dry run** writes "Dry …" copies
+    (DRYNAMT5.TAP etc.) raised so the deepest cut is ≥ 1/4 in above the
+    top: the mill makes every move but cuts air.
+  - Still only possible at the mill: measure the pulleys, the same
+    preview on the real old PC, the dry run, then the first acrylic cut
+    (TESTING.md 20, 24-26).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
