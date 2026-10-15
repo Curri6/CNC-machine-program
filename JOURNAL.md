@@ -1029,6 +1029,14 @@ from scratch.
     `.github/workflows/build-windows-app.yml` runs the tests on Windows and
     builds `ATechCNC.exe` (artifact ATechCNC-windows). `run_app.bat` runs
     from source if Python is installed.
+  - First Windows CI run failed in tests only: Windows' own ftp.exe was
+    picked up by the "real ftp client" test (it takes no port argument), and
+    the cp1252 console couldn't print ⚠ in test output. Fixed (skip on
+    Windows; UTF-8 test output). Second run: tests, exe build and smoke
+    test all green (exe ≈ 49 MB zipped artifact). Artifact downloads go to
+    a storage host this session can't reach, so the workflow now also
+    publishes builds of main as the **app-latest** release:
+    https://github.com/Curri6/CNC-machine-program/releases/latest/download/ATechCNC.exe
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
