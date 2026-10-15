@@ -70,6 +70,9 @@ that changes.
 - 2026-10-14: owner got two new blank DVD-Rs (one for NETDISC as a
   first session, one spare). The old drive reads only a disc's first
   section, so each new kit needs a fresh disc.
+- 2026-10-15: the A-Tech CNC app (Windows 11) needs nothing new either:
+  the same network cable, and the laptop's Ethernet port or a USB network
+  adapter it already has.
 
 ## Not needed
 

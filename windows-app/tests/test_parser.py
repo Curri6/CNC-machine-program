@@ -4,6 +4,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+if hasattr(sys.stdout, "reconfigure"):  # Windows console is cp1252
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 from gcode.parser import parse_gcode
 

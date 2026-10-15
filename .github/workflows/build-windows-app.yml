@@ -27,6 +27,7 @@ jobs:
       - name: Tests
         env:
           QT_QPA_PLATFORM: offscreen
+          PYTHONIOENCODING: utf-8
         run: |
           python -m tests.test_parser
           python -m tests.test_core
