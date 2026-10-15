@@ -1053,6 +1053,48 @@ from scratch.
   drill bits.** No: Settings covers top speed, depth limit, work area,
   default feed and network only; M6 tool changes are flagged as pauses but
   tools aren't named or sized. Added TODO j.
+- **2026-10-15: G-code maker added (app v1.1, "Make G-code" tab).** Owner:
+  "make all the G code for it, which includes if you add a different type
+  of drillbit, it'll still know what to do". Built:
+  - **Bits (⛏ button, tools.json):** flat / ball end mills, drills, V-bits
+    with diameter, flutes, cutting length, angle, tip, HSS/carbide; common
+    sizes menu; each bit shows what the app will do with it per material.
+  - **Speeds and feeds (cam/tools.py):** RPM from material surface speed and
+    bit size; feed = chip per tooth × flutes × RPM; over the 13.5 in/min top
+    speed the feed is capped and the spindle slowed to keep a real chip,
+    picking from Settings → Spindle speeds (default 1100, 1800, 2700, 4000,
+    6000, 10000 — typical Taig belt steps, **not checked on this mill yet**).
+    Depth per pass / stepover from material × diameter, capped by cutting
+    length; drilling at 60 % of top speed; pecks from material. E.g. 1/8 in
+    2-flute end mill in acrylic: 4,000 RPM, F13.5, plunge F4, 0.0625 in per
+    pass, 0.05 in stepover.
+  - **Steps:** holes (list / grid / bolt circle), rectangle and circle
+    (pocket, cut out, cut a hole, engrave on the line, rounded corners),
+    text (any font, outline engraving), lines, face. Holding tabs on
+    through cut-outs. Conventional milling by default (Settings: climb).
+  - **The bit decides:** drill = straight down in pecks only, refused for
+    pockets/outlines/text/lines, hole bigger than the drill refused with
+    "pick a bigger drill or an end mill"; end mill = offsets by its radius,
+    mills bigger holes round; V-bit = engrave/spot only, never deeper than
+    its cone; too-narrow pocket, too-deep cut (cutting length), missing bit
+    → error; outside the stock / deeper than the stock / letters too small
+    for the bit → warning. Through drilled holes add the drill-point length.
+  - **Output:** only G20, G90, G00/G01, ( ) comments on their own line,
+    M00 pauses, M02 — the plain subset in the manual and factory samples;
+    no M03, G41 or canned cycles. One file per bit ("Name plate T5.tap" →
+    NAMEPLT5.TAP), because the mill has no tool changer and Z must be
+    re-zeroed after each bit change. Starts with M00 "put in T5, spindle on
+    at N RPM, press C".
+  - **Tab:** project (material, stock, zero corner/centre), step list,
+    per-step form + "what the app will do", own-numbers override, live
+    preview with stock box and bit-width shading, part picker, G-code view,
+    Checks; Save to Jobs; projects save as .cncproj; last project kept.
+  - Tests: test_cam 11 (geometry of pockets/offsets/direction/tabs/holes,
+    wrong-bit errors, MPS2003-only output), test_ui 61 checks, plus the
+    existing suites; all pass locally. DOS names now keep a final "T5"/"2"
+    part (GEARJOV2 for "gear job v2").
+  - Not checked on the real machine yet: that MPS2003 accepts the generated
+    files (expected: same codes as its samples) — TESTING.md part E.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

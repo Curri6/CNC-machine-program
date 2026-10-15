@@ -39,6 +39,12 @@ def dos_name(name: str, taken: set[str] | frozenset[str] = frozenset()) -> str:
     base = "".join(c for c in stem.upper() if _DOS_OK.match(c)) or "JOB"
     if base in _RESERVED:
         base = "J" + base
+    if len(base) > 8:
+        # keep a separate last part like "T5" or "2" ("Nameplate T5" -> NAMEPLT5)
+        words = re.findall(r"[A-Za-z0-9_-]+", stem.upper())
+        if len(words) > 1 and re.fullmatch(r"[A-Z]?\d{1,3}", words[-1]):
+            tail = words[-1]
+            base = base[: len(base) - len(tail)][: 8 - len(tail)] + tail
     candidate = base[:8] + ext_u
     taken_u = {t.upper() for t in taken}
     n = 1

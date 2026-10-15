@@ -67,6 +67,10 @@ class ToolpathView(QWidget):
         self._dragged = False
         self._user_moved = False
         self._empty_text = "Add a job file to see its preview."
+        self._stock: tuple[float, float, float, float, float] | None = None
+        self._widths: list[tuple[int, int, float]] = []   # (first line, last line, bit diameter)
+        self._wide: dict[float, QPainterPath] = {}
+        self._holes = QPainterPath()
 
     # ------------------------------------------------------------ public
     def show_result(self, result: ParseResult | None) -> None:
@@ -89,6 +93,21 @@ class ToolpathView(QWidget):
         self._hilite = None
         self._rebuild()
         self.fit()
+
+    def set_stock(self, box: tuple[float, float, float, float, float] | None) -> None:
+        """Draw the stock: (x0, y0, x1, y1, thickness), top at Z0."""
+        self._stock = box
+        self._rebuild()
+
+    def set_cut_widths(self, widths: list[tuple[int, int, float]]) -> None:
+        """Shade the cuts as wide as the bit in the top view: a list of
+        (first line, last line, diameter) ranges of G-code lines."""
+        self._widths = list(widths)
+        self._rebuild()
+
+    def set_empty_text(self, text: str) -> None:
+        self._empty_text = text
+        self.update()
 
     def set_view(self, view: str) -> None:
         if view in VIEWS and view != self._view:
@@ -125,6 +144,7 @@ class ToolpathView(QWidget):
     def fit(self) -> None:
         pts = [p for seg in self._proj for p in seg] or [(0.0, 0.0)]
         pts.append((0.0, 0.0))
+        pts += [p for edge in self._stock_edges() for p in edge]
         xs = [p[0] for p in pts]
         ys = [p[1] for p in pts]
         w = max(max(xs) - min(xs), 1e-3)
@@ -144,7 +164,42 @@ class ToolpathView(QWidget):
         self._proj = [[_project(self._view, p) for p in s[0]] for s in self._segs]
         self._full_paths = self._build_paths(None)
         self._done_paths = self._build_paths(self._progress) if self._progress is not None else {}
+        self._wide = {}
+        self._holes = QPainterPath()
+        if self._widths and self._view == "top":
+            for i, (pts3, rapid, line, _b) in enumerate(self._segs):
+                if rapid or min(p[2] for p in pts3) >= 0:
+                    continue
+                d = next((w for a, b, w in self._widths if a <= line <= b), None)
+                if not d:
+                    continue
+                path = self._wide.setdefault(d, QPainterPath())
+                pts = self._proj[i]
+                if all(abs(u - pts[0][0]) < 1e-6 and abs(v - pts[0][1]) < 1e-6 for u, v in pts):
+                    if pts3[0][2] < -1e-6:
+                        continue        # a step down inside a cut (pecks, tabs): already shaded
+                    self._holes.addEllipse(QPointF(pts[0][0], -pts[0][1]), d / 2, d / 2)  # drilled
+                    continue
+                path.moveTo(pts[0][0], -pts[0][1])
+                for u, v in pts[1:]:
+                    path.lineTo(u, -v)
         self.update()
+
+    def _stock_edges(self) -> list[list[tuple[float, float]]]:
+        if not self._stock:
+            return []
+        x0, y0, x1, y1, th = self._stock
+        z0, z1 = -th, 0.0
+        if self._view == "top":
+            return [[(x0, y0), (x1, y0), (x1, y1), (x0, y1), (x0, y0)]]
+        if self._view == "front":
+            return [[(x0, z0), (x1, z0), (x1, z1), (x0, z1), (x0, z0)]]
+        if self._view == "side":
+            return [[(y0, z0), (y1, z0), (y1, z1), (y0, z1), (y0, z0)]]
+        c = [(x, y, z) for z in (z0, z1) for y in (y0, y1) for x in (x0, x1)]
+        edges = [(0, 1), (1, 3), (3, 2), (2, 0), (4, 5), (5, 7), (7, 6), (6, 4),
+                 (0, 4), (1, 5), (2, 6), (3, 7)]
+        return [[_project("iso", c[a]), _project("iso", c[b])] for a, b in edges]
 
     def _build_paths(self, upto: int | None) -> dict:
         paths: dict[int, QPainterPath] = {}
@@ -178,7 +233,7 @@ class ToolpathView(QWidget):
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing)
         p.fillRect(self.rect(), QColor(theme.VIEW_BG))
-        if not self._segs:
+        if not self._segs and not self._stock:
             p.setPen(QColor("#8a94a6"))
             p.setFont(QFont("Segoe UI", 11))
             p.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, self._empty_text)
@@ -186,6 +241,29 @@ class ToolpathView(QWidget):
         if self._view != "iso":
             self._draw_grid(p)
         p.setTransform(self._xform())
+        edges = self._stock_edges()
+        if edges:
+            sp = QPainterPath()
+            for e in edges:
+                sp.moveTo(e[0][0], -e[0][1])
+                for u, v in e[1:]:
+                    sp.lineTo(u, -v)
+            if self._view != "iso":
+                p.fillPath(sp, QColor(theme.VIEW_STOCK))
+            p.setPen(self._pen(theme.VIEW_STOCK_EDGE, 1.2))
+            p.drawPath(sp)
+        for d, path in self._wide.items():
+            c = QColor(theme.VIEW_CUT_WIDE)
+            c.setAlpha(70)
+            pen = QPen(c, d)
+            pen.setCapStyle(Qt.PenCapStyle.RoundCap)
+            pen.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
+            p.setPen(pen)
+            p.drawPath(path)
+        if not self._holes.isEmpty():
+            c = QColor(theme.VIEW_CUT_WIDE)
+            c.setAlpha(110)
+            p.fillPath(self._holes, c)
 
         dim = self._progress is not None
         for bucket, path in self._full_paths.items():

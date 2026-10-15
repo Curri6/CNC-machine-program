@@ -36,6 +36,7 @@ jobs:
         run: |
           python -m tests.test_parser
           python -m tests.test_core
+          python -m tests.test_cam
           python -m tests.test_link
           python -m tests.test_ui
       - name: Build exe
@@ -51,6 +52,7 @@ jobs:
           if ($p.HasExited) { throw "ATechCNC.exe exited early (code $($p.ExitCode))" }
           Stop-Process -Id $p.Id
           if (-not (Test-Path "$env:CNC_APP_HOME\Jobs")) { throw "no Jobs folder made" }
+          if (-not (Test-Path "$env:CNC_APP_HOME\tools.json")) { throw "no tools.json (Make tab didn't start)" }
           Get-Item dist\ATechCNC.exe | Format-List Name, Length
       - uses: actions/upload-artifact@v4
         with:

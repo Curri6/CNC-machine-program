@@ -1,4 +1,5 @@
-"""Main window: header, the Jobs / Machine Link / Help tabs, status bar."""
+"""Main window: header, the Jobs / Make G-code / Machine Link / Help tabs,
+status bar."""
 
 from __future__ import annotations
 
@@ -9,15 +10,18 @@ from PySide6.QtWidgets import (
     QHBoxLayout, QLabel, QMainWindow, QPushButton, QStatusBar, QTabWidget, QVBoxLayout, QWidget,
 )
 
-from app_config import load_settings
+from app_config import load_settings, tools_path
+from cam.tools import ToolLibrary
 from library import JOB_EXTS
 from ui.help_page import HelpPage
 from ui.icon import icon_pixmap
 from ui.jobs_page import JobsPage
 from ui.link_page import LinkPage
+from ui.make_page import MakePage
 from ui.settings_dialog import SettingsDialog
+from ui.tools_dialog import ToolsDialog
 
-VERSION = "1.0"
+VERSION = "1.1"
 
 
 class MainWindow(QMainWindow):
@@ -46,7 +50,7 @@ class MainWindow(QMainWindow):
         titles.setSpacing(0)
         t = QLabel("A-Tech CNC")
         t.setObjectName("AppTitle")
-        sub = QLabel("Jobs, preview and file transfer for the MicroMill (MPS2003)")
+        sub = QLabel("Make, preview and send G-code for the MicroMill (MPS2003)")
         sub.setObjectName("AppSub")
         titles.addWidget(t)
         titles.addWidget(sub)
@@ -61,14 +65,24 @@ class MainWindow(QMainWindow):
         helpb = QPushButton("?  Help")
         helpb.setObjectName("Flat")
         helpb.clicked.connect(lambda: self.tabs.setCurrentWidget(self.help))
+        bits = QPushButton("⛏  Bits")
+        bits.setObjectName("Flat")
+        bits.setToolTip("The tool list: end mills, drills and V-bits")
+        bits.clicked.connect(self._bits)
         h.addWidget(helpb)
+        h.addWidget(bits)
         h.addWidget(gear)
         v.addWidget(header)
 
+        self.tools = ToolLibrary(tools_path())
+        if not tools_path().exists():
+            self.tools.save()
         self.jobs = JobsPage(self.settings)
+        self.make = MakePage(self.settings, self.tools)
         self.link = LinkPage(self.settings)
         self.help = HelpPage()
         self.tabs.addTab(self.jobs, "Jobs")
+        self.tabs.addTab(self.make, "Make G-code")
         self.tabs.addTab(self.link, "Machine Link")
         self.tabs.addTab(self.help, "Help")
         v.addWidget(self.tabs, 1)
@@ -79,6 +93,8 @@ class MainWindow(QMainWindow):
 
         self.jobs.message.connect(self._msg)
         self.link.message.connect(self._msg)
+        self.make.message.connect(self._msg)
+        self.make.savedJobs.connect(self._jobs_made)
         self.jobs.sentToOutbox.connect(lambda _n: self.link.refresh_lists())
         self.link.jobsFromBackup.connect(self._jobs_from_backup)
         self._status_timer = QTimer(self)
@@ -101,7 +117,18 @@ class MainWindow(QMainWindow):
     def _settings(self) -> None:
         if SettingsDialog(self.settings, self).exec():
             self.jobs.settings_changed()
+            self.make.settings_changed()
             self._msg("Settings saved.")
+
+    def _bits(self) -> None:
+        if ToolsDialog(self.tools, self.settings, self.make.project.material, self).exec():
+            self.make.tools_changed()
+            self._msg("Tool list saved.")
+
+    def _jobs_made(self, paths: list) -> None:
+        self.jobs.library.refresh_settings()
+        self.jobs.reload_library(select=Path(paths[0]) if paths else None)
+        self.tabs.setCurrentWidget(self.jobs)
 
     def _jobs_from_backup(self, paths: list) -> None:
         self.jobs.add_files([Path(p) for p in paths])

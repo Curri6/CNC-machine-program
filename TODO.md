@@ -111,9 +111,15 @@ confirm it. Never design around this, in this phase or later ones.
                   github.com/Curri6/CNC-machine-program/releases/latest): Set up network…,
                   fetch GET.BAT once on the old PC, then Send to old PC + GET.
                   Step-by-step checklist: windows-app/TESTING.md (parts A–D).
-           j. [ ] App has no tool/drill-bit settings yet (owner asked 2026-10-15).
-                  Possible: a tool list (number, type, diameter) in Settings, used to
-                  draw cut width in the preview and name tools at M6 pauses.
+           j. [x] (2026-10-15: "Make G-code" tab + ⛏ Bits list, app v1.1) tool
+                  list and G-code making that adapts to each bit.
+           k. [ ] At the mill: write down the real spindle speeds (belt steps) and
+                  put them in Settings → Spindle speeds; check the bits you have
+                  and enter them in ⛏ Bits (TESTING.md part E).
+           l. [ ] Plot Preview (P) a made job (NAMEPLT5.TAP) in MPS2003: does it
+                  take every line, and does M00 pause and wait for C? No cutting.
+           m. [ ] Later, if wanted: import drawings (DXF/SVG) into the Make tab;
+                  filled (pocketed) letters.
            h. [ ] Laptop → old PC: fetch tools/jobs/SQUARE1.TAP with Win95 ftp
                   and Plot Preview (P) it in MPS2003 (no movement). Built and
                   tested 2026-10-14; waiting on the real try.

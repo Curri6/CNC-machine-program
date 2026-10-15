@@ -72,6 +72,26 @@ the link at a time). Cable plugged in, old PC on and at the Windows desktop.
 18. [ ] In the app, "Backups from the old PC" shows a new backup with a
         ✓ (checked, 20 files) and a zip. Click **Open backup**. (Photo.)
 
+## Part E — make a job with the app
+
+19. [ ] **⛏ Bits** (top right): the list has T1 1/8 flat end mill, T2 1/16 flat,
+        T3 1/8 ball, T4 1/8 drill, T5 60° V-bit. Change them to the bits you
+        really have (size, flutes, cutting length). Click each and read
+        "What the app will do". (Photo.)
+20. [ ] **Settings → Spindle speeds**: type the speeds your spindle can be set
+        to (look on the mill's belt guard or manual). Save.
+21. [ ] **Make G-code** tab: it opens with a sample "Name plate" (text, 2
+        holes, a cut-out). Click each step; the right side says which bit,
+        the RPM, feed and passes. Try 3D. (Photo.)
+22. [ ] Pick step 2 (holes), change "Hole size" to 1/4. It turns red: the
+        1/8 drill can't make 1/4 holes. Change the bit to T1 (end mill): it
+        goes green and mills them round. Put it back.
+23. [ ] **Save to Jobs ➜**: three files appear on the Jobs tab
+        (Name plate T5 / T4 / T1). Each shows ✓ in its Checks.
+24. [ ] Send **Name plate T5.tap** to the old PC (name NAMEPLT5.TAP), fetch it
+        with `C:\NETUP\GET NAMEPLT5.TAP`, and Plot Preview (P) it in MPS2003.
+        **Do not run it.** Does MPS2003 accept every line? (Photo.)
+
 ## If something goes wrong
 
 - Old PC light red → on the old PC run `C:\NETUP\CHECK` (photo).

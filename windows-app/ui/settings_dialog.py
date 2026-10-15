@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from PySide6.QtWidgets import (
-    QDialog, QDialogButtonBox, QDoubleSpinBox, QFormLayout, QLabel, QLineEdit, QSpinBox,
+    QCheckBox, QDialog, QDialogButtonBox, QDoubleSpinBox, QFormLayout, QLabel, QLineEdit, QSpinBox,
     QVBoxLayout,
 )
 
@@ -41,6 +41,14 @@ class SettingsDialog(QDialog):
         self.port.setRange(1, 65535)
         self.port.setValue(settings.ftp_port)
         self.port.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
+        self.rpms = QLineEdit(settings.spindle_rpms)
+        self.rpms.setToolTip("The spindle speeds your mill can be set to, separated by commas.\n"
+                             "The defaults are typical Taig belt steps: change them to the speeds "
+                             "on your mill.\nOne number = a spindle with one speed.")
+        self.safez = dspin(settings.safe_z_in, 0.02, 2, 0.05, " in")
+        self.tabh = dspin(settings.tab_height_in, 0.005, 0.5, 0.01, " in")
+        self.climb = QCheckBox("Climb milling (off = conventional, better for an older mill)")
+        self.climb.setChecked(settings.climb_milling)
 
         form.addRow(self._head("Machine"))
         form.addRow("Top speed (rapids)", self.rapid)
@@ -48,6 +56,11 @@ class SettingsDialog(QDialog):
         form.addRow("Work area X (0 = off)", self.wx)
         form.addRow("Work area Y (0 = off)", self.wy)
         form.addRow("Feed if none is set", self.feed)
+        form.addRow(self._head("Making G-code"))
+        form.addRow("Spindle speeds (RPM)", self.rpms)
+        form.addRow("Safe height above the top", self.safez)
+        form.addRow("Holding tab thickness", self.tabh)
+        form.addRow("", self.climb)
         form.addRow(self._head("Network (match the old PC)"))
         form.addRow("Laptop address", self.laptop)
         form.addRow("Old PC address", self.oldpc)
@@ -81,6 +94,10 @@ class SettingsDialog(QDialog):
         self.laptop.setText(d.laptop_ip)
         self.oldpc.setText(d.old_pc_ip)
         self.port.setValue(d.ftp_port)
+        self.rpms.setText(d.spindle_rpms)
+        self.safez.setValue(d.safe_z_in)
+        self.tabh.setValue(d.tab_height_in)
+        self.climb.setChecked(d.climb_milling)
 
     def _save(self) -> None:
         s = self.s
@@ -92,5 +109,11 @@ class SettingsDialog(QDialog):
         s.laptop_ip = self.laptop.text().strip() or s.laptop_ip
         s.old_pc_ip = self.oldpc.text().strip() or s.old_pc_ip
         s.ftp_port = self.port.value()
+        test = Settings(spindle_rpms=self.rpms.text())
+        s.spindle_rpms = ", ".join(str(r) for r in test.rpm_choices()) if self.rpms.text().strip() \
+            else Settings().spindle_rpms
+        s.safe_z_in = self.safez.value()
+        s.tab_height_in = self.tabh.value()
+        s.climb_milling = self.climb.isChecked()
         s.save()
         self.accept()
