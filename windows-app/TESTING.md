@@ -63,8 +63,9 @@ the link at a time). Cable plugged in, old PC on and at the Windows desktop.
 15. [ ] On the old PC: `C:\NETUP\GET SQUARE1.TAP`. It says
         "Done: C:\MPSPRO\SQUARE1.TAP is ready". The app's Activity log shows "Sent to old PC: SQUARE1.TAP".
         (Photo of both screens.)
-16. [ ] On the old PC: open SQUARE1.TAP in MPS2003 and press **P** (Plot
-        Preview). It draws a square. **Do not run it.** (Photo.)
+16. [ ] On the old PC, in MPS2003: 2, `TAP`, Enter, ↓ to SQUARE1.TAP, Enter.
+        Then M, P (PLOT PREVIEW shows on the left), M, 3, C; at the pause
+        press C. It draws a square. (Photo.)
 
 ## Part D — backup from the old PC
 
