@@ -110,6 +110,7 @@ confirm it. Never design around this, in this phase or later ones.
            i. [ ] Try the new app on the laptop (ATechCNC.exe from
                   github.com/Curri6/CNC-machine-program/releases/latest): Set up network…,
                   fetch GET.BAT once on the old PC, then Send to old PC + GET.
+                  Step-by-step checklist: windows-app/TESTING.md (parts A–D).
            h. [ ] Laptop → old PC: fetch tools/jobs/SQUARE1.TAP with Win95 ftp
                   and Plot Preview (P) it in MPS2003 (no movement). Built and
                   tested 2026-10-14; waiting on the real try.
