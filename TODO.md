@@ -113,7 +113,7 @@ confirm it. Never design around this, in this phase or later ones.
                   Step-by-step checklist: windows-app/TESTING.md (parts A–D).
            j. [x] (2026-10-15: "Make G-code" tab + ⛏ Bits list, app v1.1) tool
                   list and G-code making that adapts to each bit.
-           k. [ ] At the mill: write down the real spindle speeds (belt steps) and
+           k. [ ] (needed before the first made job is cut) At the mill: write down the real spindle speeds (belt steps) and
                   put them in Settings → Spindle speeds; check the bits you have
                   and enter them in ⛏ Bits (TESTING.md part E).
            l. [ ] Plot Preview (P) a made job (NAMEPLT5.TAP) in MPS2003: does it
