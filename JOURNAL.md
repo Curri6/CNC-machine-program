@@ -1039,6 +1039,16 @@ from scratch.
     https://github.com/Curri6/CNC-machine-program/releases/latest/download/ATechCNC.exe
     Main build bcc00fb: tests, exe, smoke test and publish all green;
     release **app-latest** has ATechCNC.exe (49,619,445 bytes).
+- **2026-10-15: owner asked how to test the app.** Wrote
+  windows-app/TESTING.md, a by-hand checklist in four parts: A laptop only
+  (open the exe, drag in Tuesday's MPSPRO backup folder, preview/play/
+  click-to-line on KNIGHT.TAP, Settings depth warning, Help, reopen);
+  B cable lights (Set up network… if the address light is red); C send
+  SQUARE1.TAP (raw GitHub link, Ctrl+S) → fetch GET.BAT once → `C:\NETUP\GET
+  SQUARE1.TAP` → Plot Preview only, mill off; D `C:\NETUP\SEND` backup
+  shows ✓ and a zip. Checked the wording against the code (GET.BAT's
+  "Done: … is ready", SQUARE1's "only moves in the air" check, Settings
+  re-checks the jobs). Waiting on the owner's photos.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
