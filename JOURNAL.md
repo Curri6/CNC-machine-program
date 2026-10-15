@@ -1100,6 +1100,10 @@ from scratch.
   spindle speed, feed, depth per pass, stepover and pecks, so harder
   materials get lighter, slower cuts and longer jobs (e.g. 1/8 end mill:
   acrylic F13.5 / 0.0625 per pass, aluminum F8.4 / 0.025 per pass).
+- **2026-10-15: owner asked if everything needed to actually run is in.**
+  Answered No: the software is done, but three things only the mill can
+  settle are still open — real spindle speeds (TODO k), MPS2003 accepting a
+  made file in Plot Preview (TODO l), and the Phase 0 acrylic test cut.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

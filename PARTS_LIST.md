@@ -79,6 +79,7 @@ that changes.
 - 2026-10-15: the G-code maker uses whatever bits the school already has;
   enter them in the app's ⛏ Bits list. Nothing to buy.
 - 2026-10-15: materials question: software only, nothing to buy.
+- 2026-10-15: what's left to run a job is checks at the mill, not parts.
 
 ## Not needed
 
