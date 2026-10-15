@@ -7,6 +7,8 @@ import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+if hasattr(sys.stdout, "reconfigure"):  # Windows console is cp1252
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 os.environ["CNC_APP_HOME"] = tempfile.mkdtemp()
 

@@ -13,6 +13,8 @@ from pathlib import Path
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 os.environ["CNC_APP_HOME"] = tempfile.mkdtemp()
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+if hasattr(sys.stdout, "reconfigure"):  # Windows console is cp1252
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 from PySide6.QtWidgets import QApplication, QDialogButtonBox, QMessageBox  # noqa: E402
 

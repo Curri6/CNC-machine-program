@@ -14,9 +14,10 @@ machine loads and runs each job in MPS2003.
 
 ## Getting it
 
-* **ATechCNC.exe**: built by GitHub Actions on every change to
-  `windows-app/` (workflow **Build Windows app**, artifact
-  `ATechCNC-windows`). It's one file; double-click to run. Windows may show
+* **ATechCNC.exe**: download it from
+  https://github.com/Curri6/CNC-machine-program/releases/latest/download/ATechCNC.exe
+  (built by GitHub Actions, workflow **Build Windows app**, every time
+  `windows-app/` changes on main). It's one file; double-click to run. Windows may show
   "Windows protected your PC" the first time; click **More info → Run anyway**.
 * **From source**: install Python 3.10+ from python.org, then double-click
   `run_app.bat`. The first run installs PySide6.

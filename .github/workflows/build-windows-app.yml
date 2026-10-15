@@ -1,5 +1,7 @@
 # Builds A-Tech CNC.exe for Windows 11 and runs the app's tests on Windows.
-# The exe is attached to each run as the "ATechCNC-windows" artifact.
+# The exe is attached to each run as the "ATechCNC-windows" artifact, and
+# builds of main are published as the "app-latest" release:
+# https://github.com/Curri6/CNC-machine-program/releases/latest/download/ATechCNC.exe
 name: Build Windows app
 
 on:
@@ -8,6 +10,9 @@ on:
       - "windows-app/**"
       - ".github/workflows/build-windows-app.yml"
   workflow_dispatch:
+
+permissions:
+  contents: write   # to publish the exe as the "app-latest" release
 
 jobs:
   build:
@@ -27,6 +32,7 @@ jobs:
       - name: Tests
         env:
           QT_QPA_PLATFORM: offscreen
+          PYTHONIOENCODING: utf-8
         run: |
           python -m tests.test_parser
           python -m tests.test_core
@@ -51,3 +57,14 @@ jobs:
           name: ATechCNC-windows
           path: windows-app/dist/ATechCNC.exe
           if-no-files-found: error
+      - name: Publish as the latest release (main only)
+        if: github.ref == 'refs/heads/main'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete app-latest --yes --cleanup-tag 2>$null
+          $notes = "A-Tech CNC for Windows 11, built from $($env:GITHUB_SHA.Substring(0,7)). " +
+                   "Download ATechCNC.exe and double-click it. If Windows says 'Windows protected " +
+                   "your PC', click More info, then Run anyway. Help is inside the app (Help tab)."
+          gh release create app-latest dist/ATechCNC.exe --title "A-Tech CNC (latest)" --notes $notes --target $env:GITHUB_SHA --latest

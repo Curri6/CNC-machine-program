@@ -13,6 +13,8 @@ import zipfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+if hasattr(sys.stdout, "reconfigure"):  # Windows console is cp1252
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 from link.ftp_server import LinkServer, resolve_remote  # noqa: E402
 
@@ -184,8 +186,10 @@ def test_refuses_other_networks():
 
 
 def test_real_ftp_client_send_and_get():
-    if not shutil.which("ftp"):
-        print("SKIP real ftp client (not installed)")
+    # The Linux/BSD ftp client takes a port; Windows' ftp.exe doesn't (it is
+    # tested for real against the old PC instead).
+    if sys.platform.startswith("win") or not shutil.which("ftp"):
+        print("SKIP real ftp client (needs the Linux/BSD ftp command)")
         return
     srv, root, ev = make_server()
     src = Path(tempfile.mkdtemp())
