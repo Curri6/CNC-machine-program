@@ -110,7 +110,7 @@ rec.mkdir(parents=True)
 (rec / "MANIFEST.TXT").write_bytes(b"MPSPRO/GEAR.TAP 17765\r\nMPSPRO/PARAM3.DAT 232\r\n")
 dlg = SendDialog("gear job v2.nc", outbox_dir(), received_dir())
 ok_btn = dlg.buttons.button(QDialogButtonBox.StandardButton.Ok)
-check(dlg.name() == "GEARJOBV.TAP" and ok_btn.isEnabled(), f"suggested name {dlg.name()}")
+check(dlg.name() == "GEARJOV2.TAP" and ok_btn.isEnabled(), f"suggested name {dlg.name()}")
 dlg.edit.setText("my gear.tap")
 check(not ok_btn.isEnabled(), "space in name refused")
 dlg.edit.setText("PARAM3.DAT")
@@ -158,11 +158,68 @@ for i in range(w.help.nav.count()):
     app.processEvents()
     check(len(w.help.text.toPlainText()) > 200, f"help: {w.help.nav.item(i).text()}")
 
+# --- Make G-code tab
+from app_config import jobs_dir, tools_path  # noqa: E402
+from ui.tools_dialog import ToolsDialog  # noqa: E402
+
+mk = w.make
+tab_names = [w.tabs.tabText(i) for i in range(w.tabs.count())]
+check(tab_names == ["Jobs", "Make G-code", "Machine Link", "Help"], f"tabs {tab_names}")
+check(tools_path().exists() and len(w.tools.tools) == 5, "starting tool list saved")
+check(mk.output.ok and len(mk.output.files) == 3, f"example project makes 3 files: {mk.output.messages}")
+check(mk.view.segment_count() > 50 and mk.part.count() == 4, "preview + part picker")
+mk.part.setCurrentIndex(2)
+app.processEvents()
+check(mk.code.toPlainText().startswith("(A-TECH CNC: NAME PLATE)") and "BIT T4" in mk.code.toPlainText(),
+      "part picker shows one bit's file")
+n0 = len(mk.project.steps)
+mk.add_step("holes")
+app.processEvents()
+new = mk.project.steps[-1]
+check(new.tool == 4, f"holes step picks the drill (T{new.tool})")
+check(mk.steps.currentRow() == n0 and "Holes" in mk.step_card.title.text(), "new step selected")
+mk._form_widgets["hole_d"].setText("1/4")
+mk.regenerate()
+app.processEvents()
+check(not mk.save_btn.isEnabled() and "✗" in mk.steps.item(n0).text(), "too-big hole for the drill: blocked")
+check("1/4 in drill" in mk.plan.text(), "plan says what to use instead")
+mk.bit.setCurrentIndex(mk.bit.findData(1))          # switch to the 1/8 end mill
+app.processEvents()
+check(mk.save_btn.isEnabled() and "milled round" in mk.plan.text(), "end mill mills the 1/4 holes")
+mk._form_widgets["pattern"].setCurrentIndex(1)     # grid shows the grid fields
+app.processEvents()
+check(not mk._form_widgets["gx"].isHidden() and mk._form_widgets["points"].isHidden(), "fields follow pattern")
+mk._delete()
+check(len(mk.project.steps) == n0, "step deleted")
+mk.p_name.setText("Plate")
+mk.regenerate()
+written = mk.save_to_jobs()
+app.processEvents()
+check([p.name for p in written] == ["Plate T5.tap", "Plate T4.tap", "Plate T1.tap"], f"saved {written}")
+check(all((jobs_dir() / p.name).exists() for p in written), "files in the Jobs folder")
+check(w.tabs.currentWidget() is w.jobs and jp.job and jp.job.path.name == "Plate T5.tap",
+      "Jobs tab shows the new job")
+check(SendDialog("Plate T5.tap", outbox_dir(), received_dir()).name() == "PLATET5.TAP", "DOS name keeps T5")
+again = mk.save_to_jobs()
+check(len(again) == 3 and any(p[0] == "question" for p in POPUPS), "saving again asks before replacing")
+check((Path(os.environ["CNC_APP_HOME"]) / "current.cncproj").exists(), "project kept for next time")
+
+dlg = ToolsDialog(w.tools, w.settings, "acrylic", w)
+dlg._add(__import__("cam.tools", fromlist=["Tool"]).Tool(0, "drill", 0.25, 2, 1.0, angle=118))
+check(dlg.work[-1].number == 6 and "Holes of its own size" in dlg.explain.text(), "tools dialog explains a bit")
+dlg.size.setText("abc")
+check("Diameter" in dlg.err.text(), "bad size flagged")
+dlg.size.setText("1/4")
+dlg._save()
+check(len(w.tools.tools) == 6 and '"number": 6' in tools_path().read_text(), "new bit saved")
+
 # remove from library deletes only the app's copy
+before = jp.list.count()
 jp.list.setCurrentRow(0)
+check(jp.job.path.name == "deep.tap", jp.job.path.name)
 jp.library.remove(jp.job.path)
 jp.reload_library()
-check(jp.list.count() == 1 and (src / "deep.tap").exists(), "remove keeps the original")
+check(jp.list.count() == before - 1 and (src / "deep.tap").exists(), "remove keeps the original")
 
 w.close()
 print("\nALL PASS" if fails == 0 else f"\n{fails} FAILED")

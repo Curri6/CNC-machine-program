@@ -76,6 +76,8 @@ that changes.
 - 2026-10-15: the app's test checklist (windows-app/TESTING.md) needs
   nothing new: the laptop, the cable, the old PC, mill switched off.
 - 2026-10-15: drill-bit settings question: software only, nothing to buy.
+- 2026-10-15: the G-code maker uses whatever bits the school already has;
+  enter them in the app's ⛏ Bits list. Nothing to buy.
 
 ## Not needed
 

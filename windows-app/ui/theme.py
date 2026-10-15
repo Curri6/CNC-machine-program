@@ -23,6 +23,9 @@ VIEW_RAPID = "#7c8799"
 VIEW_TOOL = "#fb923c"
 VIEW_HILITE = "#facc15"
 VIEW_ORIGIN = "#ef4444"
+VIEW_STOCK = "#1f2a3a"
+VIEW_STOCK_EDGE = "#475569"
+VIEW_CUT_WIDE = "#38bdf8"
 
 STYLE = f"""
 * {{ font-family: "Segoe UI", "Segoe UI Variable", Arial, sans-serif; font-size: 10pt; color: {TEXT}; }}
@@ -53,6 +56,11 @@ QPushButton#Primary {{ background: {ACCENT}; color: white; border: 1px solid {AC
 QPushButton#Primary:hover {{ background: {ACCENT_DARK}; }}
 QPushButton#Primary:disabled {{ background: #9db7f0; border-color: #9db7f0; color: #eef3ff; }}
 QPushButton#Danger {{ color: {BAD}; }}
+QToolButton#PrimaryTool {{ background: {ACCENT}; color: white; border: 1px solid {ACCENT}; border-radius: 7px;
+                          padding: 7px 14px; font-weight: 600; }}
+QToolButton#PrimaryTool:hover {{ background: {ACCENT_DARK}; }}
+QToolButton#PrimaryTool::menu-indicator {{ image: none; width: 0; }}
+QToolButton {{ border-radius: 7px; }}
 QPushButton#Flat, QToolButton#Flat {{ border: none; background: transparent; padding: 5px 9px; }}
 QPushButton#Flat:hover, QToolButton#Flat:hover {{ background: #eef1f6; }}
 QToolButton#Seg {{ background: {CARD}; border: 1px solid {BORDER}; padding: 5px 11px; }}

@@ -48,12 +48,7 @@ class JobStats:
 
     @property
     def time_text(self) -> str:
-        s = int(round(self.est_seconds))
-        if s < 60:
-            return f"{s} s"
-        h, rem = divmod(s, 3600)
-        m, sec = divmod(rem, 60)
-        return f"{h} h {m:02d} min" if h else f"{m} min {sec:02d} s"
+        return time_text(self.est_seconds)
 
     @property
     def short_time(self) -> str:
@@ -67,6 +62,15 @@ class JobStats:
     @property
     def warning_count(self) -> int:
         return sum(1 for c in self.checks if c.level == WARN)
+
+
+def time_text(seconds: float) -> str:
+    s = int(round(seconds))
+    if s < 60:
+        return f"{s} s"
+    h, rem = divmod(s, 3600)
+    m, sec = divmod(rem, 60)
+    return f"{h} h {m:02d} min" if h else f"{m} min {sec:02d} s"
 
 
 def _length(points) -> float:

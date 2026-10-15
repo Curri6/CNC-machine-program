@@ -6,7 +6,10 @@ Everything lives in one folder the teacher can find in File Explorer:
         Jobs\\             job files added to the app (the library)
         To Old PC\\        jobs waiting for the old PC to fetch over the cable
         Received\\         backups the old PC sent (one folder per session)
+        Projects\\         projects saved from the Make G-code tab
         settings.json
+        tools.json        the bit (tool) list
+        current.cncproj   the project open in the Make tab, kept for next time
 
 Set the environment variable CNC_APP_HOME to use a different folder
 (the tests do this).
@@ -37,6 +40,25 @@ class Settings:
     work_y_in: float = 0.0
     default_feed_in_per_min: float = 10.0  # used for the time estimate if no F is set
 
+    # Making G-code (Make tab)
+    # Spindle speeds the mill can be set to. Typical Taig belt steps; change
+    # them to the speeds on your mill. One number = a fixed-speed spindle.
+    spindle_rpms: str = "1100, 1800, 2700, 4000, 6000, 10000"
+    safe_z_in: float = 0.1           # height for moves between cuts (above the top, Z0)
+    climb_milling: bool = False      # False = conventional: kinder to an old mill with backlash
+    tab_height_in: float = 0.03      # holding tabs left on cut-outs that go all the way through
+
+    def rpm_choices(self) -> list[int]:
+        out = []
+        for part in self.spindle_rpms.replace(";", ",").split(","):
+            try:
+                v = int(float(part.strip()))
+            except ValueError:
+                continue
+            if v > 0:
+                out.append(v)
+        return sorted(set(out)) or [10000]
+
     def save(self, path: Path | None = None) -> None:
         path = path or settings_path()
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -60,6 +82,14 @@ def outbox_dir() -> Path:
 
 def received_dir() -> Path:
     return _ensure(app_home() / "Received")
+
+
+def projects_dir() -> Path:
+    return _ensure(app_home() / "Projects")
+
+
+def tools_path() -> Path:
+    return app_home() / "tools.json"
 
 
 def settings_path() -> Path:
