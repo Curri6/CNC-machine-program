@@ -21,7 +21,7 @@ from PySide6.QtWidgets import (
 
 from app_config import Settings, app_home, jobs_dir, projects_dir
 from cam.operations import ERROR, INFO, STEP_TYPES, WARN, Step, describe
-from cam.program import PROJECT_EXT, Output, Project, file_stem, generate
+from cam.program import PROJECT_EXT, Output, Project, dry_run, file_stem, generate
 from cam.tools import MATERIALS, Overrides, ToolLibrary, parse_length
 from gcode.analysis import analyze, time_text
 from gcode.parser import parse_gcode
@@ -338,6 +338,11 @@ class MakePage(QWidget):
         safety.setObjectName("Muted")
         safety.setWordWrap(True)
         bar.addWidget(safety, 1)
+        self.dry_btn = QPushButton("Save a dry run")
+        self.dry_btn.setToolTip("The same job raised above the stock, so it runs in the air: "
+                                "watch every move (and the pauses) before cutting for real")
+        self.dry_btn.clicked.connect(self.save_dry_run)
+        bar.addWidget(self.dry_btn)
         self.save_btn = QPushButton("Save to Jobs  ➜")
         self.save_btn.setObjectName("Primary")
         self.save_btn.setToolTip("Put the job file(s) in the Jobs library, ready to check and send")
@@ -779,6 +784,7 @@ class MakePage(QWidget):
             for t in self.tiles.values():
                 t.set("–")
         self.save_btn.setEnabled(out.ok)
+        self.dry_btn.setEnabled(out.ok)
         self._show_part()
         self._update_plan()
 
@@ -855,14 +861,18 @@ class MakePage(QWidget):
                 break
 
     # ------------------------------------------------------------ save
-    def save_to_jobs(self) -> list[Path]:
+    def save_dry_run(self) -> list[Path]:
+        return self.save_to_jobs(dry=True)
+
+    def save_to_jobs(self, dry: bool = False) -> list[Path]:
         out = generate(self.project, self.tools, self.settings)
         self.output = out
         if not out.ok:
             QMessageBox.warning(self, "Not ready", "Fix the steps marked ✗ first (see Checks).")
             return []
+        files = dry_run(out) if dry else out.files
         folder = jobs_dir()
-        targets = [folder / f.name for f in out.files]
+        targets = [folder / f.name for f in files]
         existing = [p for p in targets if p.exists()]
         if existing:
             ans = QMessageBox.question(
@@ -873,13 +883,14 @@ class MakePage(QWidget):
                 return []
         written = []
         try:
-            for f, path in zip(out.files, targets):
+            for f, path in zip(files, targets):
                 path.write_text(f.text, encoding="latin-1", errors="replace")
                 written.append(path)
         except OSError as exc:
             QMessageBox.critical(self, "Could not save", str(exc))
             return written
-        self.message.emit(f"Saved {len(written)} job file(s) to the Jobs library.")
+        what = "dry-run file(s) — they run in the air, above the stock" if dry else "job file(s)"
+        self.message.emit(f"Saved {len(written)} {what} to the Jobs library.")
         self.savedJobs.emit(written)
         return written
 

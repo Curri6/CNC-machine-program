@@ -343,6 +343,37 @@ def test_project_files_one_per_bit():
     print("test_project_files_one_per_bit: PASS")
 
 
+def test_dry_run():
+    from cam.program import dry_run, lift_text
+    from gcode.dosfile import dos_name
+    p = Project(name="Name plate", stock_x=4, stock_y=1.5, stock_t=0.25)
+    p.steps = [Step("holes", 4, {"points": "0.3,0.75", "through": True}),
+               Step("rect", 1, {"mode": "outside", "x": 0.1, "y": 0.1, "w": 3.8, "h": 1.3,
+                                "through": True})]
+    out = generate(p, lib(), S)
+    dry = dry_run(out)
+    assert [f.name for f in dry] == ["Dry Name plate T4.tap", "Dry Name plate T1.tap"]
+    assert [dos_name(f.name) for f in dry] == ["DRYNAMT4.TAP", "DRYNAMT1.TAP"]
+    for real, d in zip(out.files, dry):
+        rz = [q[2] for s in parse_gcode(real.text).segments for q in s.points[1:]]
+        dz = [q[2] for s in parse_gcode(d.text).segments for q in s.points[1:]]
+        assert min(dz) >= 0.25 - 1e-9, min(dz)               # everything in the air
+        lift = min(dz) - min(rz)
+        assert all(abs((b - a) - lift) < 1e-6 for a, b in zip(rz, dz))   # same moves, just higher
+        assert "DRY RUN" in d.text and "M00" in d.text
+        r = check_mps2003(d.text)
+        assert any("only moves in the air" in c.text for c in analyze(r, S, "D.TAP").checks)
+    assert lift_text("(Z0 TOP)\nG01 X1 Z-0.1000 F4\n", 0.5) == "(Z0 TOP)\nG01 X1 Z0.4000 F4\n"
+    print("test_dry_run: PASS")
+
+
+def test_pulley_speeds():
+    from ui.pulley_dialog import MOTOR_RPM, speeds
+    assert MOTOR_RPM == 3250
+    assert speeds(3250, [(1, 2), (2, 1), (1.5, 1.5), (0, 3)]) == [1620, 3250, 6500]
+    print("test_pulley_speeds: PASS")
+
+
 def test_builder_text():
     from cam.builder import comment_text, num
     assert comment_text("Nameplate (v2): 1/8° bit × 2") == "NAMEPLATE V2: 1/8 DEG BIT X 2"
@@ -361,5 +392,7 @@ if __name__ == "__main__":
     test_wrong_bit_for_the_job()
     test_text_lines_face()
     test_project_files_one_per_bit()
+    test_dry_run()
+    test_pulley_speeds()
     test_builder_text()
     print("\nAll G-code maker tests passed.")

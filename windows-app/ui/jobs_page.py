@@ -520,8 +520,8 @@ class NextStepsDialog(QDialog):
         cmd.setStyleSheet("font-family: Consolas, monospace; font-size: 12pt; padding: 6px;")
         lay.addWidget(cmd)
         more = QLabel(
-            "3. In MPS2003: press 2 (Load Program), type TAP, pick the job.\n"
-            "4. Press P for Plot Preview and run it once with no movement before cutting.\n\n"
+            "3. In MPS2003: press 2 (Load Program), type TAP, Enter, ↓ to the job, Enter.\n"
+            "4. Preview it: M, P (PLOT PREVIEW shows on the left), M, 3, C. At a pause press C.\n\n"
             "No C:\\NETUP\\GET.BAT yet? See Help → \"First time: get GET.BAT\".")
         more.setObjectName("Muted")
         lay.addWidget(more)

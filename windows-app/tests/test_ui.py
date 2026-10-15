@@ -161,6 +161,7 @@ for i in range(w.help.nav.count()):
 # --- Make G-code tab
 from app_config import jobs_dir, tools_path  # noqa: E402
 from ui.tools_dialog import ToolsDialog  # noqa: E402
+from gcode.parser import parse_gcode  # noqa: E402
 
 mk = w.make
 tab_names = [w.tabs.tabText(i) for i in range(w.tabs.count())]
@@ -203,6 +204,23 @@ check(SendDialog("Plate T5.tap", outbox_dir(), received_dir()).name() == "PLATET
 again = mk.save_to_jobs()
 check(len(again) == 3 and any(p[0] == "question" for p in POPUPS), "saving again asks before replacing")
 check((Path(os.environ["CNC_APP_HOME"]) / "current.cncproj").exists(), "project kept for next time")
+
+dry = mk.save_dry_run()
+check([p.name for p in dry] == ["Dry Plate T5.tap", "Dry Plate T4.tap", "Dry Plate T1.tap"], f"dry {dry}")
+check(min(z for s in parse_gcode(dry[2].read_text()).segments for (_x, _y, z) in s.points[1:]) >= 0.25,
+      "dry run stays above the stock")
+
+from ui.pulley_dialog import PulleyDialog  # noqa: E402
+from ui.settings_dialog import SettingsDialog  # noqa: E402
+pd = PulleyDialog()
+pd.set_row(0, 1.0, 3.0)
+pd.set_row(1, 2.0, 2.0)
+check(pd.speeds() == [1080, 3250] and "3,250" in pd.result.text(), f"pulleys {pd.speeds()}")
+sd = SettingsDialog(w.settings)
+sd.rpms.setText("4000, 1000, x, 2500")
+sd._save()
+check(w.settings.rpm_choices() == [1000, 2500, 4000] and w.settings.spindle_rpms == "1000, 2500, 4000",
+      w.settings.spindle_rpms)
 
 dlg = ToolsDialog(w.tools, w.settings, "acrylic", w)
 dlg._add(__import__("cam.tools", fromlist=["Tool"]).Tool(0, "drill", 0.25, 2, 1.0, angle=118))

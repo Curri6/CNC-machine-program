@@ -1246,7 +1246,7 @@ pieces of original equipment:
    (MicroProto is a spin-off of Taig Tools). Axis motors are standard
    **Lin Engineering 5718L-10D, 1.0A NEMA 23 steppers**. Spindle is a
    separate **Franklin Electric 1/4 HP 115V AC induction motor**
-   (3450 RPM) — not part of the precision motion system, just on/off.
+   (3250 RPM on its label — corrected 2026-10-15, was written 3450) — not part of the precision motion system, just on/off.
    A silver interface panel (mounted on/near the mill) exposes DIN-style
    connectors labeled `X`, `Y`, `Z`, `A`, an `I/O PORT`, and an
    `XYZA PORT`.
