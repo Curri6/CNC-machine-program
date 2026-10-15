@@ -81,6 +81,7 @@ that changes.
 - 2026-10-15: materials question: software only, nothing to buy.
 - 2026-10-15: what's left to run a job is checks at the mill, not parts.
 - 2026-10-15: measuring the pulleys needs only a ruler or calipers (the school's).
+- 2026-10-15: first cut needs scrap acrylic and a scrap board under it (school stock).
 
 ## Not needed
 

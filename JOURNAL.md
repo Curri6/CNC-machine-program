@@ -1131,6 +1131,9 @@ from scratch.
   - Still only possible at the mill: measure the pulleys, the same
     preview on the real old PC, the dry run, then the first acrylic cut
     (TESTING.md 20, 24-26).
+- **2026-10-15: owner asked for all the steps.** Gave one ordered list (laptop
+  setup, cable/GET.BAT, pulleys, preview on the old PC, dry run, first
+  acrylic cut). TESTING.md step 16 fixed to the real preview keys.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
