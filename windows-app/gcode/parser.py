@@ -52,6 +52,7 @@ class ToolpathSegment:
     points: list[tuple[float, float, float]]
     rapid: bool  # True for G00 (non-cutting) moves
     source_line: int
+    feed: float | None = None  # modal F in effect (None for rapids / not set yet)
 
 
 @dataclass
@@ -60,6 +61,8 @@ class ParseResult:
     segments: list[ToolpathSegment]
     warnings: list[str]
     units: str  # "in" or "mm"
+    tool_changes: int = 0     # M06 count (MPS2003 pauses for each)
+    program_stops: int = 0    # M00 count (MPS2003 pauses for each)
 
     @property
     def is_fully_supported(self) -> bool:
@@ -195,6 +198,9 @@ def parse_gcode(text: str) -> ParseResult:
     retract_to_r = False           # G99 (else G98: back to start height)
     drill_r: float | None = None   # modal R plane (program coords)
     drill_z: float | None = None   # modal drill depth (program coords)
+    feed: float | None = None      # modal F
+    tool_changes = 0
+    program_stops = 0
 
     for i, raw in enumerate(text.splitlines(), start=1):
         parsed = parse_line(i, raw)
@@ -211,6 +217,10 @@ def parse_gcode(text: str) -> ParseResult:
 
         codes = parsed.codes
         words = parsed.words
+        if "F" in words and words["F"] > 0:
+            feed = words["F"]
+        tool_changes += codes.count("M06")
+        program_stops += codes.count("M00")
         if "G20" in codes:
             units = "in"
         if "G21" in codes:
@@ -273,7 +283,10 @@ def parse_gcode(text: str) -> ParseResult:
             for a, b, rapid in path:
                 if a != b:
                     segments.append(
-                        ToolpathSegment(points=[a, b], rapid=rapid, source_line=i)
+                        ToolpathSegment(
+                            points=[a, b], rapid=rapid, source_line=i,
+                            feed=None if rapid else feed,
+                        )
                     )
             pos = (x, y, end_z)
             continue
@@ -283,7 +296,8 @@ def parse_gcode(text: str) -> ParseResult:
         if motion in _LINEAR_MOVES:
             segments.append(
                 ToolpathSegment(
-                    points=[pos, target], rapid=(motion == "G00"), source_line=i
+                    points=[pos, target], rapid=(motion == "G00"), source_line=i,
+                    feed=None if motion == "G00" else feed,
                 )
             )
         else:
@@ -297,9 +311,14 @@ def parse_gcode(text: str) -> ParseResult:
                 z=target[2],
             )
             segments.append(
-                ToolpathSegment(points=[pos] + arc_points, rapid=False, source_line=i)
+                ToolpathSegment(
+                    points=[pos] + arc_points, rapid=False, source_line=i, feed=feed
+                )
             )
 
         pos = target
 
-    return ParseResult(lines=lines, segments=segments, warnings=warnings, units=units)
+    return ParseResult(
+        lines=lines, segments=segments, warnings=warnings, units=units,
+        tool_changes=tool_changes, program_stops=program_stops,
+    )
