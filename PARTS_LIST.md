@@ -83,6 +83,7 @@ that changes.
 - 2026-10-15: measuring the pulleys needs only a ruler or calipers (the school's).
 - 2026-10-15: first cut needs scrap acrylic and a scrap board under it (school stock).
 - 2026-10-16: preview test (SQUARE0) needs nothing new.
+- 2026-10-16: axis direction check needs nothing new.
 
 ## Not needed
 

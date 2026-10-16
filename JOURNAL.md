@@ -1144,6 +1144,25 @@ from scratch.
   preview SQUARE0 with the mill's motor power OFF; dry-run note says its
   preview is blank too. The app's "only moves in the air" check now says
   MPS2003's preview will be blank. Help says so.
+- **2026-10-16: owner sent 4 ruler photos of the mill** (table length, Z
+  column, Y across the table) and said "up and down is Z, left and right X,
+  forward and back Y — I might've flipped the axes, not 100%".
+  - Those names are the standard ones (and what MPS2003 and the app use):
+    X = table left/right (X stepper on the right end of the table), Y =
+    forward/back, Z = spindle up/down (Z stepper on top of the column).
+  - What can still be "flipped" is the **direction** of an axis (wiring or
+    motor). Emulated MPS2003 Manual Jog (1): pick X/Y/Z/A, S/M/F speed,
+    Right Shift = +, Left Shift = − (from its own screen; xdotool under
+    DOSBox can't tell the two Shifts apart, so not tested here). Added a
+    jog check (TESTING.md 25, Help → Running a job): + X = table moves left,
+    + Y = table moves toward you, + Z = spindle up. A reversed axis would
+    cut mirror-image text.
+  - From the photos: the T-slot table is about 18 in long (12 in ruler + the
+    rest), roughly 3.5 in wide — table size, not travel. Travel to be read
+    off MPS2003's X/Y numbers by jogging to each end (same TESTING step) →
+    Settings → Work area. A 4th-axis rotary table (the A axis, with its own
+    stepper) sits next to the mill. The belt is on the top step of both
+    pulleys in the Z photo.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
