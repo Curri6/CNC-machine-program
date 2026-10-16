@@ -1211,6 +1211,11 @@ from scratch.
   move it to the bottom rows.
   Owner: "does it matter?" Answered No (either position works; it only
   shifts the spindle's height range by one row).
+- **2026-10-16: owner asked for a picture of where the belt was.** Made
+  images/belt-position-2026-10-16.png from the motor photo: belt on the
+  spindle pulley's TOP (smallest) step; from the earlier ruler photo, on the
+  motor pulley's TOP (largest) step — the fastest speed setting. (The ruler
+  photos weren't kept; the session restarted and their uploads are gone.)
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
