@@ -120,7 +120,9 @@ confirm it. Never design around this, in this phase or later ones.
                   types, M00 pause + C) Same on the real old PC: NAMEPLT5.TAP,
                   M, P, M, 3, C. No cutting.
            o. [ ] Dry run DRYNAMT5.TAP on the mill (spindle off, cuts air), person present.
-           r. [ ] **BLOCKER (2026-10-16): Z jogs down but not up.** Diagnose: slow jog,
+           r. [ ] **BLOCKER (2026-10-16): Z jogs down but not up — Z motor is bad, being
+                  replaced with the spare.** Then slow jog test, re-zero, direction check.
+                  (Earlier notes:) Diagnose: slow jog,
                   top of travel?, hand-turn with power off, gib/lock screw, coupling
                   set screws, swap Z/X plugs; clean + light oil on Z leadscrew and dovetail.
                   2026-10-16: very hard to turn by hand → find the bind (motor vs screw vs gib).

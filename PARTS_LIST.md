@@ -90,6 +90,10 @@ that changes.
   light oil (school shop). If the brass nut's threads are stripped it would need
   replacing — not buyable now, so don't force it.
 - 2026-10-16: Z axis off the mill for cleaning; nothing to buy.
+- 2026-10-16: **Z stepper motor failed**; replaced with the school's spare (no
+  purchase). After this the school has **no spare** stepper. If another one
+  fails: Lin Engineering 5718L-10D (NEMA 23, 1.0 A) or an equal — note only,
+  nothing to buy now.
 
 ## Not needed
 

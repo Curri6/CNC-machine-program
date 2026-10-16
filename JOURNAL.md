@@ -1232,6 +1232,12 @@ from scratch.
   possibly from the plug-swap test or the Z rebuild. Fix (power off): swap
   the X and Y plugs back at the silver axis panel, then redo the jog check
   for direction. Asked the owner to confirm what each axis letter moves.
+- **2026-10-16: owner found the Z stepper motor itself is bad** ("busted") and
+  is swapping in a spare the school has. Sent swap steps: power off, photo the
+  old plug/wiring first, check the spare matches (NEMA 23, Lin 5718L-10D or
+  same size/current/shaft, same plug), refit with the alignment routine, slow
+  jog test, re-zero Z, redo the direction check. Label the old motor BAD.
+  After this there is no spare Z motor.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
