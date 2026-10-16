@@ -128,6 +128,8 @@ confirm it. Never design around this, in this phase or later ones.
                   Z axis now off the mill (parts in the right order); bench test, oil, refit aligned.
                   Works apart, binds when reassembled → alignment/gib/pinch; rebuild one step at a time.
                   No dry run or cutting until fixed.
+           s. [ ] X/Y look swapped in the jog check (X moves the table toward you):
+                  confirm; if so swap the X and Y plugs back (power off) and redo step 25.
            q. [ ] Jog check (TESTING.md 25): + direction of X, Y, Z; read X/Y travel →
                   Settings → Work area. Owner's ruler photos 2026-10-16: table ~18 in.
            p. [ ] First cut: NAMEPLT5.TAP on scrap acrylic (0.02 in engraving), person present.

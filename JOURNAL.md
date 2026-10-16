@@ -1225,6 +1225,13 @@ from scratch.
   Sent: undo the last steps one at a time until it frees; reassemble with
   screws loose and tighten one part at a time, hand-turning the full travel
   after each.
+- **2026-10-16: jog check, X:** owner: "X axis left shift towards me, Left
+  shift to the left". Read as: with X selected, the table moves toward the
+  operator (that's Y motion); and (with the other axis selected) Left Shift
+  moves the table left. If so, the **X and Y motor cables are swapped** —
+  possibly from the plug-swap test or the Z rebuild. Fix (power off): swap
+  the X and Y plugs back at the silver axis panel, then redo the jog check
+  for direction. Asked the owner to confirm what each axis letter moves.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
