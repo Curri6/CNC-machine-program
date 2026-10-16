@@ -44,12 +44,16 @@ the link at a time). Cable plugged in, old PC on and at the Windows desktop.
 
 ## Part C — send a job to the old PC
 
-11. [ ] Get SQUARE1.TAP (a 0.5 in square in the air, Z+0.25, cuts nothing):
-        open https://raw.githubusercontent.com/Curri6/CNC-machine-program/main/tools/jobs/SQUARE1.TAP
-        and press Ctrl+S. Drag the saved file into the app.
-12. [ ] The preview shows a square, and Checks say it only moves in the air.
-13. [ ] **Send to old PC ➜**. Make the name `SQUARE1.TAP`, click OK. It
-        appears under "Waiting for the old PC" on Machine Link.
+11. [ ] Get the two test squares (0.5 in each): open these and press Ctrl+S
+        on each, then drag both saved files into the app.
+        https://raw.githubusercontent.com/Curri6/CNC-machine-program/main/tools/jobs/SQUARE1.TAP
+        (0.25 in above the work, cuts nothing — for a real run later)
+        https://raw.githubusercontent.com/Curri6/CNC-machine-program/main/tools/jobs/SQUARE0.TAP
+        (at Z0 — for MPS2003's Plot Preview only)
+12. [ ] The preview shows a square for each, and Checks say SQUARE1 only
+        moves in the air.
+13. [ ] **Send to old PC ➜** both, named `SQUARE1.TAP` and `SQUARE0.TAP`.
+        They appear under "Waiting for the old PC" on Machine Link.
 14. [ ] **First time only**, on the old PC, open an MS-DOS Prompt and type:
         ```
         ftp 192.168.50.1
@@ -60,12 +64,23 @@ the link at a time). Cable plugged in, old PC on and at the Windows desktop.
         get GET.BAT
         quit
         ```
-15. [ ] On the old PC: `C:\NETUP\GET SQUARE1.TAP`. It says
-        "Done: C:\MPSPRO\SQUARE1.TAP is ready". The app's Activity log shows "Sent to old PC: SQUARE1.TAP".
-        (Photo of both screens.)
-16. [ ] On the old PC, in MPS2003: 2, `TAP`, Enter, ↓ to SQUARE1.TAP, Enter.
-        Then M, P (PLOT PREVIEW shows on the left), M, 3, C; at the pause
-        press C. It draws a square. (Photo.)
+15. [ ] On the old PC: `C:\NETUP\GET SQUARE1.TAP`, then
+        `C:\NETUP\GET SQUARE0.TAP`. Each says "Done: C:\MPSPRO\… is ready".
+        The app's Activity log shows "Sent to old PC: …". (Photo of both screens.)
+16. [ ] **Preview it in MPS2003 (no movement).** Leave the mill's motor power
+        OFF for this test, so nothing can move.
+        - Start MPS2003 the way you normally do (C:\MPSPRO\MILL).
+        - Press 2 (Load Program), type `TAP`, press Enter, press ↓ until
+          SQUARE0.TAP is picked, press Enter. The left side says PROGRAM:
+          SQUARE0.TAP.
+        - Press M (second menu), then P. The words PLOT PREVIEW appear on
+          the left.
+        - Press M, then 3 (Run Program), then C.
+        - It draws a small square and says END OF PROGRAM. (Photo.)
+        - Optional: load SQUARE1.TAP the same way and run it. The screen
+          stays blank but it still says END OF PROGRAM: MPS2003's Plot
+          Preview only draws moves at or below Z0, and SQUARE1 is all above
+          the work. (Found by running MPS2003 in an emulator, 2026-10-16.)
 
 ## Part D — backup from the old PC
 
@@ -102,7 +117,8 @@ the link at a time). Cable plugged in, old PC on and at the Windows desktop.
         run** → send **Dry Name plate T5.tap** (DRYNAMT5.TAP). Clamp nothing
         under the bit, zero X, Y and Z, spindle OFF. Plot Preview OFF, run it,
         hand near the stop/power switch the whole time. Every move should be
-        at least 1/4 in above Z0.
+        at least 1/4 in above Z0. (Its Plot Preview stays blank — it's all
+        above Z0 — so preview NAMEPLT5.TAP instead, step 24.)
 26. [ ] **First real cut** (Phase 0, person present): scrap acrylic, the name
         plate's T5 file only (engraving 0.02 in deep), spindle on at the speed
         it shows. Stop at once if anything sounds or looks wrong.

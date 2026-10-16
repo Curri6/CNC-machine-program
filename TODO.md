@@ -125,8 +125,9 @@ confirm it. Never design around this, in this phase or later ones.
                   filled (pocketed) letters.
            n. [ ] After the first real cuts, adjust the material numbers if they
                   feel too slow or too aggressive (cam/tools.py MATERIALS).
-           h. [ ] Laptop → old PC: fetch tools/jobs/SQUARE1.TAP with Win95 ftp
-                  and Plot Preview (P) it in MPS2003 (no movement). Built and
+           h. [ ] Laptop → old PC: send SQUARE1.TAP and SQUARE0.TAP, GET both, and
+                  Plot Preview SQUARE0 in MPS2003 with the motor power OFF (M, P, M, 3,
+                  C). SQUARE1's preview is blank by design (all above Z0). Built and
                   tested 2026-10-14; waiting on the real try.
            g. [ ] Ask whether MPS2003 really ignores M03/M07/G40/G41 (factory
                   samples use them): run GEAR.TAP in Plot Preview (P) — no
