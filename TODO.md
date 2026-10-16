@@ -123,6 +123,7 @@ confirm it. Never design around this, in this phase or later ones.
            r. [ ] **BLOCKER (2026-10-16): Z jogs down but not up.** Diagnose: slow jog,
                   top of travel?, hand-turn with power off, gib/lock screw, coupling
                   set screws, swap Z/X plugs; clean + light oil on Z leadscrew and dovetail.
+                  2026-10-16: very hard to turn by hand → find the bind (motor vs screw vs gib).
                   No dry run or cutting until fixed.
            q. [ ] Jog check (TESTING.md 25): + direction of X, Y, Z; read X/Y travel →
                   Settings → Work area. Owner's ruler photos 2026-10-16: table ~18 in.

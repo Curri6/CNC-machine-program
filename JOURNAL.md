@@ -1178,6 +1178,11 @@ from scratch.
 - **2026-10-16: owner thinks it's the Z motor stalling; asked if lubrication
   helps.** Answered Yes (less friction on the leadscrew and dovetail = less
   torque needed to lift the head). Owner going to check.
+- **2026-10-16: Z is very hard to turn by hand** → binding, not just a weak
+  motor. Sent isolation steps: Z motor cable unplugged (a powered-off driver
+  can short the coils and make a stepper stiff), coupling set screws loosened
+  to turn the leadscrew alone, gib screws on the Z slide backed off a little,
+  leadscrew and dovetail cleaned and lightly oiled, check the top of travel.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
