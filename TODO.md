@@ -125,6 +125,7 @@ confirm it. Never design around this, in this phase or later ones.
                   set screws, swap Z/X plugs; clean + light oil on Z leadscrew and dovetail.
                   2026-10-16: very hard to turn by hand → find the bind (motor vs screw vs gib).
                   Photo: brass nut corroded (green), old grease, looks tipped → clean + seat square.
+                  Z axis now off the mill (parts in the right order); bench test, oil, refit aligned.
                   No dry run or cutting until fixed.
            q. [ ] Jog check (TESTING.md 25): + direction of X, Y, Z; read X/Y travel →
                   Settings → Work area. Owner's ruler photos 2026-10-16: table ~18 in.

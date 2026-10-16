@@ -1192,6 +1192,15 @@ from scratch.
   screw line it up, re-snug), start the screw by hand without force (back
   up until it drops into the thread), light oil. Brass threads strip if
   forced — a new nut can't be bought, so no force.
+- **2026-10-16: owner took the whole Z axis off and laid it out** (images/z-axis-
+  removed-2026-10-16.jpg) and asked "is this right". Order is right: Z
+  stepper → motor mount with coupling → black bearing block → leadscrew →
+  steel Z slide (dovetail underneath, brass nut inside; the screw's end
+  sticks out the bottom, so it's threaded through the nut now). A black
+  strip with 3 holes lies beside it (gib or a cover plate). Answered Yes.
+  Next: bench test (turn the coupling by hand, slide should run the length
+  of the screw easily), clean/oil the dovetails, and on refit line up the
+  bearing block before tightening so the screw isn't bent.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

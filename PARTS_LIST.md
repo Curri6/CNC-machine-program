@@ -89,6 +89,7 @@ that changes.
 - 2026-10-16: cleaning the Z nut: old toothbrush, rag, WD-40 or rubbing alcohol,
   light oil (school shop). If the brass nut's threads are stripped it would need
   replacing — not buyable now, so don't force it.
+- 2026-10-16: Z axis off the mill for cleaning; nothing to buy.
 
 ## Not needed
 
