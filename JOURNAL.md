@@ -1175,6 +1175,9 @@ from scratch.
   Asked the owner for a short video and the hand-turn test. MPS2003's Z
   number is now wrong (it counted steps that didn't happen): re-zero Z
   after the fix. No cutting until Z lifts reliably.
+- **2026-10-16: owner thinks it's the Z motor stalling; asked if lubrication
+  helps.** Answered Yes (less friction on the leadscrew and dovetail = less
+  torque needed to lift the head). Owner going to check.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
