@@ -113,13 +113,30 @@ the link at a time). Cable plugged in, old PC on and at the Windows desktop.
         M, 3, C. It stops at the first line with the bit and RPM message:
         press C. It draws the letters. (Photo.) Already checked in an emulator
         with the real MPS2003.EXE on 2026-10-15; this checks the real PC.
-25. [ ] **Dry run** (the mill moves, cuts only air): Make tab → **Save a dry
+25. [ ] **Which way is + ?** (motor power ON, spindle OFF, nothing clamped,
+        a person at the switch). In MPS2003 press 1 (Manual Jog), then S
+        (slow). Press X, then tap **Right Shift** (+) a few times: the X
+        number on the left goes up. Then tap **Left Shift** (−): it goes down.
+        Do the same with Y and Z. Check each one moves this way:
+
+        | Axis | Right Shift (+) should… |
+        | --- | --- |
+        | X | move the **table to the LEFT** (the bit goes right across the work) |
+        | Y | move the **table TOWARD you** (the bit goes away from you) |
+        | Z | move the **spindle UP** |
+
+        Write down any axis that goes the other way and send a photo/video —
+        a backwards axis would cut text mirror-image. Q leaves Manual Jog.
+        (While you're there: jog X slowly to each end, stopping ~1/8 in short,
+        and write down the X number at both ends; same for Y. That's the
+        travel, for Settings → Work area.)
+26. [ ] **Dry run** (the mill moves, cuts only air): Make tab → **Save a dry
         run** → send **Dry Name plate T5.tap** (DRYNAMT5.TAP). Clamp nothing
         under the bit, zero X, Y and Z, spindle OFF. Plot Preview OFF, run it,
         hand near the stop/power switch the whole time. Every move should be
         at least 1/4 in above Z0. (Its Plot Preview stays blank — it's all
         above Z0 — so preview NAMEPLT5.TAP instead, step 24.)
-26. [ ] **First real cut** (Phase 0, person present): scrap acrylic, the name
+27. [ ] **First real cut** (Phase 0, person present): scrap acrylic, the name
         plate's T5 file only (engraving 0.02 in deep), spindle on at the speed
         it shows. Stop at once if anything sounds or looks wrong.
 

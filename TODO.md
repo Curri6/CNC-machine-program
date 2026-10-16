@@ -120,6 +120,8 @@ confirm it. Never design around this, in this phase or later ones.
                   types, M00 pause + C) Same on the real old PC: NAMEPLT5.TAP,
                   M, P, M, 3, C. No cutting.
            o. [ ] Dry run DRYNAMT5.TAP on the mill (spindle off, cuts air), person present.
+           q. [ ] Jog check (TESTING.md 25): + direction of X, Y, Z; read X/Y travel →
+                  Settings → Work area. Owner's ruler photos 2026-10-16: table ~18 in.
            p. [ ] First cut: NAMEPLT5.TAP on scrap acrylic (0.02 in engraving), person present.
            m. [ ] Later, if wanted: import drawings (DXF/SVG) into the Make tab;
                   filled (pocketed) letters.

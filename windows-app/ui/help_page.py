@@ -152,6 +152,17 @@ it names, switch the spindle on, then press <b>C</b>. Stay at the machine.</li>
 <li>When it finishes: spindle off, change to the next bit, <b>zero Z again</b> on the top of the
 stock (don't touch X and Y), load the next file, and repeat.</li>
 </ol>
+<h2>Which way the axes go</h2>
+<p>The app (and MPS2003's preview) use the usual milling directions. Check them once with
+Manual Jog (<b>1</b>, then <b>S</b> for slow, pick <b>X</b>, <b>Y</b> or <b>Z</b>, <b>Right Shift</b> = +,
+<b>Left Shift</b> = −, <b>Q</b> to stop):</p>
+<table>
+<tr><td><b>X</b> (left / right)</td><td>+ moves the <b>table to the left</b>, so the bit goes right across the work</td></tr>
+<tr><td><b>Y</b> (forward / back)</td><td>+ moves the <b>table toward you</b>, so the bit goes away from you</td></tr>
+<tr><td><b>Z</b> (up / down)</td><td>+ moves the <b>spindle up</b></td></tr>
+</table>
+<p>If an axis goes the other way, jobs come out mirror-image (backwards text). Don't cut until
+that's sorted out.</p>
 <p>Cut-outs that go all the way through leave small <b>holding tabs</b> so the part doesn't
 break loose and get thrown. Snip or file them off afterwards. Put a scrap board under the stock
 for anything that goes through.</p>
