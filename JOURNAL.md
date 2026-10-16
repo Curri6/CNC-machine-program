@@ -1209,6 +1209,8 @@ from scratch.
   came off (outline/witness mark, clean vs dirty threads); if unknown, top,
   then check the bit still reaches the table with Z travel left, else
   move it to the bottom rows.
+  Owner: "does it matter?" Answered No (either position works; it only
+  shifts the spindle's height range by one row).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
