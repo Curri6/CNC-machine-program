@@ -1201,6 +1201,14 @@ from scratch.
   Next: bench test (turn the coupling by hand, slide should run the length
   of the screw easily), clean/oil the dovetails, and on refit line up the
   bearing block before tightening so the screw isn't bent.
+- **2026-10-16: "top or bottom hole?"** (images/z-slide-plate-2026-10-16.jpg):
+  the black plate (6 screws, 2 × 3) on the Z slide fits the slide's 4 rows of
+  holes in two places — top 3 rows (as photographed, toward the motor end) or
+  bottom 3. The two positions differ by one row spacing in spindle height.
+  Couldn't tell the original from the photo. Advice: put it back where it
+  came off (outline/witness mark, clean vs dirty threads); if unknown, top,
+  then check the bit still reaches the table with Z travel left, else
+  move it to the bottom rows.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
