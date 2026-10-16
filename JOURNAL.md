@@ -1163,6 +1163,18 @@ from scratch.
     Settings → Work area. A 4th-axis rotary table (the A axis, with its own
     stepper) sits next to the mill. The belt is on the top step of both
     pulleys in the Z photo.
+- **2026-10-16: jog check result — Z goes down but not up ("seems jammed").**
+  Not yet diagnosed. The Z stepper lifts the whole head *and* the heavy
+  Franklin spindle motor mounted on it; going down, gravity helps. Likely
+  causes, cheapest first: (1) jog too fast for lifting (try S = slow);
+  (2) head already at the top of its travel; (3) Z gib / lock screw on the
+  column dovetail too tight, or chips/dry leadscrew; (4) loose set screw in
+  the coupling between the Z motor and the leadscrew (motor turns, screw
+  doesn't — gravity still lets it drop); (5) electrical: a bad Z wire or
+  driver channel (test by swapping the Z and X motor plugs, power off).
+  Asked the owner for a short video and the hand-turn test. MPS2003's Z
+  number is now wrong (it counted steps that didn't happen): re-zero Z
+  after the fix. No cutting until Z lifts reliably.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

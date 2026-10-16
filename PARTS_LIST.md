@@ -84,6 +84,8 @@ that changes.
 - 2026-10-15: first cut needs scrap acrylic and a scrap board under it (school stock).
 - 2026-10-16: preview test (SQUARE0) needs nothing new.
 - 2026-10-16: axis direction check needs nothing new.
+- 2026-10-16: Z won't lift. Checks need only hex keys, a flashlight and light
+  machine oil (school shop). Nothing to buy unless a part turns out broken.
 
 ## Not needed
 

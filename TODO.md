@@ -120,6 +120,9 @@ confirm it. Never design around this, in this phase or later ones.
                   types, M00 pause + C) Same on the real old PC: NAMEPLT5.TAP,
                   M, P, M, 3, C. No cutting.
            o. [ ] Dry run DRYNAMT5.TAP on the mill (spindle off, cuts air), person present.
+           r. [ ] **BLOCKER (2026-10-16): Z jogs down but not up.** Diagnose: slow jog,
+                  top of travel?, hand-turn with power off, gib/lock screw, coupling
+                  set screws, swap Z/X plugs. No dry run or cutting until fixed.
            q. [ ] Jog check (TESTING.md 25): + direction of X, Y, Z; read X/Y travel →
                   Settings → Work area. Owner's ruler photos 2026-10-16: table ~18 in.
            p. [ ] First cut: NAMEPLT5.TAP on scrap acrylic (0.02 in engraving), person present.
