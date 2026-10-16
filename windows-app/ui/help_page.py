@@ -34,7 +34,9 @@ or make one on the <b>Make G-code</b> tab and click <b>Save to Jobs ➜</b>.</li
 <li><b>On the old PC</b> (MS-DOS Prompt): <table class="cmdt" cellpadding="6" cellspacing="0" bgcolor="#eef2f7"><tr><td><code>C:\\NETUP\\GET JOB1.TAP</code></td></tr></table></li>
 <li><b>In MPS2003:</b> press <b>2</b> (Load Program), type <code>TAP</code> and Enter, press ↓ to the job and Enter.
 Then preview it: <b>M</b> (second menu), <b>P</b> (the words PLOT PREVIEW appear on the left), <b>M</b>, <b>3</b>
-(Run Program), <b>C</b>. It draws the job; at each pause press <b>C</b> again. Watch it all before cutting.</li>
+(Run Program), <b>C</b>. It draws the job; at each pause press <b>C</b> again. Watch it all before cutting.
+Keep the mill's motor power off while previewing. MPS2003 only draws moves at or below the top of
+the work (Z0), so a job that stays in the air (a dry run) shows a blank preview.</li>
 </ol>
 <p class="box"><b>Safety:</b> the app never starts a job and can't move the machine. A person
 at the machine always loads and starts each job in MPS2003, and stays there while it runs.</p>

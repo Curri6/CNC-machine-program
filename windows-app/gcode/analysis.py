@@ -147,7 +147,9 @@ def analyze(result: ParseResult, settings: Settings, file_name: str = "") -> Job
     elif deepest < 0:
         checks.append(Check(OK, f"Deepest cut: Z{deepest:.3f} {result.units}."))
     else:
-        checks.append(Check(INFO, "Nothing goes below Z0 — this job only moves in the air."))
+        checks.append(Check(INFO, "Nothing goes below Z0 — this job only moves in the air. "
+                                  "(MPS2003's Plot Preview only draws moves at or below Z0, "
+                                  "so its preview screen will stay blank.)"))
 
     # --- work area
     if settings.work_x_in > 0 and settings.work_y_in > 0:

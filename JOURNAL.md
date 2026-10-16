@@ -1134,6 +1134,16 @@ from scratch.
 - **2026-10-15: owner asked for all the steps.** Gave one ordered list (laptop
   setup, cable/GET.BAT, pulleys, preview on the old PC, dry run, first
   acrylic cut). TESTING.md step 16 fixed to the real preview keys.
+- **2026-10-16: owner said the SQUARE1 Plot Preview was never done** and asked
+  to add it. Tried it first in the emulated MPS2003: SQUARE1.TAP ran to END
+  OF PROGRAM but **drew nothing**. The same square at Z0 or Z-0.01 drew
+  fine, so **MPS2003's Plot Preview only draws moves at or below Z0** (the
+  drawing is of the cut, not the air moves). Added tools/jobs/SQUARE0.TAP
+  (the square at Z0, "preview test only, do not run") — draws a clear
+  square in the emulator. TESTING.md 11-16 now send both squares and
+  preview SQUARE0 with the mill's motor power OFF; dry-run note says its
+  preview is blank too. The app's "only moves in the air" check now says
+  MPS2003's preview will be blank. Help says so.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
