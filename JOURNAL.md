@@ -1183,6 +1183,15 @@ from scratch.
   can short the coils and make a stepper stiff), coupling set screws loosened
   to turn the leadscrew alone, gib screws on the Z slide backed off a little,
   leadscrew and dovetail cleaned and lightly oiled, check the top of travel.
+- **2026-10-16: owner photo of the brass leadscrew nut** (images/z-leadscrew-
+  nut-2026-10-16.jpg): "still will not screw". The square brass nut in its
+  pocket has **green corrosion (verdigris)** and dark dried old grease/chips
+  on it, and it looks **tipped in its pocket**. A dirty, corroded or cocked
+  nut binds the leadscrew. Sent: clean nut and screw threads (toothbrush,
+  WD-40 or alcohol), seat the nut square (loosen its holding screw, let the
+  screw line it up, re-snug), start the screw by hand without force (back
+  up until it drops into the thread), light oil. Brass threads strip if
+  forced — a new nut can't be bought, so no force.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

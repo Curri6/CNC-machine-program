@@ -86,6 +86,9 @@ that changes.
 - 2026-10-16: axis direction check needs nothing new.
 - 2026-10-16: Z won't lift. Checks need only hex keys, a flashlight and light
   machine oil (school shop). Nothing to buy unless a part turns out broken.
+- 2026-10-16: cleaning the Z nut: old toothbrush, rag, WD-40 or rubbing alcohol,
+  light oil (school shop). If the brass nut's threads are stripped it would need
+  replacing — not buyable now, so don't force it.
 
 ## Not needed
 
