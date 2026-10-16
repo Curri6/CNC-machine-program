@@ -1216,6 +1216,15 @@ from scratch.
   spindle pulley's TOP (smallest) step; from the earlier ruler photo, on the
   motor pulley's TOP (largest) step — the fastest speed setting. (The ruler
   photos weren't kept; the session restarted and their uploads are gone.)
+- **2026-10-16: Z worked fully apart, binds again once reassembled.** So the
+  screw, nut and motor are fine; something in the assembly squeezes it:
+  bearing block not lined up with the nut (screw pulled sideways), gib
+  screws too tight on the column, motor mount off-centre, the nut's holding
+  screw or a too-long plate screw pinching the brass nut, or the black plate
+  moved to the other set of holes with a screw now bearing on something.
+  Sent: undo the last steps one at a time until it frees; reassemble with
+  screws loose and tighten one part at a time, hand-turning the full travel
+  after each.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
