@@ -1245,6 +1245,15 @@ from scratch.
   common stepper failure and would fit "drops down but can't lift". Keep the
   old motor labelled BAD — later it can be checked with a multimeter (each
   coil's resistance, wiggling the cable at the bend) and may be fixable.
+- **2026-10-19: spare Z motor fitted — Z goes up and down now.** But the
+  **spindle belt broke** (images/spindle-belt-broken-2026-10-19.jpg): a thin
+  black belt with notches (teeth) on the inside, from the step pulleys.
+  Owner can't buy anything. Sent: look for a spare in the school first
+  (shop drawers, the mill's box, other small machines), measure the broken
+  belt (it lies flat now: full length, top width, notched) so the school can
+  get the same one; don't run the spindle without it. Axis work that needs
+  no spindle can carry on: jog/direction check, travel, dry run, Plot
+  Preview. Only the real cut waits for the belt.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

@@ -120,7 +120,10 @@ confirm it. Never design around this, in this phase or later ones.
                   types, M00 pause + C) Same on the real old PC: NAMEPLT5.TAP,
                   M, P, M, 3, C. No cutting.
            o. [ ] Dry run DRYNAMT5.TAP on the mill (spindle off, cuts air), person present.
-           r. [ ] **BLOCKER (2026-10-16): Z jogs down but not up — Z motor is bad, being
+           t. [ ] **Spindle belt broke (2026-10-19).** Find a spare in school or have the
+                  school get one (measure: length, width, notched). Blocks only real cutting;
+                  jog check, travel and dry run can go ahead.
+           r. [x] (2026-10-19: spare Z motor fitted, Z goes up and down) **BLOCKER (2026-10-16): Z jogs down but not up — Z motor is bad, being
                   replaced with the spare.** Then slow jog test, re-zero, direction check.
                   Later: multimeter-check the bad motor's cable at the motor end (may be fixable).
                   (Earlier notes:) Diagnose: slow jog,

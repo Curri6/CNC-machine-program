@@ -96,6 +96,12 @@ that changes.
   nothing to buy now.
 - 2026-10-19: keep the bad Z motor; its cable may just have a broken wire at
   the motor (checkable with the school's multimeter). Nothing to buy.
+- 2026-10-19: **spindle drive belt broke.** Needed before any real cutting.
+  The owner can't buy it: first check the school for a spare; otherwise it's
+  for the teacher/school to get. To match it, measure the broken belt laid
+  flat: full length (end to end), width across the top, and note it is a
+  notched (toothed-inside) small V-belt for the mill's step pulleys. Bring
+  the old belt along.
 
 ## Not needed
 
