@@ -94,6 +94,8 @@ that changes.
   purchase). After this the school has **no spare** stepper. If another one
   fails: Lin Engineering 5718L-10D (NEMA 23, 1.0 A) or an equal — note only,
   nothing to buy now.
+- 2026-10-19: keep the bad Z motor; its cable may just have a broken wire at
+  the motor (checkable with the school's multimeter). Nothing to buy.
 
 ## Not needed
 

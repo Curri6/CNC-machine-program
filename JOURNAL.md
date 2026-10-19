@@ -1238,6 +1238,13 @@ from scratch.
   same size/current/shaft, same plug), refit with the alignment routine, slow
   jog test, re-zero Z, redo the direction check. Label the old motor BAD.
   After this there is no spare Z motor.
+- **2026-10-19: photo of the bad Z motor** (images/z-motor-bad-2026-10-19.jpg):
+  NEMA 23 stepper, steel coupling still on its shaft (move it to the spare
+  if the spare has none), black motor cable leaving the motor with a sharp
+  bend right at the motor. A broken wire inside the cable at that bend is a
+  common stepper failure and would fit "drops down but can't lift". Keep the
+  old motor labelled BAD — later it can be checked with a multimeter (each
+  coil's resistance, wiggling the cable at the bend) and may be fixable.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

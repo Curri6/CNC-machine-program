@@ -122,6 +122,7 @@ confirm it. Never design around this, in this phase or later ones.
            o. [ ] Dry run DRYNAMT5.TAP on the mill (spindle off, cuts air), person present.
            r. [ ] **BLOCKER (2026-10-16): Z jogs down but not up — Z motor is bad, being
                   replaced with the spare.** Then slow jog test, re-zero, direction check.
+                  Later: multimeter-check the bad motor's cable at the motor end (may be fixable).
                   (Earlier notes:) Diagnose: slow jog,
                   top of travel?, hand-turn with power off, gib/lock screw, coupling
                   set screws, swap Z/X plugs; clean + light oil on Z leadscrew and dovetail.
