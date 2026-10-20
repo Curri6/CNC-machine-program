@@ -1290,6 +1290,10 @@ from scratch.
   Owner can get warm glycerin; sent soak steps (teacher, gloves/goggles, warm in
   a water bath, 15-30 min, wash off with soap, fit with motor slid in, slip test).
   Water temperature asked: about 70 °C / 160 °F (steaming, not bubbling), 10-15 min.
+  Owner soaking the spare belt in a 2 L beaker on the lab hotplate/stirrer for ~30 min
+  (images/belt-soak-hotplate-2026-10-20.jpg). Belt lies on the beaker bottom: told to
+  lift it off the hot glass, keep it below a boil, stay with it, tongs + heat gloves,
+  hotplate off after (hot top).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
