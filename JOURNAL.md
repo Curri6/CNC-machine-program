@@ -1273,6 +1273,8 @@ from scratch.
   heating it is a fire risk, and alcohol alone dries rubber out further.
   Owner: "just do hot water then". Hot water is safe but already wasn't
   enough; a longer, hotter soak may help a little. Real fix is another belt.
+  Owner asked about heating the water on a 3D printer: No (water on the heated
+  bed/electronics is a shock and damage risk; use a kettle or hot tap).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
