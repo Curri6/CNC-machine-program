@@ -123,6 +123,8 @@ confirm it. Never design around this, in this phase or later ones.
            t. [ ] **Spindle belt broke (2026-10-19).** Find a spare in school or have the
                   school get one (measure: length, width, notched). Blocks only real cutting;
                   jog check, travel and dry run can go ahead.
+                  2026-10-20: spare found but hardened — warm it, fit with the motor slid in (no
+                  stretching); fresh belt still needed.
            r. [x] (2026-10-19: spare Z motor fitted, Z goes up and down) **BLOCKER (2026-10-16): Z jogs down but not up — Z motor is bad, being
                   replaced with the spare.** Then slow jog test, re-zero, direction check.
                   Later: multimeter-check the bad motor's cable at the motor end (may be fixable).

@@ -1254,6 +1254,13 @@ from scratch.
   get the same one; don't run the spindle without it. Axis work that needs
   no spindle can carry on: jog/direction check, travel, dry run, Plot
   Preview. Only the real cut waits for the belt.
+- **2026-10-20: owner found a spare belt, but it's rock hard** (old rubber gone
+  hard) and would snap if stretched on. Sent: compare its length/width with
+  the broken one; warm it in hot tap water a few minutes to soften it; fit it
+  **without stretching** by loosening the motor mount and sliding the motor
+  toward the spindle, put it straight onto the steps it needs, then slide the
+  motor back just until snug. Bend-test a short section: surface cracks =
+  dry-rotted, use only for testing/light cuts. A fresh belt is still needed.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,

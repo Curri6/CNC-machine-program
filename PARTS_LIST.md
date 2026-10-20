@@ -102,6 +102,8 @@ that changes.
   flat: full length (end to end), width across the top, and note it is a
   notched (toothed-inside) small V-belt for the mill's step pulleys. Bring
   the old belt along.
+- 2026-10-20: a spare belt was found but it has gone hard; it may do for testing
+  if fitted without stretching. A fresh belt is still needed (for the school to get).
 
 ## Not needed
 
