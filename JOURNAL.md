@@ -1281,6 +1281,9 @@ from scratch.
   microwave/kettle, science-lab hot plate with the teacher) — but hot water
   won't really fix the belt; better to have the teacher order a new one and
   do the no-spindle checks meanwhile.
+  Owner: hot water worked on the old belt before, so try it. Sent safe way:
+  teacher's staff-room microwave/kettle or lab hot plate with the teacher,
+  very hot not boiling, 10-15 min, fit at once with the motor slid in.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
