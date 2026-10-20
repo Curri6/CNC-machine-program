@@ -1275,6 +1275,8 @@ from scratch.
   enough; a longer, hotter soak may help a little. Real fix is another belt.
   Owner asked about heating the water on a 3D printer: No (water on the heated
   bed/electronics is a shock and damage risk; use a kettle or hot tap).
+  Even in a container: still No (spill/pressure risk, and a printer bed gets the
+  water no hotter than a kettle or hot tap would).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
