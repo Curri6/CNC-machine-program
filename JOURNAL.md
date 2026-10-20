@@ -1277,6 +1277,10 @@ from scratch.
   bed/electronics is a shock and damage risk; use a kettle or hot tap).
   Even in a container: still No (spill/pressure risk, and a printer bed gets the
   water no hotter than a kettle or hot tap would).
+  No kettle or hot tap at school. Suggested: ask the teacher (staff-room
+  microwave/kettle, science-lab hot plate with the teacher) — but hot water
+  won't really fix the belt; better to have the teacher order a new one and
+  do the no-spindle checks meanwhile.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
