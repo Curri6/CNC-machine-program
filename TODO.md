@@ -120,6 +120,8 @@ confirm it. Never design around this, in this phase or later ones.
                   types, M00 pause + C) Same on the real old PC: NAMEPLT5.TAP,
                   M, P, M, 3, C. No cutting.
            o. [ ] Dry run DRYNAMT5.TAP on the mill (spindle off, cuts air), person present.
+           u. [ ] Take a full photo of the mill and of the old PC setup (owner asked for
+                  one 2026-10-20; none saved yet) and add it to images/.
            t. [ ] **Spindle belt broke (2026-10-19).** Find a spare in school or have the
                   school get one (measure: length, width, notched). Blocks only real cutting;
                   jog check, travel and dry run can go ahead.
