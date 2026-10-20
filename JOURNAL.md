@@ -1261,6 +1261,14 @@ from scratch.
   toward the spindle, put it straight onto the steps it needs, then slide the
   motor back just until snug. Bend-test a short section: surface cracks =
   dry-rotted, use only for testing/light cuts. A fresh belt is still needed.
+- **2026-10-20: spare belt still too stiff after warming; owner asked how to make
+  it like new.** Told the truth: hardened rubber can't be made new again.
+  At best a soak in oil of wintergreen (methyl salicylate) + rubbing alcohol
+  softens it for a while (old trick for record-player and printer rubber) —
+  only if the school already has some (chem lab / nurse), not to buy. Better:
+  a belt from another school machine, a matching O-ring/round belt from the
+  shop's spares as a stop-gap for light cuts, or the school orders a new
+  belt (cheap; parts list has what to measure).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
