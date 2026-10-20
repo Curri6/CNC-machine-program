@@ -1298,6 +1298,9 @@ from scratch.
   can't catch. (Owner: small magnetic stir bar on the bottom — fine as long as the belt
   isn't lying on the bottom next to it.)
   600 rpm to make the belt float: No (rubber sinks; the vortex drags it onto the bar).
+  Hanging leaves part of the belt out of the water: suggested a wire/paper-clip hook to
+  hang it lower, a small beaker inside the big one (belt inside, stir bar outside), or
+  skip stirring and rest it on an upside-down small dish.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
