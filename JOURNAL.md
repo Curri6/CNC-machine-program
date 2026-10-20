@@ -1295,7 +1295,8 @@ from scratch.
   lift it off the hot glass, keep it below a boil, stay with it, tongs + heat gloves,
   hotplate off after (hot top).
   Asked about using the stirrer: Yes, low speed, belt hung above the stir bar so it
-  can't catch.
+  can't catch. (Owner: small magnetic stir bar on the bottom — fine as long as the belt
+  isn't lying on the bottom next to it.)
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
