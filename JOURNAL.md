@@ -1284,6 +1284,9 @@ from scratch.
   Owner: hot water worked on the old belt before, so try it. Sent safe way:
   teacher's staff-room microwave/kettle or lab hot plate with the teacher,
   very hot not boiling, 10-15 min, fit at once with the motor slid in.
+  Asked for anything better than water: not really without buying (belt
+  dressing / rubber renewer). Maybe warm glycerin from the science lab, washed
+  off after. Avoid WD-40, oils, solvents (swell/weaken rubber, make it slip).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
