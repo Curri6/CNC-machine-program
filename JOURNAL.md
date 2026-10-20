@@ -1269,6 +1269,8 @@ from scratch.
   a belt from another school machine, a matching O-ring/round belt from the
   shop's spares as a stop-gap for light cuts, or the school orders a new
   belt (cheap; parts list has what to measure).
+- **2026-10-20: owner asked about hot rubbing alcohol instead.** Answered No:
+  heating it is a fire risk, and alcohol alone dries rubber out further.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
