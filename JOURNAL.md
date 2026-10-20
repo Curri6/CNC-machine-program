@@ -1289,6 +1289,7 @@ from scratch.
   off after. Avoid WD-40, oils, solvents (swell/weaken rubber, make it slip).
   Owner can get warm glycerin; sent soak steps (teacher, gloves/goggles, warm in
   a water bath, 15-30 min, wash off with soap, fit with motor slid in, slip test).
+  Water temperature asked: about 70 °C / 160 °F (steaming, not bubbling), 10-15 min.
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
