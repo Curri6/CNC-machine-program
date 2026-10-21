@@ -1301,6 +1301,13 @@ from scratch.
   Hanging leaves part of the belt out of the water: suggested a wire/paper-clip hook to
   hang it lower, a small beaker inside the big one (belt inside, stir bar outside), or
   skip stirring and rest it on an upside-down small dish.
+- **2026-10-21: full photos** of the workstation (images/workstation-2026-10-21.jpg:
+  IBM NetVista with "Broken CD drive" written on it, Dell monitor labelled
+  "NASA COMPOOTE", the MicroProto MicroMill 2000HD/LE controller box with the
+  A-axis rotary table and its stepper sitting on top) and the whole mill
+  (images/micromill-full-2026-10-21.jpg: Franklin spindle motor, the new Z
+  stepper on top of the column, X stepper on the right end of the table, and
+  a belt now on the pulleys).
 - **Plan: floppy disk.** `C:\MPSPRO` is about 1.2MB, which fits on one
   1.44MB floppy. The old PC already has a floppy drive; the modern
   laptop needs a USB floppy drive (about $15). Commands: on Win95,
